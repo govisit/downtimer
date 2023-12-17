@@ -1,5 +1,3 @@
 /// <reference lib="deno.unstable" />
 
 export const kv = await Deno.openKv();
-
-export const generateId = () => self.crypto.randomUUID();

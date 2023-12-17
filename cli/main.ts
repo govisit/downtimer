@@ -1,6 +1,11 @@
 import { parseArgs } from "https://deno.land/std@0.209.0/cli/parse_args.ts";
-import { createTopic, deleteTopic, listTopics } from "./topics.ts";
-import { createTemplate, deleteTemplate, listTemplates } from "./templates.ts";
+import { createTopic, deleteTopic, listTopics } from "./commands/topics.ts";
+import {
+  createTemplate,
+  deleteTemplate,
+  listTemplates,
+} from "./commands/templates.ts";
+import { deleteTimer, listTimers, startTimer } from "./commands/timers.ts";
 
 const args = parseArgs(Deno.args);
 console.log({ args });
@@ -44,6 +49,35 @@ async function main(): Promise<never> {
 
       case "delete":
         await deleteTemplate(args._[2]?.toString());
+        break;
+
+      default:
+        console.error("Action not supported!");
+    }
+  } else if (resource === "timer") {
+    switch (action) {
+      case "show":
+        break;
+
+      case "pause":
+        break;
+
+      case "resume":
+        break;
+
+      case "start":
+        await startTimer(args.name, args.duration, args.topic, args.template);
+        break;
+
+      case "manual-complete":
+        break;
+
+      case "list":
+        await listTimers();
+        break;
+
+      case "delete":
+        await deleteTimer(args._[2]?.toString());
         break;
 
       default:

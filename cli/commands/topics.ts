@@ -4,7 +4,7 @@ import {
   getTopics,
   newTopic,
   storeTopic,
-} from "./db/topics.ts";
+} from "../db/topics.ts";
 
 export async function createTopic(name: string | undefined): Promise<void> {
   if (!name) {

@@ -4,7 +4,7 @@ import {
   getTemplates,
   newTemplate,
   storeTemplate,
-} from "./db/templates.ts";
+} from "../db/templates.ts";
 
 export async function createTemplate(
   name: string | undefined,
@@ -39,21 +39,21 @@ export async function listTemplates(): Promise<void> {
   console.log(templates);
 }
 
-export async function deleteTemplate(slug: string | undefined): Promise<void> {
-  if (!slug) {
-    console.error("Third argument 'slug' is required.");
+export async function deleteTemplate(id: string | undefined): Promise<void> {
+  if (!id) {
+    console.error("Third argument 'id' is required.");
 
     return;
   }
 
-  const templateRes = await getTemplate(slug);
+  const templateRes = await getTemplate(id);
 
   if (!templateRes) {
-    console.log(`No template with slug ${slug} found.`);
+    console.log(`No template with ID ${id} found.`);
     return;
   }
 
-  await destroyTemplate(slug);
+  await destroyTemplate(id);
 
-  console.log(`Template "${slug}" deleted.`);
+  console.log(`Template with ID "${id}" deleted.`);
 }

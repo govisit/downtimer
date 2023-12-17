@@ -1,5 +1,5 @@
 import { slug } from "https://deno.land/x/slug@v1.1.0/mod.ts";
-import { kv } from "../db.ts";
+import { generateId, kv } from "../db.ts";
 import { Template } from "../../shared/types.ts";
 
 export function newTemplate(
@@ -8,16 +8,17 @@ export function newTemplate(
   topic: string | undefined,
 ): Template {
   return {
+    id: generateId(),
     name: name,
     slug: slug(name),
     duration: duration,
-    topic: topic,
+    topicId: topic,
     createdAt: new Date(),
   };
 }
 
 export async function storeTemplate(template: Template): Promise<Template> {
-  const templateKey = ["templates", template.slug];
+  const templateKey = ["templates", template.id];
 
   const { ok } = await kv.atomic().check({
     key: templateKey,
@@ -42,16 +43,16 @@ export async function getTemplates(): Promise<Template[]> {
   return templates;
 }
 
-export async function getTemplate(slug: string): Promise<Template | null> {
-  const key = ["templates", slug];
+export async function getTemplate(id: string): Promise<Template | null> {
+  const key = ["templates", id];
 
   return (await kv.get<Template>(key)).value;
 }
 
 export async function destroyTemplate(
-  slug: string,
+  id: string,
 ): Promise<void> {
-  const templateKey = ["templates", slug];
+  const templateKey = ["templates", id];
 
   await kv.delete(templateKey);
 }
