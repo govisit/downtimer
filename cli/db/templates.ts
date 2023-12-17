@@ -19,7 +19,10 @@ export function newTemplate(
 export async function storeTemplate(template: Template): Promise<Template> {
   const templateKey = ["templates", template.slug];
 
-  const { ok } = await kv.atomic().check({ key: templateKey, versionstamp: null })
+  const { ok } = await kv.atomic().check({
+    key: templateKey,
+    versionstamp: null,
+  })
     .set(templateKey, template).commit();
 
   if (!ok) {

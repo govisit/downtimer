@@ -13,10 +13,11 @@ export function newTopic(name: string): Topic {
 export async function storeTopic(topic: Topic): Promise<Topic> {
   const topicKey = ["topics", topic.slug];
 
-  const { ok }= await kv.atomic().check({ key: topicKey, versionstamp: null }).set(
-    topicKey,
-    topic,
-  ).commit();
+  const { ok } = await kv.atomic().check({ key: topicKey, versionstamp: null })
+    .set(
+      topicKey,
+      topic,
+    ).commit();
 
   if (!ok) {
     throw new Error(`Topic "${topic.name}" already exists.`);
