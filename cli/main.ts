@@ -51,54 +51,9 @@ await new Command()
 //         await listTemplates();
 //         break;
 
-<<<<<<< HEAD
-      default:
-        console.error("Action not supported!");
-    }
-  } else if (resource === "timer") {
-    switch (action) {
-      case "show":
-        break;
-
-      case "pause":
-        break;
-
-      case "resume":
-        break;
-
-      case "start":
-        await startTimer(args.name, args.duration, args.topic, args.template);
-        break;
-
-      case "manual-complete":
-        break;
-
-      case "list":
-        await listTimers();
-        break;
-
-      case "delete":
-        await deleteTimer(args._[2]?.toString());
-        break;
-
-      default:
-        console.error("Action not supported!");
-    }
-  } else {
-    console.error("Resource not implemented!");
-  }
-||||||| parent of 5c29788 (Refactors code.)
-      default:
-        console.error("Action not supported!");
-    }
-  } else {
-    console.error("Resource not implemented!");
-  }
-=======
 //       case "delete":
 //         await deleteTemplate(args._[2]?.toString());
 //         break;
->>>>>>> 5c29788 (Refactors code.)
 
 //       default:
 //         console.error("Action not supported!");
