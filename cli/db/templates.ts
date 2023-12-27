@@ -1,5 +1,6 @@
 import { kv } from "../db.ts";
 import { Template } from "../../shared/types.ts";
+import { getTopic } from "./topics.ts";
 
 export const TEMPLATE_PREFIX = "templates";
 
@@ -19,6 +20,20 @@ async function insertTemplate(
   template: Template,
 ): Promise<Deno.KvCommitResult | Deno.KvCommitError> {
   const templateKey = getTemplateKey(template.id);
+
+  if (template.topicId) {
+    const topicRes = await getTopic(template.topicId) 
+
+    if (topicRes.value) {
+      return await kv
+        .atomic()
+        .check({ key: templateKey, versionstamp: null })
+        .check(topicRes)
+        .set(templateKey, template)
+        .commit();
+    }
+
+  }
 
   return await kv
     .atomic()

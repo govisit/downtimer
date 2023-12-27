@@ -1,15 +1,15 @@
 import { Command } from "$cliffy/command/mod.ts";
 import { Table } from "$cliffy/table/table.ts";
-import { getTopics } from "../../db/topics.ts";
+import { getTemplates } from "../../db/templates.ts";
 
 export const command = new Command()
-  .description("List all topics.")
+  .description("List all templates.")
   .action(async () => {
-    const topics = await getTopics();
+    const templates = await getTemplates();
 
     const table = new Table();
-    const body = topics.map(
-      (topic) => [topic.name, topic.slug, topic.createdAt.toISOString()],
+    const body = templates.map(
+      (template) => [template.name, template.slug, template.createdAt.toISOString()],
     );
 
     table
