@@ -1,6 +1,6 @@
 import { Command } from "$cliffy/command/mod.ts";
 import { insertTopic } from "../../db/topics.ts";
-import { newTopic } from "../topics.ts";
+import { newTopic } from "../../topics.ts";
 
 export const command = new Command()
   .option("-n, --name <name:string>", "The name of the topic.", {

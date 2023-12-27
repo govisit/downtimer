@@ -3,6 +3,8 @@ import { Topic } from "../../shared/types.ts";
 
 export const TOPIC_PREFIX = "topics";
 
+const getTopicKey = (slug: string): string[] => [TOPIC_PREFIX, slug];
+
 export async function getTopics(): Promise<Topic[]> {
   const topics: Topic[] = [];
 
@@ -25,16 +27,14 @@ export async function insertTopic(
     .commit();
 }
 
-const getTopicKey = (slug: string): string[] => [TOPIC_PREFIX, slug];
-
 export async function deleteTopic(slug: string): Promise<void> {
   const topicKey = getTopicKey(slug);
 
   await kv.delete(topicKey);
 }
 
-export async function getTopic(slug: string): Promise<Topic | null> {
+export async function getTopic(slug: string): Promise<Deno.KvEntryMaybe<Topic>> {
   const topicKey = getTopicKey(slug);
 
-  return (await kv.get<Topic>(topicKey)).value;
+  return (await kv.get<Topic>(topicKey));
 }

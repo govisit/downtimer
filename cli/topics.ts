@@ -1,5 +1,5 @@
 import { slug } from "slug";
-import { Topic } from "../../shared/types.ts";
+import { Topic } from "../shared/types.ts";
 
 export function newTopic(name: string): Topic {
   return {

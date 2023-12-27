@@ -7,7 +7,7 @@ export const command = new Command()
   .action(async (_, args_0) => {
     const slug = args_0;
 
-    const topic = await getTopic(slug);
+    const { value: topic }= await getTopic(slug);
 
     if (!topic) {
       console.log(`No topic with slug ${slug} found.`);
