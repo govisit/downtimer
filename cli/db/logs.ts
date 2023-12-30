@@ -9,7 +9,6 @@ export function newLog(
     id: generateId(),
     timerId: timerId,
     timerStatus: timerStatus,
-    createdAt: new Date(),
   };
 }
 

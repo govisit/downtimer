@@ -8,4 +8,3 @@ export const command = new Command()
   .command("create", createTemplateCommand)
   .command("list", listTemplateCommand)
   .command("delete", deleteTemplateCommand);
-

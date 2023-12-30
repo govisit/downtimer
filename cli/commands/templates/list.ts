@@ -1,5 +1,6 @@
 import { Command } from "$cliffy/command/mod.ts";
 import { Table } from "$cliffy/table/table.ts";
+import { decodeTime } from "$std/ulid/mod.ts";
 import { getTemplates } from "../../db/templates.ts";
 
 export const command = new Command()
@@ -9,11 +10,20 @@ export const command = new Command()
 
     const table = new Table();
     const body = templates.map(
-      (template) => [template.name, template.slug, template.createdAt.toISOString()],
+      (
+        template,
+      ) => [
+        template.id,
+        template.name,
+        template.slug,
+        template.duration,
+        template.topicId,
+        new Date(decodeTime(template.id)).toISOString(),
+      ],
     );
 
     table
-      .header(["name", "slug", "created at"])
+      .header(["id", "name", "slug", "duration", "topic", "created at"])
       .body(body)
       .border()
       .render();

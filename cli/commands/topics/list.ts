@@ -1,5 +1,6 @@
 import { Command } from "$cliffy/command/mod.ts";
 import { Table } from "$cliffy/table/table.ts";
+import { decodeTime } from "$std/ulid/mod.ts";
 import { getTopics } from "../../db/topics.ts";
 
 export const command = new Command()
@@ -9,11 +10,18 @@ export const command = new Command()
 
     const table = new Table();
     const body = topics.map(
-      (topic) => [topic.name, topic.slug, topic.createdAt.toISOString()],
+      (
+        topic,
+      ) => [
+        topic.id,
+        topic.name,
+        topic.slug,
+        new Date(decodeTime(topic.id)).toISOString(),
+      ],
     );
 
     table
-      .header(["name", "slug", "created at"])
+      .header(["id", "name", "slug", "created at"])
       .body(body)
       .border()
       .render();

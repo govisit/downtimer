@@ -2,9 +2,17 @@ import { kv } from "../db.ts";
 import { Template } from "../../shared/types.ts";
 import { getTopic } from "./topics.ts";
 
-export const TEMPLATE_PREFIX = "templates";
+const TEMPLATE_PREFIX = "templates";
+const TEMPLATE_BY_TOPIC_PREFIX = "templates_by_topic";
 
-const getTemplateKey = (id: string): string[] => [TEMPLATE_PREFIX, id];
+const getTemplateKey = (
+  topicId: string,
+): string[] => [TEMPLATE_PREFIX, topicId];
+
+const getTemplateByTopicKey = (
+  id: string,
+  topicId: string,
+): string[] => [TEMPLATE_BY_TOPIC_PREFIX, topicId, id];
 
 export async function getTemplates(): Promise<Template[]> {
   const templates: Template[] = [];
@@ -16,23 +24,40 @@ export async function getTemplates(): Promise<Template[]> {
   return templates;
 }
 
-async function insertTemplate(
+export async function getTemplatesByTopic(
+  topicId: string,
+): Promise<Template[]> {
+  const templates: Template[] = [];
+
+  for await (
+    const res of kv.list<Template>({ prefix: [TEMPLATE_PREFIX, topicId] })
+  ) {
+    templates.push(res.value);
+  }
+
+  return templates;
+}
+
+export async function insertTemplate(
   template: Template,
 ): Promise<Deno.KvCommitResult | Deno.KvCommitError> {
   const templateKey = getTemplateKey(template.id);
 
   if (template.topicId) {
-    const topicRes = await getTopic(template.topicId) 
+    const topicRes = await getTopic(template.topicId);
 
-    if (topicRes.value) {
-      return await kv
-        .atomic()
-        .check({ key: templateKey, versionstamp: null })
-        .check(topicRes)
-        .set(templateKey, template)
-        .commit();
-    }
+    const templateByTopicKey = getTemplateByTopicKey(
+      template.id,
+      template.topicId,
+    );
 
+    return await kv
+      .atomic()
+      .check({ key: templateKey, versionstamp: null })
+      .check(topicRes)
+      .set(templateKey, template)
+      .set(templateByTopicKey, template)
+      .commit();
   }
 
   return await kv
@@ -41,32 +66,43 @@ async function insertTemplate(
     .set(templateKey, template)
     .commit();
 }
-// export async function storeTemplate(template: Template): Promise<Template> {
-//   const templateKey = ["templates", template.id];
 
-//   const { ok } = await kv.atomic().check({
-//     key: templateKey,
-//     versionstamp: null,
-//   })
-//     .set(templateKey, template).commit();
+export async function getTemplate(
+  id: string,
+): Promise<Deno.KvEntryMaybe<Template>> {
+  const key = getTemplateKey(id);
 
-//   if (!ok) {
-//     throw new Error(`Template "${template.name}" already exists.`);
-//   }
+  return (await kv.get<Template>(key));
+}
 
-//   return template;
-// }
+export async function deleteTemplate(id: string): Promise<void> {
+  const templateKey = getTemplateKey(id);
 
-// export async function getTemplate(id: string): Promise<Template | null> {
-//   const key = ["templates", id];
+  let res = { ok: false };
 
-//   return (await kv.get<Template>(key)).value;
-// }
+  while (!res.ok) {
+    const templateRes = await getTemplate(id);
 
-// export async function destroyTemplate(
-//   id: string,
-// ): Promise<void> {
-//   const templateKey = ["templates", id];
+    if (templateRes.value === null) return;
 
-//   await kv.delete(templateKey);
-// }
+    if (templateRes.value.topicId) {
+      const templateByTopicKey = getTemplateByTopicKey(
+        id,
+        templateRes.value.topicId,
+      );
+
+      res = await kv.atomic()
+        .check(templateRes)
+        .delete(templateKey)
+        .delete(templateByTopicKey)
+        .commit();
+
+      continue;
+    }
+
+    res = await kv.atomic()
+      .check(templateRes)
+      .delete(templateKey)
+      .commit();
+  }
+}

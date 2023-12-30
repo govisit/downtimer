@@ -1,7 +1,7 @@
 export type Topic = {
+  id: string;
   name: string;
   slug: string;
-  createdAt: Date;
 };
 
 export type Template = {
@@ -10,7 +10,6 @@ export type Template = {
   slug: string;
   duration: number;
   topicId: string | undefined;
-  createdAt: Date;
 };
 
 export type Timer = {
@@ -33,5 +32,4 @@ export type Log = {
   id: string;
   timerId: string;
   timerStatus: TimerStatus;
-  createdAt: Date;
 };
