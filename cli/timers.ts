@@ -1,0 +1,175 @@
+import { decodeTime } from "$std/ulid/mod.ts";
+import { Log, Template, Timer, TimerStatus } from "../shared/types.ts";
+import { generateId } from "./db.ts";
+import { getLatestLogForTimer, insertLog } from "./db/logs.ts";
+import { getTimers, insertTimer } from "./db/timers.ts";
+import { newLog } from "./logs.ts";
+
+export function newTimer(
+  name: string,
+  duration: number,
+  topicId?: string,
+  templateId?: string,
+): Timer {
+  return {
+    id: generateId(),
+    name: name,
+    duration: duration,
+    topicId: topicId,
+    templateId: templateId,
+  };
+}
+
+type Overrides = {
+  name?: string | undefined;
+  duration?: number | undefined;
+  topic?: string | undefined;
+};
+
+export function newTimerFromTemplate(
+  template: Template,
+  overrides: Overrides,
+): Timer {
+  return {
+    id: generateId(),
+    name: overrides.name || template.name,
+    duration: overrides.duration || template.duration,
+    topicId: overrides.topic || template.topicId,
+    templateId: template.id,
+  };
+}
+
+// type TimerWithStatus = Timer & {
+//   status: TimerStatus | null;
+// };
+
+interface TimerWithStatus extends Timer {
+  status: TimerStatus | null;
+}
+
+export async function withStatus(timer: Timer): Promise<TimerWithStatus> {
+  const log = await getLatestLogForTimer(timer.id);
+
+  if (!log) {
+    return {
+      ...timer,
+      status: null,
+    };
+  }
+
+  return {
+    ...timer,
+    status: log.timerStatus,
+  };
+}
+
+type TimerStartedEvent = {
+  timer: Timer;
+  log: Log;
+};
+
+export async function startTimer(timer: Timer): Promise<TimerStartedEvent> {
+  await insertTimer(timer);
+
+  const log = newLog(timer.id, TimerStatus.Started);
+
+  await insertLog(log);
+
+  return {
+    timer,
+    log,
+  };
+}
+
+async function completeTimer(timer: Timer): Promise<void> {
+  await insertNewLog(timer.id, TimerStatus.Completed);
+}
+
+export async function pauseTimer(timer: Timer): Promise<void> {
+  await insertNewLog(timer.id, TimerStatus.Paused);
+}
+
+export async function resumeTimer(timer: Timer): Promise<void> {
+  await insertNewLog(timer.id, TimerStatus.Resumed);
+}
+
+export async function manualCompleteTimer(timer: Timer): Promise<void> {
+  await insertNewLog(timer.id, TimerStatus.ManualCompleted);
+}
+
+async function insertNewLog(
+  timerId: string,
+  status: TimerStatus,
+): Promise<void> {
+  const log = newLog(timerId, status);
+
+  await insertLog(log);
+}
+
+/**
+ * @returns It returns the remaining time in seconds.
+ */
+export async function getTimeRemaining(
+  timer: TimerWithStatus,
+): Promise<number> {
+  const durationInSeconds = timer.duration * 60;
+
+  const now = Date.now();
+
+  const log = await getLatestLogForTimer(timer.id);
+
+  if (!log) {
+    return durationInSeconds;
+  }
+
+  const startedAt = decodeTime(log.id);
+
+  const timeElapsed = now - startedAt;
+
+  const timeRemaining = durationInSeconds - timeElapsed;
+
+  if (timeRemaining < 0) {
+    return 0;
+  }
+
+  return timeRemaining;
+}
+
+export function getPrettyTimeRemaining(timeInSeconds: number): string {
+  if (timeInSeconds === 0) {
+    return "-";
+  }
+
+  return `${timeInSeconds / 60}min`;
+}
+
+const activeStatuses = [
+  TimerStatus.Resumed,
+  TimerStatus.Started,
+];
+
+export async function getAllTimers(): Promise<TimerWithStatus[]> {
+  return (await Promise.all(
+    await getTimers().then((timers) =>
+      timers.map((timer) => withStatus(timer))
+    ),
+  ));
+}
+
+export async function getActiveTimers(): Promise<TimerWithStatus[]> {
+  return (await getAllTimers()).filter((timer) =>
+    timer.status && activeStatuses.includes(timer.status)
+  );
+}
+
+export async function cron() {
+  const activeTimers = await getActiveTimers();
+
+  for (const timer of activeTimers) {
+    const timeRemaining = await getTimeRemaining(timer);
+
+    if (timeRemaining === 0) {
+      await completeTimer(timer);
+    }
+  }
+}

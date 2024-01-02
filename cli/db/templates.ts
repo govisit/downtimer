@@ -6,8 +6,8 @@ const TEMPLATE_PREFIX = "templates";
 const TEMPLATE_BY_TOPIC_PREFIX = "templates_by_topic";
 
 const getTemplateKey = (
-  topicId: string,
-): string[] => [TEMPLATE_PREFIX, topicId];
+  templateId: string,
+): string[] => [TEMPLATE_PREFIX, templateId];
 
 const getTemplateByTopicKey = (
   id: string,
@@ -30,7 +30,9 @@ export async function getTemplatesByTopic(
   const templates: Template[] = [];
 
   for await (
-    const res of kv.list<Template>({ prefix: [TEMPLATE_PREFIX, topicId] })
+    const res of kv.list<Template>({
+      prefix: [TEMPLATE_BY_TOPIC_PREFIX, topicId],
+    })
   ) {
     templates.push(res.value);
   }

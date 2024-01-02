@@ -1,36 +1,23 @@
-import { generateId, kv } from "../db.ts";
+import { kv } from "../db.ts";
 import { Timer } from "../../shared/types.ts";
-import { destroyLog, getLogsforTimer } from "./logs.ts";
+import { deleteLog, getLogsByTimer } from "./logs.ts";
 
-export function newTimer(
-  name: string,
-  duration: number,
-  topic: string | undefined,
-  template: string | undefined,
-): Timer {
-  return {
-    id: generateId(),
-    name: name,
-    duration: duration,
-    topicId: topic,
-    templateId: template,
-  };
-}
+const TIMER_PREFIX = "timers";
 
-export async function storeTimer(timer: Timer): Promise<Timer> {
-  const timerKey = ["timers", timer.id];
+const getTimerKey = (
+  id: string,
+): string[] => [TIMER_PREFIX, id];
 
-  const { ok } = await kv.atomic().check({
-    key: timerKey,
-    versionstamp: null,
-  })
-    .set(timerKey, timer).commit();
+export async function insertTimer(
+  timer: Timer,
+): Promise<Deno.KvCommitResult | Deno.KvCommitError> {
+  const timerKey = getTimerKey(timer.id);
 
-  if (!ok) {
-    throw new Error(`Timer "${timer.name}" already exists.`);
-  }
-
-  return timer;
+  return await kv
+    .atomic()
+    .check({ key: timerKey, versionstamp: null })
+    .set(timerKey, timer)
+    .commit();
 }
 
 export async function getTimers(): Promise<Timer[]> {
@@ -43,21 +30,21 @@ export async function getTimers(): Promise<Timer[]> {
   return timers;
 }
 
-export async function getTimer(id: string): Promise<Timer | null> {
-  const key = ["timers", id];
+export async function getTimer(id: string): Promise<Deno.KvEntryMaybe<Timer>> {
+  const key = getTimerKey(id);
 
-  return (await kv.get<Timer>(key)).value;
+  return (await kv.get<Timer>(key));
 }
 
-export async function destroyTimer(
+export async function deleteTimer(
   id: string,
 ): Promise<void> {
-  const timerKey = ["timers", id];
+  const timerKey = getTimerKey(id);
 
-  const logs = await getLogsforTimer(id);
+  const logs = await getLogsByTimer(id);
 
   for (const log of logs) {
-    await destroyLog(log.id);
+    await deleteLog(log.id);
   }
 
   await kv.delete(timerKey);

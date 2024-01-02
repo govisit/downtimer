@@ -1,5 +1,5 @@
 import { Timer, TimerStatus } from "../../shared/types.ts";
-import { newLog, storeLog } from "../db/logs.ts";
+import { insertLog, newLog } from "../db/logs.ts";
 import { getTemplate } from "../db/templates.ts";
 import {
   destroyTimer,
@@ -51,7 +51,7 @@ export async function startTimer(
 
   const log = newLog(timer.id, TimerStatus.Started);
 
-  await storeLog(log);
+  await insertLog(log);
 
   console.log(`Timer "${timer.name}" started.`);
 }
