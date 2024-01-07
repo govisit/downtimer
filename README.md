@@ -12,3 +12,15 @@ This repository contains two projects:
 
 - cli
 - web/api
+
+## Testing
+
+Navigate to a project and run tests with:
+
+```bash
+# one-off
+deno test
+
+# or watch for changes
+deno test --watch
+```
