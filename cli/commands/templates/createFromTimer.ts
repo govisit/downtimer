@@ -1,33 +1,31 @@
 import { Command } from "$cliffy/command/mod.ts";
-import { getTemplate } from "../../db/templates.ts";
+import { insertTemplate } from "../../db/templates.ts";
+import { getTimer } from "../../db/timers.ts";
 import { getTopicBySlug } from "../../db/topics.ts";
+import { newTemplateFromTimer } from "../../templates.ts";
+
 import {
   getTemplateOverrides,
-  newTimerFromTemplate,
   Overrides,
   parseDuration,
-  startTimer,
 } from "../../timers.ts";
 
 export const command = new Command()
-  .arguments("<templateId:string>")
-  .option("-n, --name <name:string>", "Override the name of the timer.")
+  .option("-n, --name <name:string>", "The name of the template.")
+  .option("-d, --duration <duration:string>", "The duration of the timer.")
   .option(
-    "-d, --duration <duration:string>",
-    "Override the duration of the timer.",
+    "--topic <topic:string>",
+    "The topic slug to which the template belongs.",
   )
-  .option(
-    "-t, --topic <topic:string>",
-    "Override the topic to which the timer belongs.",
-  )
+  .arguments("<timerId:string>")
   .description(
-    "It starts a new timer using a template. You can override template values.",
+    "It creates a new template from a timer. You can override timer values.",
   )
-  .action(async (options, templateId) => {
-    const template = await getTemplate(templateId);
+  .action(async (options, timerId) => {
+    const timer = await getTimer(timerId);
 
-    if (!template.value) {
-      console.error(`Template with ID '${templateId}' was not found`);
+    if (!timer.value) {
+      console.error(`Timer with ID '${timerId}' was not found`);
       return;
     }
 
@@ -57,9 +55,9 @@ export const command = new Command()
       topic?.value?.id,
     );
 
-    const timer = newTimerFromTemplate(template.value, overrides);
+    const template = newTemplateFromTimer(timer.value, overrides);
 
-    await startTimer(timer);
+    await insertTemplate(template);
 
-    console.log(`Timer "${timer.id}" started.`);
+    console.log(`Template "${template.name}" created.`);
   });

@@ -1,6 +1,6 @@
 import { decodeTime } from "$std/ulid/mod.ts";
 import { Log, Template, Timer, TimerStatus } from "../shared/types.ts";
-import { generateId } from "./db.ts";
+import { generateId } from "./utils.ts";
 import { getLatestLogForTimer, insertLog } from "./db/logs.ts";
 import { getTimers, insertTimer } from "./db/timers.ts";
 import { newLog } from "./logs.ts";
@@ -112,7 +112,7 @@ async function insertNewLog(
 export async function getTimeRemaining(
   timer: TimerWithStatus,
 ): Promise<number> {
-  const durationInMiliseconds = timer.duration * 60;
+  const durationInMiliseconds = timer.duration;
 
   const now = Date.now();
 
@@ -133,16 +133,6 @@ export async function getTimeRemaining(
   }
 
   return timeRemaining;
-}
-
-export function getPrettyTimeRemaining(timeInMiliSeconds: number): string {
-  if (timeInMiliSeconds === 0) {
-    return "-";
-  }
-
-  const roundedTime = Math.round(timeInMiliSeconds / 60 / 1000);
-
-  return `${roundedTime}min`;
 }
 
 const activeStatuses = [
@@ -169,6 +159,7 @@ export async function cron() {
 
   for (const timer of activeTimers) {
     const timeRemaining = await getTimeRemaining(timer);
+    console.log({ timeRemaining });
 
     if (timeRemaining === 0) {
       await completeTimer(timer);

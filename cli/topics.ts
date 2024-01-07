@@ -1,6 +1,6 @@
 import { slug } from "slug";
 import { Topic } from "../shared/types.ts";
-import { generateId } from "./db.ts";
+import { generateId } from "./utils.ts";
 
 export function newTopic(name: string): Topic {
   return {

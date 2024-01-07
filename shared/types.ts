@@ -7,7 +7,6 @@ export type Topic = {
 export type Template = {
   id: string;
   name: string;
-  slug: string;
   duration: number;
   topicId: string | undefined;
 };

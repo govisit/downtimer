@@ -2,12 +2,13 @@ import { Command } from "$cliffy/command/mod.ts";
 import { insertTemplate } from "../../db/templates.ts";
 import { getTopicBySlug } from "../../db/topics.ts";
 import { newTemplate } from "../../templates.ts";
+import { parseDuration } from "../../timers.ts";
 
 export const command = new Command()
   .option("-n, --name <name:string>", "The name of the template.", {
     required: true,
   })
-  .option("-d, --duration <duration:number>", "The duration of the timer.", {
+  .option("-d, --duration <duration:string>", "The duration of the timer.", {
     required: true,
   })
   .option(
@@ -27,7 +28,16 @@ export const command = new Command()
       }
     }
 
-    const template = newTemplate(options.name, options.duration, options.topic);
+    const duration = parseDuration(options.duration);
+
+    if (!duration) {
+      console.error(
+        `Duration can't be parsed. Valid format is {integer}[ms|s|m|h].`,
+      );
+      return;
+    }
+
+    const template = newTemplate(options.name, duration, options.topic);
 
     const { ok } = await insertTemplate(template);
 

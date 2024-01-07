@@ -1,5 +1,5 @@
 import { Log, TimerStatus } from "../shared/types.ts";
-import { generateId } from "./db.ts";
+import { generateId } from "./utils.ts";
 
 export function newLog(
   timerId: string,

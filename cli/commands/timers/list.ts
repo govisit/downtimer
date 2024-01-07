@@ -1,13 +1,12 @@
 import { Command } from "$cliffy/command/mod.ts";
 import { Table } from "$cliffy/table/table.ts";
-import { decodeTime } from "$std/ulid/mod.ts";
 import {
   cron,
   getActiveTimers,
   getAllTimers,
-  getPrettyTimeRemaining,
   getTimeRemaining,
 } from "../../timers.ts";
+import { getPrettyDate, getPrettyDuration } from "../../utils.ts";
 
 export const command = new Command()
   .description("Lists all active timers by default.")
@@ -42,24 +41,24 @@ export const command = new Command()
         return [
           timer.id,
           timer.name,
-          timer.duration,
+          getPrettyDuration(timer.duration),
           timer.status?.toString(),
           timer.topicId,
-          getPrettyTimeRemaining(timeRemaining),
-          new Date(decodeTime(timer.id)).toLocaleString(),
+          getPrettyDuration(timeRemaining),
+          getPrettyDate(timer.id),
         ];
       },
     ));
 
     table
       .header([
-        "id",
-        "name",
-        "duration",
-        "status",
-        "topic",
-        "remaining",
-        "createdAt",
+        "Id",
+        "Name",
+        "Duration",
+        "Status",
+        "Topic",
+        "Remaining",
+        "Created at",
       ])
       .body(body)
       .border()

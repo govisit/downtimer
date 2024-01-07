@@ -1,7 +1,7 @@
 import { Command } from "$cliffy/command/mod.ts";
 import { Table } from "$cliffy/table/table.ts";
-import { decodeTime } from "$std/ulid/mod.ts";
 import { getTopics } from "../../db/topics.ts";
+import { getPrettyDate } from "../../utils.ts";
 
 export const command = new Command()
   .description("List all topics.")
@@ -16,12 +16,12 @@ export const command = new Command()
         topic.id,
         topic.name,
         topic.slug,
-        new Date(decodeTime(topic.id)).toISOString(),
+        getPrettyDate(topic.id),
       ],
     );
 
     table
-      .header(["id", "name", "slug", "created at"])
+      .header(["Id", "Name", "Slug", "Created at"])
       .body(body)
       .border()
       .render();
