@@ -23,7 +23,7 @@ export async function insertTimer(
 export async function getTimers(): Promise<Timer[]> {
   const timers: Timer[] = [];
 
-  for await (const res of kv.list<Timer>({ prefix: ["timers"] })) {
+  for await (const res of kv.list<Timer>({ prefix: [TIMER_PREFIX] })) {
     timers.push(res.value);
   }
 

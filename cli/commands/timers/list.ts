@@ -1,5 +1,6 @@
 import { Command } from "$cliffy/command/mod.ts";
 import { Table } from "$cliffy/table/table.ts";
+import { decodeTime } from "$std/ulid/mod.ts";
 import {
   cron,
   getActiveTimers,
@@ -45,12 +46,21 @@ export const command = new Command()
           timer.status?.toString(),
           timer.topicId,
           getPrettyTimeRemaining(timeRemaining),
+          new Date(decodeTime(timer.id)).toLocaleString(),
         ];
       },
     ));
 
     table
-      .header(["id", "name", "duration", "status", "topic", "remaining"])
+      .header([
+        "id",
+        "name",
+        "duration",
+        "status",
+        "topic",
+        "remaining",
+        "createdAt",
+      ])
       .body(body)
       .border()
       .render();

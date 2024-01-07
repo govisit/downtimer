@@ -20,10 +20,10 @@ export function newTimer(
   };
 }
 
-type Overrides = {
+export type Overrides = {
   name?: string | undefined;
   duration?: number | undefined;
-  topic?: string | undefined;
+  topicId?: string | undefined;
 };
 
 export function newTimerFromTemplate(
@@ -34,7 +34,7 @@ export function newTimerFromTemplate(
     id: generateId(),
     name: overrides.name || template.name,
     duration: overrides.duration || template.duration,
-    topicId: overrides.topic || template.topicId,
+    topicId: overrides.topicId || template.topicId,
     templateId: template.id,
   };
 }
@@ -107,26 +107,26 @@ async function insertNewLog(
 }
 
 /**
- * @returns It returns the remaining time in seconds.
+ * @returns It returns the remaining time in miliseconds.
  */
 export async function getTimeRemaining(
   timer: TimerWithStatus,
 ): Promise<number> {
-  const durationInSeconds = timer.duration * 60;
+  const durationInMiliseconds = timer.duration * 60;
 
   const now = Date.now();
 
   const log = await getLatestLogForTimer(timer.id);
 
   if (!log) {
-    return durationInSeconds;
+    return durationInMiliseconds;
   }
 
   const startedAt = decodeTime(log.id);
 
   const timeElapsed = now - startedAt;
 
-  const timeRemaining = durationInSeconds - timeElapsed;
+  const timeRemaining = durationInMiliseconds - timeElapsed;
 
   if (timeRemaining < 0) {
     return 0;
@@ -135,12 +135,14 @@ export async function getTimeRemaining(
   return timeRemaining;
 }
 
-export function getPrettyTimeRemaining(timeInSeconds: number): string {
-  if (timeInSeconds === 0) {
+export function getPrettyTimeRemaining(timeInMiliSeconds: number): string {
+  if (timeInMiliSeconds === 0) {
     return "-";
   }
 
-  return `${timeInSeconds / 60}min`;
+  const roundedTime = Math.round(timeInMiliSeconds / 60 / 1000);
+
+  return `${roundedTime}min`;
 }
 
 const activeStatuses = [
@@ -172,4 +174,47 @@ export async function cron() {
       await completeTimer(timer);
     }
   }
+}
+
+/**
+ * @returns It should always return the parsed duration in miliseconds or
+ * undefined if the duration can't be parsed.
+ */
+export function parseDuration(duration: string): number | undefined {
+  const result = /^([0-9]+)(ms|s|m|h)$/.exec(duration);
+
+  if (!result) {
+    return undefined;
+  }
+
+  const { 1: value, 2: unit } = result;
+
+  const number = parseInt(value);
+
+  if (isNaN(number)) {
+    return undefined;
+  }
+
+  switch (unit) {
+    case "s":
+      return number * 1000;
+    case "m":
+      return number * 60 * 1000;
+    case "h":
+      return number * 60 * 60 * 1000;
+    default:
+      return number;
+  }
+}
+
+export function getTemplateOverrides(
+  name?: string,
+  duration?: number,
+  topicId?: string,
+): Overrides {
+  return {
+    name,
+    duration,
+    topicId,
+  };
 }

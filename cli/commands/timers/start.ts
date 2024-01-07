@@ -1,12 +1,12 @@
 import { Command } from "$cliffy/command/mod.ts";
 import { getTopicBySlug } from "../../db/topics.ts";
-import { newTimer, startTimer } from "../../timers.ts";
+import { newTimer, parseDuration, startTimer } from "../../timers.ts";
 
 export const command = new Command()
   .option("-n, --name <name:string>", "The name of the timer.", {
     required: true,
   })
-  .option("-d, --duration <duration:number>", "The duration of the timer.", {
+  .option("-d, --duration <duration:string>", "The duration of the timer.", {
     required: true,
   })
   .option(
@@ -26,7 +26,16 @@ export const command = new Command()
       }
     }
 
-    const timer = newTimer(options.name, options.duration, options.topic);
+    const duration = parseDuration(options.duration);
+
+    if (!duration) {
+      console.error(
+        `Duration can't be parsed. Valid format is {integer}[ms|s|m|h].`,
+      );
+      return;
+    }
+
+    const timer = newTimer(options.name, duration, options.topic);
 
     await startTimer(timer);
 

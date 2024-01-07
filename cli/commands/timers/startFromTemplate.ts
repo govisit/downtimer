@@ -1,13 +1,19 @@
 import { Command } from "$cliffy/command/mod.ts";
 import { getTemplate } from "../../db/templates.ts";
 import { getTopic } from "../../db/topics.ts";
-import { newTimerFromTemplate, startTimer } from "../../timers.ts";
+import {
+  getTemplateOverrides,
+  newTimerFromTemplate,
+  Overrides,
+  parseDuration,
+  startTimer,
+} from "../../timers.ts";
 
 export const command = new Command()
   .arguments("<template:string>")
   .option("-n, --name <name:string>", "Override the name of the timer.")
   .option(
-    "-d, --duration <duration:number>",
+    "-d, --duration <duration:string>",
     "Override the duration of the timer.",
   )
   .option(
@@ -25,21 +31,31 @@ export const command = new Command()
       return;
     }
 
-    const topicSlug = options.topic;
+    const topic = options.topic ? await getTopic(options.topic) : undefined;
 
-    if (topicSlug) {
-      const topic = await getTopic(topicSlug);
-
-      if (!topic.value) {
-        console.error(`Topic with slug '${topicSlug}' was not found`);
-        return;
-      }
-
-      // NOTE: Mutates value.
-      options.topic = topic.value.id;
+    if (!topic?.value) {
+      console.error(`Topic with slug '${options.topic}' was not found`);
+      return;
     }
 
-    const timer = newTimerFromTemplate(template.value, options);
+    const duration = options.duration
+      ? parseDuration(options.duration)
+      : undefined;
+
+    if (!duration) {
+      console.error(
+        `Duration can't be parsed. Valid format is {integer}[ms|s|m|h].`,
+      );
+      return;
+    }
+
+    const overrides: Overrides = getTemplateOverrides(
+      options.name,
+      duration,
+      topic?.value?.id,
+    );
+
+    const timer = newTimerFromTemplate(template.value, overrides);
 
     await startTimer(timer);
 
