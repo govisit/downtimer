@@ -160,37 +160,6 @@ export async function cron() {
   }
 }
 
-/**
- * @returns It should always return the parsed duration in miliseconds or
- * undefined if the duration can't be parsed.
- */
-export function parseDuration(duration: string): number | undefined {
-  const result = /^([0-9]+)(ms|s|m|h)$/.exec(duration);
-
-  if (!result) {
-    return undefined;
-  }
-
-  const { 1: value, 2: unit } = result;
-
-  const number = parseInt(value);
-
-  if (isNaN(number)) {
-    return undefined;
-  }
-
-  switch (unit) {
-    case "s":
-      return number * 1000;
-    case "m":
-      return number * 60 * 1000;
-    case "h":
-      return number * 60 * 60 * 1000;
-    default:
-      return number;
-  }
-}
-
 export function getTemplateOverrides(
   name?: string,
   duration?: number,

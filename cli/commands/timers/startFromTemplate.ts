@@ -5,9 +5,9 @@ import {
   getTemplateOverrides,
   newTimerFromTemplate,
   Overrides,
-  parseDuration,
   startTimer,
 } from "../../timers.ts";
+import { parseDuration } from "../../utils.ts";
 
 export const command = new Command()
   .arguments("<templateId:string>")

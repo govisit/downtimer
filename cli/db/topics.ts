@@ -1,5 +1,11 @@
 import { kv } from "../db.ts";
-import { Topic } from "../../shared/types.ts";
+import { Template, Timer, Topic } from "../../shared/types.ts";
+import { getTimerByTopicKey, getTimerKey, getTimersByTopic } from "./timers.ts";
+import {
+  getTemplateByTopicKey,
+  getTemplateKey,
+  getTemplatesByTopic,
+} from "./templates.ts";
 
 const TOPIC_PREFIX = "topics";
 const TOPIC_BY_SLUG_PREFIX = "topics_by_slug";
@@ -47,11 +53,39 @@ export async function deleteTopic(id: string): Promise<void> {
 
     const topicBySlugKey = getTopicBySlugKey(topicRes.value.slug);
 
-    res = await kv.atomic()
+    const operation = kv
+      .atomic()
       .check(topicRes)
       .delete(topicKey)
-      .delete(topicBySlugKey)
-      .commit();
+      .delete(topicBySlugKey);
+
+    const timers = await getTimersByTopic(id);
+
+    for (const timer of timers) {
+      const timerByTopicKey = getTimerByTopicKey(timer.id, id);
+      const timerKey = getTimerKey(timer.id);
+
+      const updatedTimer: Timer = { ...timer, topicId: undefined };
+
+      operation
+        .delete(timerByTopicKey)
+        .set(timerKey, updatedTimer);
+    }
+
+    const templates = await getTemplatesByTopic(id);
+
+    for (const template of templates) {
+      const templateByTopicKey = getTemplateByTopicKey(template.id, id);
+      const templateKey = getTemplateKey(template.id);
+
+      const updatedTemplate: Template = { ...template, topicId: undefined };
+
+      operation
+        .delete(templateByTopicKey)
+        .set(templateKey, updatedTemplate);
+    }
+
+    res = await operation.commit();
   }
 }
 

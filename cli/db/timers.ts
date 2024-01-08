@@ -3,27 +3,81 @@ import { Timer } from "../../shared/types.ts";
 import { deleteLog, getLogsByTimer } from "./logs.ts";
 
 const TIMER_PREFIX = "timers";
+const TIMER_TOPIC_PREFIX = "timers_by_topic";
+const TIMER_TEMPLATE_PREFIX = "timers_by_template";
 
-const getTimerKey = (
+export const getTimerKey = (
   id: string,
 ): string[] => [TIMER_PREFIX, id];
+
+export const getTimerByTopicKey = (
+  id: string,
+  topicId: string,
+): string[] => [TIMER_TOPIC_PREFIX, topicId, id];
+
+export const getTimerByTemplateKey = (
+  id: string,
+  templateId: string,
+): string[] => [TIMER_TEMPLATE_PREFIX, templateId, id];
 
 export async function insertTimer(
   timer: Timer,
 ): Promise<Deno.KvCommitResult | Deno.KvCommitError> {
   const timerKey = getTimerKey(timer.id);
 
-  return await kv
+  const operation: Deno.AtomicOperation = kv
     .atomic()
     .check({ key: timerKey, versionstamp: null })
-    .set(timerKey, timer)
-    .commit();
+    .set(timerKey, timer);
+
+  if (timer.topicId) {
+    const timerByTopicKey = getTimerByTopicKey(timer.id, timer.topicId);
+
+    operation.set(timerByTopicKey, timer);
+  }
+
+  if (timer.templateId) {
+    const timerByTemplateKey = getTimerByTemplateKey(
+      timer.id,
+      timer.templateId,
+    );
+
+    operation.set(timerByTemplateKey, timer);
+  }
+
+  return await operation.commit();
 }
 
 export async function getTimers(): Promise<Timer[]> {
   const timers: Timer[] = [];
 
   for await (const res of kv.list<Timer>({ prefix: [TIMER_PREFIX] })) {
+    timers.push(res.value);
+  }
+
+  return timers;
+}
+
+export async function getTimersByTopic(topicId: string): Promise<Timer[]> {
+  const timers: Timer[] = [];
+
+  for await (
+    const res of kv.list<Timer>({ prefix: [TIMER_TOPIC_PREFIX, topicId] })
+  ) {
+    timers.push(res.value);
+  }
+
+  return timers;
+}
+
+export async function getTimersByTemplate(
+  templateId: string,
+): Promise<Timer[]> {
+  const timers: Timer[] = [];
+
+  for await (
+    const res of kv.list<Timer>({ prefix: [TIMER_TEMPLATE_PREFIX, templateId] })
+  ) {
     timers.push(res.value);
   }
 

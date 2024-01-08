@@ -1,6 +1,7 @@
 import { Command } from "$cliffy/command/mod.ts";
 import { getTopicBySlug } from "../../db/topics.ts";
-import { newTimer, parseDuration, startTimer } from "../../timers.ts";
+import { newTimer, startTimer } from "../../timers.ts";
+import { parseDuration } from "../../utils.ts";
 
 export const command = new Command()
   .option("-n, --name <name:string>", "The name of the timer.", {
@@ -15,15 +16,13 @@ export const command = new Command()
   )
   .description("It starts a new timer.")
   .action(async (options) => {
-    const topicSlug = options.topic;
+    const topic = options.topic
+      ? await getTopicBySlug(options.topic)
+      : undefined;
 
-    if (topicSlug) {
-      const topic = await getTopicBySlug(topicSlug);
-
-      if (!topic.value) {
-        console.error(`Topic with slug '${topicSlug}' not found`);
-        return;
-      }
+    if (options.topic && !topic?.value) {
+      console.error(`Topic with slug '${options.topic}' was not found`);
+      return;
     }
 
     const duration = parseDuration(options.duration);
@@ -35,7 +34,7 @@ export const command = new Command()
       return;
     }
 
-    const timer = newTimer(options.name, duration, options.topic);
+    const timer = newTimer(options.name, duration, topic?.value?.id);
 
     await startTimer(timer);
 

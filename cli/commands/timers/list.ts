@@ -1,5 +1,6 @@
 import { Command } from "$cliffy/command/mod.ts";
 import { Table } from "$cliffy/table/table.ts";
+import { getTopic } from "../../db/topics.ts";
 import {
   cron,
   getActiveTimers,
@@ -33,18 +34,19 @@ export const command = new Command()
     const table = new Table();
 
     const body = await Promise.all(timers.map(
-      (
+      async (
         timer,
       ) => {
         const timeRemaining = getTimeRemaining(timer);
-        // console.log({ timeRemaining });
+
+        const topic = timer.topicId ? await getTopic(timer.topicId) : undefined;
 
         return [
           timer.id,
           timer.name,
           getPrettyDuration(timer.duration),
           timer.status?.toString(),
-          timer.topicId,
+          topic?.value?.slug,
           getPrettyDuration(timeRemaining),
           getPrettyDate(timer.id),
         ];

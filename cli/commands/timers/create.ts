@@ -2,7 +2,7 @@ import { Command } from "$cliffy/command/mod.ts";
 import { insertTemplate } from "../../db/templates.ts";
 import { getTopicBySlug } from "../../db/topics.ts";
 import { newTemplate } from "../../templates.ts";
-import { parseDuration } from "../../timers.ts";
+import { parseDuration } from "../../utils.ts";
 
 export const command = new Command()
   .option("-n, --name <name:string>", "The name of the template.", {
