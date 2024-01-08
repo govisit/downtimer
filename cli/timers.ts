@@ -109,20 +109,14 @@ async function insertNewLog(
 /**
  * @returns It returns the remaining time in miliseconds.
  */
-export async function getTimeRemaining(
+export function getTimeRemaining(
   timer: TimerWithStatus,
-): Promise<number> {
+): number {
   const durationInMiliseconds = timer.duration;
 
   const now = Date.now();
 
-  const log = await getLatestLogForTimer(timer.id);
-
-  if (!log) {
-    return durationInMiliseconds;
-  }
-
-  const startedAt = decodeTime(log.id);
+  const startedAt = decodeTime(timer.id);
 
   const timeElapsed = now - startedAt;
 
@@ -158,8 +152,7 @@ export async function cron() {
   const activeTimers = await getActiveTimers();
 
   for (const timer of activeTimers) {
-    const timeRemaining = await getTimeRemaining(timer);
-    console.log({ timeRemaining });
+    const timeRemaining = getTimeRemaining(timer);
 
     if (timeRemaining === 0) {
       await completeTimer(timer);

@@ -33,10 +33,11 @@ export const command = new Command()
     const table = new Table();
 
     const body = await Promise.all(timers.map(
-      async (
+      (
         timer,
       ) => {
-        const timeRemaining = await getTimeRemaining(timer);
+        const timeRemaining = getTimeRemaining(timer);
+        // console.log({ timeRemaining });
 
         return [
           timer.id,

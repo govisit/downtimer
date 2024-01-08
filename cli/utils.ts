@@ -12,6 +12,10 @@ export function getPrettyDate(id: string): string {
 }
 
 export function getPrettyDuration(duration: number): string {
+  if (duration === 0) {
+    return "-";
+  }
+
   if (duration < 1000) {
     return `${duration}ms`;
   }
