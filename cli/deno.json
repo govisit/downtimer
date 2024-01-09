@@ -1,6 +1,9 @@
 {
   "lock": false,
-  "tasks": {},
+  "tasks": {
+    "start": "deno run --unstable-kv ./main.ts",
+    "start:debug": "deno run --unstable-kv --inspect-brk ./main.ts"
+  },
   "imports": {
     "$cliffy/": "https://deno.land/x/cliffy@v1.0.0-rc.3/",
     "$std/": "https://deno.land/std@0.208.0/",

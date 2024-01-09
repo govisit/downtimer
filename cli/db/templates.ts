@@ -3,6 +3,7 @@ import { Template, Timer } from "../../shared/types.ts";
 import { getTopic } from "./topics.ts";
 import {
   getTimerByTemplateKey,
+  getTimerByTopicKey,
   getTimerKey,
   getTimersByTemplate,
 } from "./timers.ts";
@@ -114,6 +115,12 @@ export async function deleteTemplate(id: string): Promise<void> {
       const timerKey = getTimerKey(timer.id);
 
       const updatedTimer: Timer = { ...timer, templateId: undefined };
+
+      if (timer.topicId) {
+        const timerByTopicKey = getTimerByTopicKey(timer.id, timer.topicId);
+
+        operation.set(timerByTopicKey, updatedTimer);
+      }
 
       operation
         .delete(timerByTemplateKey)

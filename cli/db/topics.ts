@@ -1,6 +1,11 @@
 import { kv } from "../db.ts";
 import { Template, Timer, Topic } from "../../shared/types.ts";
-import { getTimerByTopicKey, getTimerKey, getTimersByTopic } from "./timers.ts";
+import {
+  getTimerByTemplateKey,
+  getTimerByTopicKey,
+  getTimerKey,
+  getTimersByTopic,
+} from "./timers.ts";
 import {
   getTemplateByTopicKey,
   getTemplateKey,
@@ -66,6 +71,15 @@ export async function deleteTopic(id: string): Promise<void> {
       const timerKey = getTimerKey(timer.id);
 
       const updatedTimer: Timer = { ...timer, topicId: undefined };
+
+      if (timer.templateId) {
+        const timerByTemplateKey = getTimerByTemplateKey(
+          timer.id,
+          timer.templateId,
+        );
+
+        operation.set(timerByTemplateKey, updatedTimer);
+      }
 
       operation
         .delete(timerByTopicKey)
