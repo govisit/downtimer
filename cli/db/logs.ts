@@ -6,11 +6,11 @@ import { getTimer } from "./timers.ts";
 const LOG_PREFIX = "logs";
 const LOG_BY_TIMER_PREFIX = "logs_by_timer";
 
-const getLogKey = (
+export const getLogKey = (
   id: string,
 ): string[] => [LOG_PREFIX, id];
 
-const getLogByTimerKey = (
+export const getLogByTimerKey = (
   id: string,
   timerId: string,
 ): string[] => [LOG_BY_TIMER_PREFIX, timerId, id];

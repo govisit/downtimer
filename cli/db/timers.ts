@@ -1,6 +1,6 @@
 import { kv } from "../db.ts";
 import { Timer } from "../../shared/types.ts";
-import { deleteLog, getLogsByTimer } from "./logs.ts";
+import { getLogByTimerKey, getLogKey, getLogsByTimer } from "./logs.ts";
 
 const TIMER_PREFIX = "timers";
 const TIMER_TOPIC_PREFIX = "timers_by_topic";
@@ -95,11 +95,42 @@ export async function deleteTimer(
 ): Promise<void> {
   const timerKey = getTimerKey(id);
 
-  const logs = await getLogsByTimer(id);
+  let res = { ok: false };
 
-  for (const log of logs) {
-    await deleteLog(log.id);
+  while (!res.ok) {
+    const timerRes = await getTimer(id);
+
+    if (timerRes.value === null) return;
+
+    const operation = kv
+      .atomic()
+      .check(timerRes)
+      .delete(timerKey);
+
+    if (timerRes.value.topicId) {
+      const timerByTopicKey = getTimerByTopicKey(id, timerRes.value.topicId);
+
+      operation.delete(timerByTopicKey);
+    }
+
+    if (timerRes.value.templateId) {
+      const timerByTemplateKey = getTimerByTemplateKey(
+        id,
+        timerRes.value.templateId,
+      );
+
+      operation.delete(timerByTemplateKey);
+    }
+
+    const logs = await getLogsByTimer(id);
+
+    for (const log of logs) {
+      const logKey = getLogKey(log.id);
+      const logByTimerKey = getLogByTimerKey(log.id, log.timerId);
+
+      operation.delete(logKey).delete(logByTimerKey);
+    }
+
+    res = await operation.commit();
   }
-
-  await kv.delete(timerKey);
 }
