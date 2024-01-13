@@ -1,5 +1,6 @@
 import { Command } from "$cliffy/command/mod.ts";
 import { Table } from "$cliffy/table/table.ts";
+import { getDatabaseConnection } from "../../db.ts";
 import { getTopic } from "../../db/topics.ts";
 import {
   cron,
@@ -13,14 +14,16 @@ export const command = new Command()
   .description("Lists all active timers by default.")
   .option("-a, --all", "Set this option to show all timers.")
   .action(async (options) => {
-    await cron();
+    const kv = await getDatabaseConnection();
+
+    await cron(kv);
 
     const timers = await (() => {
       if (options.all) {
-        return getAllTimers();
+        return getAllTimers(kv);
       }
 
-      return getActiveTimers();
+      return getActiveTimers(kv);
     })();
 
     if (timers.length === 0) {
@@ -39,7 +42,9 @@ export const command = new Command()
       ) => {
         const timeRemaining = getTimeRemaining(timer);
 
-        const topic = timer.topicId ? await getTopic(timer.topicId) : undefined;
+        const topic = timer.topicId
+          ? await getTopic(kv, timer.topicId)
+          : undefined;
 
         return [
           timer.id,

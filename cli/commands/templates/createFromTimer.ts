@@ -1,4 +1,5 @@
 import { Command } from "$cliffy/command/mod.ts";
+import { getDatabaseConnection } from "../../db.ts";
 import { insertTemplate } from "../../db/templates.ts";
 import { getTimer } from "../../db/timers.ts";
 import { getTopicBySlug } from "../../db/topics.ts";
@@ -19,7 +20,9 @@ export const command = new Command()
     "It creates a new template from a timer. You can override timer values.",
   )
   .action(async (options, timerId) => {
-    const timer = await getTimer(timerId);
+    const kv = await getDatabaseConnection();
+
+    const timer = await getTimer(kv, timerId);
 
     if (!timer.value) {
       console.error(`Timer with ID '${timerId}' was not found`);
@@ -27,7 +30,7 @@ export const command = new Command()
     }
 
     const topic = options.topic
-      ? await getTopicBySlug(options.topic)
+      ? await getTopicBySlug(kv, options.topic)
       : undefined;
 
     if (options.topic && !topic?.value) {
@@ -54,7 +57,7 @@ export const command = new Command()
 
     const template = newTemplateFromTimer(timer.value, overrides);
 
-    await insertTemplate(template);
+    await insertTemplate(kv, template);
 
     console.log(`Template "${template.name}" created.`);
   });

@@ -1,5 +1,6 @@
 import { Command } from "$cliffy/command/mod.ts";
 import { Table } from "$cliffy/table/table.ts";
+import { getDatabaseConnection } from "../../db.ts";
 import { getTemplates } from "../../db/templates.ts";
 import { getTopic } from "../../db/topics.ts";
 import { getPrettyDate, getPrettyDuration } from "../../utils.ts";
@@ -7,7 +8,9 @@ import { getPrettyDate, getPrettyDuration } from "../../utils.ts";
 export const command = new Command()
   .description("List all templates.")
   .action(async () => {
-    const templates = await getTemplates();
+    const kv = await getDatabaseConnection();
+
+    const templates = await getTemplates(kv);
 
     const table = new Table();
     const body = await Promise.all(templates.map(
@@ -15,7 +18,7 @@ export const command = new Command()
         template,
       ) => {
         const topic = template.topicId
-          ? await getTopic(template.topicId)
+          ? await getTopic(kv, template.topicId)
           : undefined;
 
         return [

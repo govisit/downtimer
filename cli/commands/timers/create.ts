@@ -1,4 +1,5 @@
 import { Command } from "$cliffy/command/mod.ts";
+import { getDatabaseConnection } from "../../db.ts";
 import { insertTemplate } from "../../db/templates.ts";
 import { getTopicBySlug } from "../../db/topics.ts";
 import { newTemplate } from "../../templates.ts";
@@ -17,10 +18,12 @@ export const command = new Command()
   )
   .description("It creates a new template.")
   .action(async (options) => {
+    const kv = await getDatabaseConnection();
+
     const topicSlug = options.topic;
 
     if (topicSlug) {
-      const topic = await getTopicBySlug(topicSlug);
+      const topic = await getTopicBySlug(kv, topicSlug);
 
       if (!topic.value) {
         console.error(`Topic with slug '${topicSlug}' not found`);
@@ -39,7 +42,7 @@ export const command = new Command()
 
     const template = newTemplate(options.name, duration, options.topic);
 
-    const { ok } = await insertTemplate(template);
+    const { ok } = await insertTemplate(kv, template);
 
     if (!ok) {
       console.log(`Template "${template.name}" already exists.`);
