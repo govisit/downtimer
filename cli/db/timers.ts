@@ -1,4 +1,3 @@
-import { kv } from "../db.ts";
 import { Timer } from "../../shared/types.ts";
 import { getLogByTimerKey, getLogKey, getLogsByTimer } from "./logs.ts";
 
@@ -21,6 +20,7 @@ export const getTimerByTemplateKey = (
 ): string[] => [TIMER_TEMPLATE_PREFIX, templateId, id];
 
 export async function insertTimer(
+  kv: Deno.Kv,
   timer: Timer,
 ): Promise<Deno.KvCommitResult | Deno.KvCommitError> {
   const timerKey = getTimerKey(timer.id);
@@ -48,7 +48,9 @@ export async function insertTimer(
   return await operation.commit();
 }
 
-export async function getTimers(): Promise<Timer[]> {
+export async function getTimers(
+  kv: Deno.Kv,
+): Promise<Timer[]> {
   const timers: Timer[] = [];
 
   for await (const res of kv.list<Timer>({ prefix: [TIMER_PREFIX] })) {
@@ -58,7 +60,10 @@ export async function getTimers(): Promise<Timer[]> {
   return timers;
 }
 
-export async function getTimersByTopic(topicId: string): Promise<Timer[]> {
+export async function getTimersByTopic(
+  kv: Deno.Kv,
+  topicId: string,
+): Promise<Timer[]> {
   const timers: Timer[] = [];
 
   for await (
@@ -71,6 +76,7 @@ export async function getTimersByTopic(topicId: string): Promise<Timer[]> {
 }
 
 export async function getTimersByTemplate(
+  kv: Deno.Kv,
   templateId: string,
 ): Promise<Timer[]> {
   const timers: Timer[] = [];
@@ -84,13 +90,17 @@ export async function getTimersByTemplate(
   return timers;
 }
 
-export async function getTimer(id: string): Promise<Deno.KvEntryMaybe<Timer>> {
+export async function getTimer(
+  kv: Deno.Kv,
+  id: string,
+): Promise<Deno.KvEntryMaybe<Timer>> {
   const key = getTimerKey(id);
 
   return (await kv.get<Timer>(key));
 }
 
 export async function deleteTimer(
+  kv: Deno.Kv,
   id: string,
 ): Promise<void> {
   const timerKey = getTimerKey(id);
@@ -98,7 +108,7 @@ export async function deleteTimer(
   let res = { ok: false };
 
   while (!res.ok) {
-    const timerRes = await getTimer(id);
+    const timerRes = await getTimer(kv, id);
 
     if (timerRes.value === null) return;
 
@@ -122,7 +132,7 @@ export async function deleteTimer(
       operation.delete(timerByTemplateKey);
     }
 
-    const logs = await getLogsByTimer(id);
+    const logs = await getLogsByTimer(kv, id);
 
     for (const log of logs) {
       const logKey = getLogKey(log.id);

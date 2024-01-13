@@ -1,4 +1,3 @@
-import { kv } from "../db.ts";
 import { Template, Timer, Topic } from "../../shared/types.ts";
 import {
   getTimerByTemplateKey,
@@ -21,7 +20,7 @@ const getTopicBySlugKey = (
   slug: string,
 ): string[] => [TOPIC_BY_SLUG_PREFIX, slug];
 
-export async function getTopics(): Promise<Topic[]> {
+export async function getTopics(kv: Deno.Kv): Promise<Topic[]> {
   const topics: Topic[] = [];
 
   for await (const res of kv.list<Topic>({ prefix: [TOPIC_PREFIX] })) {
@@ -32,6 +31,7 @@ export async function getTopics(): Promise<Topic[]> {
 }
 
 export async function insertTopic(
+  kv: Deno.Kv,
   topic: Topic,
 ): Promise<Deno.KvCommitResult | Deno.KvCommitError> {
   const topicKey = getTopicKey(topic.id);
@@ -46,13 +46,13 @@ export async function insertTopic(
     .commit();
 }
 
-export async function deleteTopic(id: string): Promise<void> {
+export async function deleteTopic(kv: Deno.Kv, id: string): Promise<void> {
   const topicKey = getTopicKey(id);
 
   let res = { ok: false };
 
   while (!res.ok) {
-    const topicRes = await getTopic(id);
+    const topicRes = await getTopic(kv, id);
 
     if (topicRes.value === null) return;
 
@@ -64,7 +64,7 @@ export async function deleteTopic(id: string): Promise<void> {
       .delete(topicKey)
       .delete(topicBySlugKey);
 
-    const timers = await getTimersByTopic(id);
+    const timers = await getTimersByTopic(kv, id);
 
     for (const timer of timers) {
       const timerByTopicKey = getTimerByTopicKey(timer.id, id);
@@ -86,7 +86,7 @@ export async function deleteTopic(id: string): Promise<void> {
         .set(timerKey, updatedTimer);
     }
 
-    const templates = await getTemplatesByTopic(id);
+    const templates = await getTemplatesByTopic(kv, id);
 
     for (const template of templates) {
       const templateByTopicKey = getTemplateByTopicKey(template.id, id);
@@ -104,6 +104,7 @@ export async function deleteTopic(id: string): Promise<void> {
 }
 
 export async function getTopic(
+  kv: Deno.Kv,
   id: string,
 ): Promise<Deno.KvEntryMaybe<Topic>> {
   const key = getTopicKey(id);
@@ -112,6 +113,7 @@ export async function getTopic(
 }
 
 export async function getTopicBySlug(
+  kv: Deno.Kv,
   slug: string,
 ): Promise<Deno.KvEntryMaybe<Topic>> {
   const key = getTopicBySlugKey(slug);

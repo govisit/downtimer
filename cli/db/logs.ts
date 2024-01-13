@@ -1,4 +1,3 @@
-import { kv } from "../db.ts";
 import { Log } from "../../shared/types.ts";
 import { decodeTime } from "$std/ulid/mod.ts";
 import { getTimer } from "./timers.ts";
@@ -16,12 +15,13 @@ export const getLogByTimerKey = (
 ): string[] => [LOG_BY_TIMER_PREFIX, timerId, id];
 
 export async function insertLog(
+  kv: Deno.Kv,
   log: Log,
 ): Promise<Deno.KvCommitResult | Deno.KvCommitError> {
   const logKey = getLogKey(log.id);
   const logByTimerKey = getLogByTimerKey(log.id, log.timerId);
 
-  const timerRes = await getTimer(log.timerId);
+  const timerRes = await getTimer(kv, log.timerId);
 
   return await kv.atomic()
     .check({
@@ -34,7 +34,7 @@ export async function insertLog(
     .commit();
 }
 
-export async function getLogs(): Promise<Log[]> {
+export async function getLogs(kv: Deno.Kv): Promise<Log[]> {
   const logs: Log[] = [];
 
   for await (const res of kv.list<Log>({ prefix: [LOG_PREFIX] })) {
@@ -44,7 +44,10 @@ export async function getLogs(): Promise<Log[]> {
   return logs;
 }
 
-export async function getLogsByTimer(timerId: string): Promise<Log[]> {
+export async function getLogsByTimer(
+  kv: Deno.Kv,
+  timerId: string,
+): Promise<Log[]> {
   const logs: Log[] = [];
 
   for await (
@@ -57,9 +60,10 @@ export async function getLogsByTimer(timerId: string): Promise<Log[]> {
 }
 
 export async function getLatestLogForTimer(
+  kv: Deno.Kv,
   timerId: string,
 ): Promise<Log | undefined> {
-  const logs = await getLogsByTimer(timerId);
+  const logs = await getLogsByTimer(kv, timerId);
 
   const firstLog = logs.toSorted((a, b) => decodeTime(b.id) - decodeTime(a.id))
     .at(0);
@@ -71,13 +75,17 @@ export async function getLatestLogForTimer(
   return firstLog;
 }
 
-export async function getLog(id: string): Promise<Deno.KvEntryMaybe<Log>> {
+export async function getLog(
+  kv: Deno.Kv,
+  id: string,
+): Promise<Deno.KvEntryMaybe<Log>> {
   const key = getLogKey(id);
 
   return (await kv.get<Log>(key));
 }
 
 export async function deleteLog(
+  kv: Deno.Kv,
   id: string,
 ): Promise<void> {
   const logKey = getLogKey(id);
@@ -85,7 +93,7 @@ export async function deleteLog(
   let res = { ok: false };
 
   while (!res.ok) {
-    const logRes = await getLog(id);
+    const logRes = await getLog(kv, id);
 
     if (logRes.value === null) return;
 

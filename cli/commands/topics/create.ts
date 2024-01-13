@@ -1,4 +1,5 @@
 import { Command } from "$cliffy/command/mod.ts";
+import { getDatabaseConnection } from "../../db.ts";
 import { insertTopic } from "../../db/topics.ts";
 import { newTopic } from "../../topics.ts";
 
@@ -10,7 +11,9 @@ export const command = new Command()
   .action(async (options) => {
     const topic = newTopic(options.name);
 
-    const { ok } = await insertTopic(topic);
+    const kv = await getDatabaseConnection();
+
+    const { ok } = await insertTopic(kv, topic);
 
     if (!ok) {
       console.log(`Topic "${topic.name}" already exists.`);

@@ -68,12 +68,15 @@ type TimerStartedEvent = {
   log: Log;
 };
 
-export async function startTimer(timer: Timer): Promise<TimerStartedEvent> {
-  await insertTimer(timer);
+export async function startTimer(
+  kv: Deno.Kv,
+  timer: Timer,
+): Promise<TimerStartedEvent> {
+  await insertTimer(kv, timer);
 
   const log = newLog(timer.id, TimerStatus.Started);
 
-  await insertLog(log);
+  await insertLog(kv, log);
 
   return {
     timer,
@@ -81,29 +84,33 @@ export async function startTimer(timer: Timer): Promise<TimerStartedEvent> {
   };
 }
 
-async function completeTimer(timer: Timer): Promise<void> {
-  await insertNewLog(timer.id, TimerStatus.Completed);
+async function completeTimer(kv: Deno.Kv, timer: Timer): Promise<void> {
+  await insertNewLog(kv, timer.id, TimerStatus.Completed);
 }
 
-export async function pauseTimer(timer: Timer): Promise<void> {
-  await insertNewLog(timer.id, TimerStatus.Paused);
+export async function pauseTimer(kv: Deno.Kv, timer: Timer): Promise<void> {
+  await insertNewLog(kv, timer.id, TimerStatus.Paused);
 }
 
-export async function resumeTimer(timer: Timer): Promise<void> {
-  await insertNewLog(timer.id, TimerStatus.Resumed);
+export async function resumeTimer(kv: Deno.Kv, timer: Timer): Promise<void> {
+  await insertNewLog(kv, timer.id, TimerStatus.Resumed);
 }
 
-export async function manualCompleteTimer(timer: Timer): Promise<void> {
-  await insertNewLog(timer.id, TimerStatus.ManualCompleted);
+export async function manualCompleteTimer(
+  kv: Deno.Kv,
+  timer: Timer,
+): Promise<void> {
+  await insertNewLog(kv, timer.id, TimerStatus.ManualCompleted);
 }
 
 async function insertNewLog(
+  kv: Deno.Kv,
   timerId: string,
   status: TimerStatus,
 ): Promise<void> {
   const log = newLog(timerId, status);
 
-  await insertLog(log);
+  await insertLog(kv, log);
 }
 
 /**
@@ -134,28 +141,28 @@ const activeStatuses = [
   TimerStatus.Started,
 ];
 
-export async function getAllTimers(): Promise<TimerWithStatus[]> {
+export async function getAllTimers(kv: Deno.Kv): Promise<TimerWithStatus[]> {
   return (await Promise.all(
-    await getTimers().then((timers) =>
+    await getTimers(kv).then((timers) =>
       timers.map((timer) => withStatus(timer))
     ),
   ));
 }
 
-export async function getActiveTimers(): Promise<TimerWithStatus[]> {
-  return (await getAllTimers()).filter((timer) =>
+export async function getActiveTimers(kv: Deno.Kv): Promise<TimerWithStatus[]> {
+  return (await getAllTimers(kv)).filter((timer) =>
     timer.status && activeStatuses.includes(timer.status)
   );
 }
 
-export async function cron() {
-  const activeTimers = await getActiveTimers();
+export async function cron(kv: Deno.Kv) {
+  const activeTimers = await getActiveTimers(kv);
 
   for (const timer of activeTimers) {
     const timeRemaining = getTimeRemaining(timer);
 
     if (timeRemaining === 0) {
-      await completeTimer(timer);
+      await completeTimer(kv, timer);
     }
   }
 }

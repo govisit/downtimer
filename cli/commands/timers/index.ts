@@ -7,6 +7,9 @@ import { command as pauseTimerCommand } from "./pause.ts";
 
 export const command = new Command()
   .description("Manage timers.")
+  .action(() => {
+    command.showHelp();
+  })
   .command("start", startTimerCommand)
   .command("start:template", startTimerFromTemplateCommand)
   .command("list", listTimerCommand)

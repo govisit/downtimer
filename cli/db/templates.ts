@@ -1,4 +1,3 @@
-import { kv } from "../db.ts";
 import { Template, Timer } from "../../shared/types.ts";
 import { getTopic } from "./topics.ts";
 import {
@@ -20,7 +19,7 @@ export const getTemplateByTopicKey = (
   topicId: string,
 ): string[] => [TEMPLATE_BY_TOPIC_PREFIX, topicId, id];
 
-export async function getTemplates(): Promise<Template[]> {
+export async function getTemplates(kv: Deno.Kv): Promise<Template[]> {
   const templates: Template[] = [];
 
   for await (const res of kv.list<Template>({ prefix: [TEMPLATE_PREFIX] })) {
@@ -31,6 +30,7 @@ export async function getTemplates(): Promise<Template[]> {
 }
 
 export async function getTemplatesByTopic(
+  kv: Deno.Kv,
   topicId: string,
 ): Promise<Template[]> {
   const templates: Template[] = [];
@@ -47,12 +47,13 @@ export async function getTemplatesByTopic(
 }
 
 export async function insertTemplate(
+  kv: Deno.Kv,
   template: Template,
 ): Promise<Deno.KvCommitResult | Deno.KvCommitError> {
   const templateKey = getTemplateKey(template.id);
 
   if (template.topicId) {
-    const topicRes = await getTopic(template.topicId);
+    const topicRes = await getTopic(kv, template.topicId);
 
     const templateByTopicKey = getTemplateByTopicKey(
       template.id,
@@ -76,6 +77,7 @@ export async function insertTemplate(
 }
 
 export async function getTemplate(
+  kv: Deno.Kv,
   id: string,
 ): Promise<Deno.KvEntryMaybe<Template>> {
   const key = getTemplateKey(id);
@@ -83,13 +85,13 @@ export async function getTemplate(
   return (await kv.get<Template>(key));
 }
 
-export async function deleteTemplate(id: string): Promise<void> {
+export async function deleteTemplate(kv: Deno.Kv, id: string): Promise<void> {
   const templateKey = getTemplateKey(id);
 
   let res = { ok: false };
 
   while (!res.ok) {
-    const templateRes = await getTemplate(id);
+    const templateRes = await getTemplate(kv, id);
 
     if (templateRes.value === null) return;
 
@@ -108,7 +110,7 @@ export async function deleteTemplate(id: string): Promise<void> {
         .delete(templateByTopicKey);
     }
 
-    const timers = await getTimersByTemplate(id);
+    const timers = await getTimersByTemplate(kv, id);
 
     for (const timer of timers) {
       const timerByTemplateKey = getTimerByTemplateKey(timer.id, id);

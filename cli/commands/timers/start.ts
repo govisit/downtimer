@@ -1,4 +1,5 @@
 import { Command } from "$cliffy/command/mod.ts";
+import { getDatabaseConnection } from "../../db.ts";
 import { getTopicBySlug } from "../../db/topics.ts";
 import { newTimer, startTimer } from "../../timers.ts";
 import { parseDuration } from "../../utils.ts";
@@ -16,8 +17,10 @@ export const command = new Command()
   )
   .description("It starts a new timer.")
   .action(async (options) => {
+    const kv = await getDatabaseConnection();
+
     const topic = options.topic
-      ? await getTopicBySlug(options.topic)
+      ? await getTopicBySlug(kv, options.topic)
       : undefined;
 
     if (options.topic && !topic?.value) {
@@ -36,7 +39,7 @@ export const command = new Command()
 
     const timer = newTimer(options.name, duration, topic?.value?.id);
 
-    await startTimer(timer);
+    await startTimer(kv, timer);
 
     console.log(`Timer "${timer.id}" started.`);
   });

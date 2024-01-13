@@ -6,6 +6,9 @@ import { command as createTemplateFromTimerCommand } from "./createFromTimer.ts"
 
 export const command = new Command()
   .description("Manage templates.")
+  .action(() => {
+    command.showHelp();
+  })
   .command("create", createTemplateCommand)
   .command("list", listTemplateCommand)
   .command("delete", deleteTemplateCommand)
