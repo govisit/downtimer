@@ -18,6 +18,8 @@ This repository contains two projects:
 Navigate to a project and run tests with:
 
 ```bash
+deno --unstable-kv test --allow-read --allow-write
+
 # one-off
 deno test
 
