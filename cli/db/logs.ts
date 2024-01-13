@@ -1,5 +1,4 @@
 import { Log } from "../../shared/types.ts";
-import { decodeTime } from "$std/ulid/mod.ts";
 import { getTimer } from "./timers.ts";
 
 const LOG_PREFIX = "logs";
@@ -57,22 +56,6 @@ export async function getLogsByTimer(
   }
 
   return logs;
-}
-
-export async function getLatestLogForTimer(
-  kv: Deno.Kv,
-  timerId: string,
-): Promise<Log | undefined> {
-  const logs = await getLogsByTimer(kv, timerId);
-
-  const firstLog = logs.toSorted((a, b) => decodeTime(b.id) - decodeTime(a.id))
-    .at(0);
-
-  if (!firstLog) {
-    return undefined;
-  }
-
-  return firstLog;
 }
 
 export async function getLog(

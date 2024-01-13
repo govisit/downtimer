@@ -1,9 +1,9 @@
 import { decodeTime } from "$std/ulid/mod.ts";
 import { Log, Template, Timer, TimerStatus } from "../shared/types.ts";
 import { generateId } from "./utils.ts";
-import { getLatestLogForTimer, insertLog } from "./db/logs.ts";
+import { insertLog } from "./db/logs.ts";
 import { getTimers, insertTimer } from "./db/timers.ts";
-import { newLog } from "./logs.ts";
+import { getLatestLogForTimer, newLog } from "./logs.ts";
 
 export function newTimer(
   name: string,
@@ -47,8 +47,11 @@ interface TimerWithStatus extends Timer {
   status: TimerStatus | null;
 }
 
-export async function withStatus(timer: Timer): Promise<TimerWithStatus> {
-  const log = await getLatestLogForTimer(timer.id);
+export async function withStatus(
+  kv: Deno.Kv,
+  timer: Timer,
+): Promise<TimerWithStatus> {
+  const log = await getLatestLogForTimer(kv, timer.id);
 
   if (!log) {
     return {
@@ -144,7 +147,7 @@ const activeStatuses = [
 export async function getAllTimers(kv: Deno.Kv): Promise<TimerWithStatus[]> {
   return (await Promise.all(
     await getTimers(kv).then((timers) =>
-      timers.map((timer) => withStatus(timer))
+      timers.map((timer) => withStatus(kv, timer))
     ),
   ));
 }
