@@ -4,6 +4,7 @@ import { getDatabaseConnection } from "../../db.ts";
 import { getTemplates } from "../../db/templates.ts";
 import { getTopic } from "../../db/topics.ts";
 import { getPrettyDate, getPrettyDuration } from "../../utils.ts";
+import { colors } from "$cliffy/ansi/colors.ts";
 
 export const command = new Command()
   .description("List all templates.")
@@ -12,7 +13,18 @@ export const command = new Command()
 
     const templates = await getTemplates(kv);
 
+    if (templates.length === 0) {
+      console.log(
+        colors.blue(
+          "No templates.\nTry creating a new template with `template create`.",
+        ),
+      );
+
+      Deno.exit(1);
+    }
+
     const table = new Table();
+
     const body = await Promise.all(templates.map(
       async (
         template,

@@ -1,4 +1,5 @@
 import { Command } from "$cliffy/command/mod.ts";
+import { colors } from "$cliffy/ansi/colors.ts";
 import { getDatabaseConnection } from "../../db.ts";
 import { insertTemplate } from "../../db/templates.ts";
 import { getTimer } from "../../db/timers.ts";
@@ -25,8 +26,9 @@ export const command = new Command()
     const timer = await getTimer(kv, timerId);
 
     if (!timer.value) {
-      console.error(`Timer with ID '${timerId}' was not found`);
-      return;
+      console.error(colors.red(`Timer with ID '${timerId}' was not found`));
+
+      Deno.exit(1);
     }
 
     const topic = options.topic
@@ -34,8 +36,11 @@ export const command = new Command()
       : undefined;
 
     if (options.topic && !topic?.value) {
-      console.error(`Topic with slug '${options.topic}' was not found`);
-      return;
+      console.error(
+        colors.red(`Topic with slug '${options.topic}' was not found`),
+      );
+
+      Deno.exit(1);
     }
 
     const duration = options.duration
@@ -44,9 +49,12 @@ export const command = new Command()
 
     if (options.duration && !duration) {
       console.error(
-        `Duration can't be parsed. Valid format is {integer}[ms|s|m|h].`,
+        colors.red(
+          `Duration can't be parsed. Valid format is {integer}[ms|s|m|h].`,
+        ),
       );
-      return;
+
+      Deno.exit(1);
     }
 
     const overrides: Overrides = getTemplateOverrides(
@@ -59,5 +67,5 @@ export const command = new Command()
 
     await insertTemplate(kv, template);
 
-    console.log(`Template "${template.name}" created.`);
+    console.log(colors.green(`Template "${template.name}" created.`));
   });

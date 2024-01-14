@@ -1,71 +1,48 @@
 import { assertEquals, assertExists, assertRejects } from "$std/assert/mod.ts";
-import { Topic } from "../../shared/types.ts";
-import { getDatabaseConnection } from "../db.ts";
-import { newTemplate } from "../templates.ts";
+import { databaseCleanup, getDatabaseConnection } from "../db.ts";
+import { createTemplate } from "../templates.ts";
 import { newTimer, startTimer } from "../timers.ts";
-import { newTopic } from "../topics.ts";
-import { deleteTemplate, insertTemplate } from "./templates.ts";
+import { createTopic } from "../topics.ts";
+import { deleteTemplate } from "./templates.ts";
 import { deleteTimer } from "./timers.ts";
-import {
-  deleteTopic,
-  getTopic,
-  getTopicBySlug,
-  getTopics,
-  insertTopic,
-} from "./topics.ts";
+import { deleteTopic, getTopic, getTopicBySlug, getTopics } from "./topics.ts";
 
 const kv = await getDatabaseConnection("test.db");
 
-async function databaseCleanup() {
-  for await (const res of kv.list({ prefix: [] })) {
-    await kv.delete(res.key);
-  }
-}
-
-async function insertDummyTopic(
-  name: string,
-): Promise<readonly [boolean, Topic]> {
-  const topic = newTopic(name);
-
-  const { ok } = await insertTopic(kv, topic);
-
-  return [ok, topic];
-}
-
 Deno.test("it should get topics from the db", async (t) => {
-  await databaseCleanup();
+  await databaseCleanup(kv);
 
   await t.step("when the database is empty", async () => {
     assertEquals(await getTopics(kv), []);
   });
 
   await t.step("when the database has one topic", async () => {
-    await insertDummyTopic("test");
+    await createTopic(kv, "test");
 
     assertEquals((await getTopics(kv)).length, 1);
   });
 });
 
 Deno.test("it should insert a topic in db", async (t) => {
-  await databaseCleanup();
+  await databaseCleanup(kv);
 
   await t.step("can insert topic", async () => {
-    const [ok] = await insertDummyTopic("test");
+    const [ok] = await createTopic(kv, "test");
 
     assertEquals(ok, true);
   });
 
   await t.step("can't insert duplicate topic", async () => {
-    const [ok] = await insertDummyTopic("test");
+    const [ok] = await createTopic(kv, "test");
 
     assertEquals(ok, false);
   });
 });
 
 Deno.test("it should get a single topic", async (t) => {
-  await databaseCleanup();
+  await databaseCleanup(kv);
 
-  const [_, topic] = await insertDummyTopic("test");
+  const [_, topic] = await createTopic(kv, "test");
 
   await t.step("by Id", async () => {
     const topicRes = await getTopic(kv, topic.id);
@@ -81,9 +58,9 @@ Deno.test("it should get a single topic", async (t) => {
 });
 
 Deno.test("it should delete a topic", async (t) => {
-  await databaseCleanup();
+  await databaseCleanup(kv);
 
-  const [_, topic] = await insertDummyTopic("test");
+  const [_, topic] = await createTopic(kv, "test");
 
   await t.step("when a topic exists", async () => {
     await deleteTopic(kv, topic.id);
@@ -103,9 +80,9 @@ Deno.test("it should delete a topic", async (t) => {
 });
 
 Deno.test("when deleting a topic", async (t) => {
-  await databaseCleanup();
+  await databaseCleanup(kv);
 
-  const [_, topic] = await insertDummyTopic("test");
+  const [_, topic] = await createTopic(kv, "test");
 
   await t.step("it should fail when there are associated timers", async () => {
     const timer = newTimer("test", 6000, topic.id);
@@ -126,9 +103,7 @@ Deno.test("when deleting a topic", async (t) => {
   await t.step(
     "it should fail when there are associated templates",
     async () => {
-      const template = newTemplate("test", 6000, topic.id);
-
-      await insertTemplate(kv, template);
+      const [_, template] = await createTemplate(kv, "test", 6000, topic.id);
 
       await assertRejects(
         async () => {

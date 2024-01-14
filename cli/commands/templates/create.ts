@@ -1,4 +1,5 @@
 import { Command } from "$cliffy/command/mod.ts";
+import { colors } from "$cliffy/ansi/colors.ts";
 import { getDatabaseConnection } from "../../db.ts";
 import { insertTemplate } from "../../db/templates.ts";
 import { getTopicBySlug } from "../../db/topics.ts";
@@ -25,17 +26,21 @@ export const command = new Command()
       : undefined;
 
     if (options.topic && !topic?.value) {
-      console.error(`Topic with slug '${options.topic}' not found`);
-      return;
+      console.error(colors.red(`Topic with slug '${options.topic}' not found`));
+
+      Deno.exit(1);
     }
 
     const duration = parseDuration(options.duration);
 
     if (!duration) {
       console.error(
-        `Duration can't be parsed. Valid format is {integer}[ms|s|m|h].`,
+        colors.red(
+          `Duration can't be parsed. Valid format is {integer}[ms|s|m|h].`,
+        ),
       );
-      return;
+
+      Deno.exit(1);
     }
 
     const template = newTemplate(options.name, duration, topic?.value?.id);
@@ -43,9 +48,10 @@ export const command = new Command()
     const { ok } = await insertTemplate(kv, template);
 
     if (!ok) {
-      console.log(`Template "${template.name}" already exists.`);
-      return;
+      console.log(colors.red(`Template "${template.name}" already exists.`));
+
+      Deno.exit(1);
     }
 
-    console.log(`Template "${template.name}" created.`);
+    console.log(colors.green(`Template "${template.name}" created.`));
   });

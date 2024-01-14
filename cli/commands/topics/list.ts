@@ -3,6 +3,7 @@ import { Table } from "$cliffy/table/table.ts";
 import { getDatabaseConnection } from "../../db.ts";
 import { getTopics } from "../../db/topics.ts";
 import { getPrettyDate } from "../../utils.ts";
+import { colors } from "$cliffy/ansi/colors.ts";
 
 export const command = new Command()
   .description("List all topics.")
@@ -11,7 +12,18 @@ export const command = new Command()
 
     const topics = await getTopics(kv);
 
+    if (topics.length === 0) {
+      console.log(
+        colors.blue(
+          "No topics.\nTry creating a new topic with `timer create`.",
+        ),
+      );
+
+      Deno.exit(1);
+    }
+
     const table = new Table();
+
     const body = topics.map(
       (
         topic,

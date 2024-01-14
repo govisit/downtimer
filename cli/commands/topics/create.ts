@@ -1,7 +1,7 @@
 import { Command } from "$cliffy/command/mod.ts";
+import { colors } from "$cliffy/ansi/colors.ts";
 import { getDatabaseConnection } from "../../db.ts";
-import { insertTopic } from "../../db/topics.ts";
-import { newTopic } from "../../topics.ts";
+import { createTopic } from "../../topics.ts";
 
 export const command = new Command()
   .option("-n, --name <name:string>", "The name of the topic.", {
@@ -9,16 +9,17 @@ export const command = new Command()
   })
   .description("It creates a new topic.")
   .action(async (options) => {
-    const topic = newTopic(options.name);
-
     const kv = await getDatabaseConnection();
 
-    const { ok } = await insertTopic(kv, topic);
+    const [ok, topic] = await createTopic(kv, options.name);
 
     if (!ok) {
-      console.log(`Topic "${topic.name}" already exists.`);
-      return;
+      console.log(
+        colors.red(`Topic "${topic.name}" already exists.`),
+      );
+
+      Deno.exit(1);
     }
 
-    console.log(`Topic "${topic.name}" created.`);
+    console.log(colors.green(`Topic "${topic.name}" created.`));
   });

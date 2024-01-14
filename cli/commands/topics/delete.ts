@@ -1,4 +1,5 @@
 import { Command } from "$cliffy/command/mod.ts";
+import { colors } from "$cliffy/ansi/colors.ts";
 import { getDatabaseConnection } from "../../db.ts";
 import { deleteTopic, getTopicBySlug } from "../../db/topics.ts";
 
@@ -11,11 +12,18 @@ export const command = new Command()
     const { value: topic } = await getTopicBySlug(kv, slug);
 
     if (!topic) {
-      console.log(`No topic with slug ${slug} found.`);
-      return;
+      console.log(colors.red(`No topic with slug ${slug} found.`));
+
+      Deno.exit(1);
     }
 
-    await deleteTopic(kv, topic.id);
+    try {
+      await deleteTopic(kv, topic.id);
+    } catch (error) {
+      console.error(colors.red(error.message));
 
-    console.log(`Topic "${slug}" deleted.`);
+      Deno.exit(1);
+    }
+
+    console.log(colors.green(`Topic "${slug}" deleted.`));
   });

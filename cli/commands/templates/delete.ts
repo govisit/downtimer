@@ -1,4 +1,5 @@
 import { Command } from "$cliffy/command/mod.ts";
+import { colors } from "$cliffy/ansi/colors.ts";
 import { getDatabaseConnection } from "../../db.ts";
 import { deleteTemplate, getTemplate } from "../../db/templates.ts";
 
@@ -11,11 +12,12 @@ export const command = new Command()
     const { value: template } = await getTemplate(kv, id);
 
     if (!template) {
-      console.log(`No template with id ${id} found.`);
-      return;
+      console.log(colors.red(`No template with id ${id} found.`));
+
+      Deno.exit(1);
     }
 
     await deleteTemplate(kv, template.id);
 
-    console.log(`Template "${template.name}" (${id}) deleted.`);
+    console.log(colors.green(`Template "${template.name}" (${id}) deleted.`));
   });

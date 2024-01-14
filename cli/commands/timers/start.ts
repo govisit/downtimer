@@ -1,4 +1,5 @@
 import { Command } from "$cliffy/command/mod.ts";
+import { colors } from "$cliffy/ansi/colors.ts";
 import { getDatabaseConnection } from "../../db.ts";
 import { getTopicBySlug } from "../../db/topics.ts";
 import { newTimer, startTimer } from "../../timers.ts";
@@ -24,22 +25,26 @@ export const command = new Command()
       : undefined;
 
     if (options.topic && !topic?.value) {
-      console.error(`Topic with slug '${options.topic}' was not found`);
-      return;
+      console.error(
+        colors.red(`Topic with slug '${options.topic}' was not found`),
+      );
+
+      Deno.exit(1);
     }
 
     const duration = parseDuration(options.duration);
 
     if (!duration) {
-      console.error(
+      console.error(colors.red(
         `Duration can't be parsed. Valid format is {integer}[ms|s|m|h].`,
-      );
-      return;
+      ));
+
+      Deno.exit(1);
     }
 
     const timer = newTimer(options.name, duration, topic?.value?.id);
 
     await startTimer(kv, timer);
 
-    console.log(`Timer "${timer.id}" started.`);
+    console.log(colors.green(`Timer "${timer.id}" started.`));
   });

@@ -9,6 +9,7 @@ import {
   getTimeRemaining,
 } from "../../timers.ts";
 import { getPrettyDate, getPrettyDuration } from "../../utils.ts";
+import { colors } from "$cliffy/ansi/colors.ts";
 
 export const command = new Command()
   .description("Lists all active timers by default.")
@@ -28,10 +29,12 @@ export const command = new Command()
 
     if (timers.length === 0) {
       console.log(
-        "No timers.\nTry starting a new timer or using --all option to see all timers.",
+        colors.blue(
+          "No timers.\nTry starting a new timer or using --all option to see all timers.",
+        ),
       );
 
-      return Deno.exit();
+      Deno.exit(1);
     }
 
     const table = new Table();
