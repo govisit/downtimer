@@ -13,6 +13,9 @@ export const getLogByTimerKey = (
   timerId: string,
 ): string[] => [LOG_BY_TIMER_PREFIX, timerId, id];
 
+/**
+ * @throws {Error} When the timerId is provided, but the timer with that id is not found.
+ */
 export async function insertLog(
   kv: Deno.Kv,
   log: Log,
@@ -20,14 +23,17 @@ export async function insertLog(
   const logKey = getLogKey(log.id);
   const logByTimerKey = getLogByTimerKey(log.id, log.timerId);
 
-  const timerRes = await getTimer(kv, log.timerId);
+  const timer = await getTimer(kv, log.timerId);
+
+  if (timer.value === null) {
+    throw new Error(`Timer with Id '${log.timerId}' does not exist.`);
+  }
 
   return await kv.atomic()
     .check({
       key: logKey,
       versionstamp: null,
     })
-    .check(timerRes)
     .set(logKey, log)
     .set(logByTimerKey, log)
     .commit();
@@ -71,21 +77,15 @@ export async function deleteLog(
   kv: Deno.Kv,
   id: string,
 ): Promise<void> {
-  const logKey = getLogKey(id);
+  const log = await getLog(kv, id);
 
-  let res = { ok: false };
+  if (log.value === null) return;
 
-  while (!res.ok) {
-    const logRes = await getLog(kv, id);
+  const logByTimerKey = getLogByTimerKey(id, log.value.timerId);
 
-    if (logRes.value === null) return;
-
-    const logByTimerKey = getLogByTimerKey(id, logRes.value.timerId);
-
-    res = await kv.atomic()
-      .check(logRes)
-      .delete(logKey)
-      .delete(logByTimerKey)
-      .commit();
-  }
+  await kv
+    .atomic()
+    .delete(log.key)
+    .delete(logByTimerKey)
+    .commit();
 }

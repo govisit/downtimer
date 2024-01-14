@@ -1,7 +1,11 @@
-import { assertEquals, assertExists } from "$std/assert/mod.ts";
+import { assertEquals, assertExists, assertRejects } from "$std/assert/mod.ts";
 import { Topic } from "../../shared/types.ts";
 import { getDatabaseConnection } from "../db.ts";
+import { newTemplate } from "../templates.ts";
+import { newTimer, startTimer } from "../timers.ts";
 import { newTopic } from "../topics.ts";
+import { deleteTemplate, insertTemplate } from "./templates.ts";
+import { deleteTimer } from "./timers.ts";
 import {
   deleteTopic,
   getTopic,
@@ -96,4 +100,45 @@ Deno.test("it should delete a topic", async (t) => {
 
     assertEquals(topicRes.value, null);
   });
+});
+
+Deno.test("when deleting a topic", async (t) => {
+  await databaseCleanup();
+
+  const [_, topic] = await insertDummyTopic("test");
+
+  await t.step("it should fail when there are associated timers", async () => {
+    const timer = newTimer("test", 6000, topic.id);
+
+    await startTimer(kv, timer);
+
+    await assertRejects(
+      async () => {
+        await deleteTopic(kv, topic.id);
+      },
+      Error,
+      "You must delete the associated timers first.",
+    );
+
+    await deleteTimer(kv, timer.id);
+  });
+
+  await t.step(
+    "it should fail when there are associated templates",
+    async () => {
+      const template = newTemplate("test", 6000, topic.id);
+
+      await insertTemplate(kv, template);
+
+      await assertRejects(
+        async () => {
+          await deleteTopic(kv, topic.id);
+        },
+        Error,
+        "You must delete the associated templates first.",
+      );
+
+      await deleteTemplate(kv, template.id);
+    },
+  );
 });

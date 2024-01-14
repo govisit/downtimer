@@ -1,9 +1,11 @@
 import { Timer } from "../../shared/types.ts";
 import { getLogByTimerKey, getLogKey, getLogsByTimer } from "./logs.ts";
+import { getTopic } from "./topics.ts";
 
 const TIMER_PREFIX = "timers";
 const TIMER_TOPIC_PREFIX = "timers_by_topic";
 const TIMER_TEMPLATE_PREFIX = "timers_by_template";
+const TIMER_TOPIC_TEMPLATE_PREFIX = "timers_by_topic_and_template";
 
 export const getTimerKey = (
   id: string,
@@ -19,6 +21,15 @@ export const getTimerByTemplateKey = (
   templateId: string,
 ): string[] => [TIMER_TEMPLATE_PREFIX, templateId, id];
 
+export const getTimerByTopicAndTemplateKey = (
+  id: string,
+  topicId: string,
+  templateId: string,
+): string[] => [TIMER_TOPIC_TEMPLATE_PREFIX, topicId, templateId, id];
+
+/**
+ * @throws {Error} When either topicId or templateId are provided, but they do not exist in the database.
+ */
 export async function insertTimer(
   kv: Deno.Kv,
   timer: Timer,
@@ -31,12 +42,24 @@ export async function insertTimer(
     .set(timerKey, timer);
 
   if (timer.topicId) {
+    const topic = await getTopic(kv, timer.topicId);
+
+    if (topic.value === null) {
+      throw new Error(`Topic with Id '${timer.topicId}' does not exist.`);
+    }
+
     const timerByTopicKey = getTimerByTopicKey(timer.id, timer.topicId);
 
     operation.set(timerByTopicKey, timer);
   }
 
   if (timer.templateId) {
+    const template = await getTopic(kv, timer.templateId);
+
+    if (template.value === null) {
+      throw new Error(`Template with Id '${timer.templateId}' does not exist.`);
+    }
+
     const timerByTemplateKey = getTimerByTemplateKey(
       timer.id,
       timer.templateId,
@@ -75,6 +98,24 @@ export async function getTimersByTopic(
   return timers;
 }
 
+export async function getTimersByTopicAndTemplate(
+  kv: Deno.Kv,
+  topicId: string,
+  templateId: string,
+): Promise<Timer[]> {
+  const timers: Timer[] = [];
+
+  for await (
+    const res of kv.list<Timer>({
+      prefix: [TIMER_TOPIC_TEMPLATE_PREFIX, topicId, templateId],
+    })
+  ) {
+    timers.push(res.value);
+  }
+
+  return timers;
+}
+
 export async function getTimersByTemplate(
   kv: Deno.Kv,
   templateId: string,
@@ -103,44 +144,47 @@ export async function deleteTimer(
   kv: Deno.Kv,
   id: string,
 ): Promise<void> {
-  const timerKey = getTimerKey(id);
+  const timer = await getTimer(kv, id);
 
-  let res = { ok: false };
+  if (timer.value === null) return;
 
-  while (!res.ok) {
-    const timerRes = await getTimer(kv, id);
+  const operation = kv.atomic();
 
-    if (timerRes.value === null) return;
+  operation.delete(timer.key);
 
-    const operation = kv
-      .atomic()
-      .check(timerRes)
-      .delete(timerKey);
+  if (timer.value.topicId) {
+    const timerByTopicKey = getTimerByTopicKey(id, timer.value.topicId);
 
-    if (timerRes.value.topicId) {
-      const timerByTopicKey = getTimerByTopicKey(id, timerRes.value.topicId);
-
-      operation.delete(timerByTopicKey);
-    }
-
-    if (timerRes.value.templateId) {
-      const timerByTemplateKey = getTimerByTemplateKey(
-        id,
-        timerRes.value.templateId,
-      );
-
-      operation.delete(timerByTemplateKey);
-    }
-
-    const logs = await getLogsByTimer(kv, id);
-
-    for (const log of logs) {
-      const logKey = getLogKey(log.id);
-      const logByTimerKey = getLogByTimerKey(log.id, log.timerId);
-
-      operation.delete(logKey).delete(logByTimerKey);
-    }
-
-    res = await operation.commit();
+    operation.delete(timerByTopicKey);
   }
+
+  if (timer.value.templateId) {
+    const timerByTemplateKey = getTimerByTemplateKey(
+      id,
+      timer.value.templateId,
+    );
+
+    operation.delete(timerByTemplateKey);
+  }
+
+  if (timer.value.topicId && timer.value.templateId) {
+    const timerByTopicAndTemplate = getTimerByTopicAndTemplateKey(
+      id,
+      timer.value.topicId,
+      timer.value.templateId,
+    );
+
+    operation.delete(timerByTopicAndTemplate);
+  }
+
+  const logs = await getLogsByTimer(kv, id);
+
+  for (const log of logs) {
+    const logKey = getLogKey(log.id);
+    const logByTimerKey = getLogByTimerKey(log.id, log.timerId);
+
+    operation.delete(logKey).delete(logByTimerKey);
+  }
+
+  await operation.commit();
 }

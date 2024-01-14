@@ -1,15 +1,6 @@
-import { Template, Timer, Topic } from "../../shared/types.ts";
-import {
-  getTimerByTemplateKey,
-  getTimerByTopicKey,
-  getTimerKey,
-  getTimersByTopic,
-} from "./timers.ts";
-import {
-  getTemplateByTopicKey,
-  getTemplateKey,
-  getTemplatesByTopic,
-} from "./templates.ts";
+import { Topic } from "../../shared/types.ts";
+import { getTimersByTopic } from "./timers.ts";
+import { getTemplatesByTopic } from "./templates.ts";
 
 const TOPIC_PREFIX = "topics";
 const TOPIC_BY_SLUG_PREFIX = "topics_by_slug";
@@ -46,61 +37,33 @@ export async function insertTopic(
     .commit();
 }
 
+/**
+ * @throws {Error} When there are associated timers or templates.
+ */
 export async function deleteTopic(kv: Deno.Kv, id: string): Promise<void> {
-  const topicKey = getTopicKey(id);
+  const associatedTimers = await getTimersByTopic(kv, id);
 
-  let res = { ok: false };
-
-  while (!res.ok) {
-    const topicRes = await getTopic(kv, id);
-
-    if (topicRes.value === null) return;
-
-    const topicBySlugKey = getTopicBySlugKey(topicRes.value.slug);
-
-    const operation = kv
-      .atomic()
-      .check(topicRes)
-      .delete(topicKey)
-      .delete(topicBySlugKey);
-
-    const timers = await getTimersByTopic(kv, id);
-
-    for (const timer of timers) {
-      const timerByTopicKey = getTimerByTopicKey(timer.id, id);
-      const timerKey = getTimerKey(timer.id);
-
-      const updatedTimer: Timer = { ...timer, topicId: undefined };
-
-      if (timer.templateId) {
-        const timerByTemplateKey = getTimerByTemplateKey(
-          timer.id,
-          timer.templateId,
-        );
-
-        operation.set(timerByTemplateKey, updatedTimer);
-      }
-
-      operation
-        .delete(timerByTopicKey)
-        .set(timerKey, updatedTimer);
-    }
-
-    const templates = await getTemplatesByTopic(kv, id);
-
-    for (const template of templates) {
-      const templateByTopicKey = getTemplateByTopicKey(template.id, id);
-      const templateKey = getTemplateKey(template.id);
-
-      const updatedTemplate: Template = { ...template, topicId: undefined };
-
-      operation
-        .delete(templateByTopicKey)
-        .set(templateKey, updatedTemplate);
-    }
-
-    res = await operation.commit();
+  if (associatedTimers.length) {
+    throw new Error("You must delete the associated timers first.");
   }
+
+  const associatedTemplates = await getTemplatesByTopic(kv, id);
+
+  if (associatedTemplates.length) {
+    throw new Error("You must delete the associated templates first.");
+  }
+
+  const topic = await getTopic(kv, id);
+
+  if (topic.value === null) return;
+
+  const operation = kv.atomic();
+
+  const topicBySlugKey = getTopicBySlugKey(topic.value.slug);
+
+  operation.delete(topic.key).delete(topicBySlugKey);
+
+  await operation.commit();
 }
 
 export async function getTopic(
