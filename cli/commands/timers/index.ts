@@ -4,6 +4,7 @@ import { command as startTimerFromTemplateCommand } from "./startFromTemplate.ts
 import { command as deleteTimerCommand } from "./delete.ts";
 import { command as listTimerCommand } from "./list.ts";
 import { command as pauseTimerCommand } from "./pause.ts";
+import { command as showTimerCommand } from "./show.ts";
 
 export const command = new Command()
   .description("Manage timers.")
@@ -14,4 +15,5 @@ export const command = new Command()
   .command("start:template", startTimerFromTemplateCommand)
   .command("list", listTimerCommand)
   .command("pause", pauseTimerCommand)
+  .command("show", showTimerCommand)
   .command("delete", deleteTimerCommand);

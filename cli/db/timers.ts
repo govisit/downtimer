@@ -1,5 +1,6 @@
 import { Timer } from "../../shared/types.ts";
 import { getLogByTimerKey, getLogKey, getLogsByTimer } from "./logs.ts";
+import { getTemplate } from "./templates.ts";
 import { getTopic } from "./topics.ts";
 
 const TIMER_PREFIX = "timers";
@@ -54,7 +55,7 @@ export async function insertTimer(
   }
 
   if (timer.templateId) {
-    const template = await getTopic(kv, timer.templateId);
+    const template = await getTemplate(kv, timer.templateId);
 
     if (template.value === null) {
       throw new Error(`Template with Id '${timer.templateId}' does not exist.`);
