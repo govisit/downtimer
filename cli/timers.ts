@@ -120,7 +120,7 @@ async function insertNewLog(
  * @returns It returns the remaining time in miliseconds.
  */
 export function getTimeRemaining(
-  timer: TimerWithStatus,
+  timer: Timer,
 ): number {
   const durationInMiliseconds = timer.duration;
 
