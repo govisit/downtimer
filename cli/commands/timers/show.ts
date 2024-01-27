@@ -77,7 +77,7 @@ export const command = new Command()
     });
 
     const timeRemaining = new Signal(await getCountdown(timer.value));
-    let figletWidth = textWidth(
+    const figletWidth = textWidth(
       timeRemaining.value.slice(0, timeRemaining.value.indexOf("\n")),
     );
     // const timeRemaining = new Signal("test");
