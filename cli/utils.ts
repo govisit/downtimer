@@ -62,6 +62,9 @@ export function parseDuration(duration: string): number | undefined {
   }
 }
 
+/**
+ * @deprecated Not used, but is pretty.
+ */
 export function getLongestLineLength(text: string): number {
   const lines = text.split("\n");
 

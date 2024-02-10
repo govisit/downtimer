@@ -1,7 +1,7 @@
 {
   "lock": false,
   "tasks": {
-    "start": "deno run --allow-net --unstable-kv ./main.ts",
+    "start": "deno run --allow-net --allow-read --unstable-kv ./main.ts",
     "start:debug": "deno run --unstable-kv --inspect-brk ./main.ts",
     "test": "deno --unstable-kv test --allow-read --allow-write --coverage",
     "coverage": "deno --unstable-kv coverage --html"
@@ -11,6 +11,8 @@
     "$std/": "https://deno.land/std@0.208.0/",
     "slug": "https://deno.land/x/slug@v1.1.0/mod.ts",
     "$tui/": "https://deno.land/x/tui@2.1.11/",
-    "figlet": "https://deno.land/x/deno_figlet/mod.ts"
+    "ink": "npm:ink",
+    "react": "npm:react",
+    "ink-big-text": "npm:ink-big-text"
   }
 }

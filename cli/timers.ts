@@ -1,9 +1,10 @@
 import { decodeTime } from "$std/ulid/mod.ts";
 import { Log, Template, Timer, TimerStatus } from "../shared/types.ts";
-import { generateId } from "./utils.ts";
+import { generateId, getPrettyDate, getPrettyDuration } from "./utils.ts";
 import { insertLog } from "./db/logs.ts";
 import { getTimers, insertTimer } from "./db/timers.ts";
 import { getLatestLogForTimer, newLog } from "./logs.ts";
+import { getTopic } from "./db/topics.ts";
 
 export function newTimer(
   name: string,
@@ -139,6 +140,29 @@ export function getTimeRemaining(
   return timeRemaining;
 }
 
+/**
+ * @param {number} timeRemaining Time in miliseconds.
+ */
+export function getTimeRemainingText(timeRemaining: number): string {
+  const date = new Date(timeRemaining);
+
+  const seconds = date.getUTCSeconds() < 10
+    ? `0${date.getUTCSeconds()}`
+    : date.getUTCSeconds();
+  const minutes = date.getUTCMinutes() < 10
+    ? `0${date.getUTCMinutes()}`
+    : date.getUTCMinutes();
+  const hours = date.getUTCHours() < 10
+    ? `0${date.getUTCHours()}`
+    : date.getUTCHours();
+
+  return `${hours}:${minutes}:${seconds}`;
+}
+
+export function hasTimeExpired(timeRemaining: number): boolean {
+  return timeRemaining === 0;
+}
+
 const activeStatuses = [
   TimerStatus.Resumed,
   TimerStatus.Started,
@@ -180,4 +204,20 @@ export function getTemplateOverrides(
     duration,
     topicId,
   };
+}
+
+export async function formatTimerForTable(kv: Deno.Kv, timer: TimerWithStatus) {
+  const timeRemaining = getTimeRemaining(timer);
+
+  const topic = timer.topicId ? await getTopic(kv, timer.topicId) : undefined;
+
+  return [
+    ["Id", timer.id],
+    ["Name", timer.name],
+    ["Duration", getPrettyDuration(timer.duration)],
+    ["Status", timer.status?.toString()],
+    ["Topic", topic?.value?.slug],
+    ["Remaining", getPrettyDuration(timeRemaining)],
+    ["Created at", getPrettyDate(timer.id)],
+  ];
 }

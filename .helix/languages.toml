@@ -8,7 +8,7 @@ auto-format = true
 
 [language-server.deno-lsp]
 command = "deno"
-args = ["lsp", "--unstable-kv"]
+args = ["lsp"]
 environment = { NO_COLOR = "1" }
 
 [language-server.deno-lsp.config.deno]
