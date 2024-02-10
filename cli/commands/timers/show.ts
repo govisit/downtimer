@@ -15,10 +15,11 @@ import {
   Tui,
   VerticalLayout,
 } from "$tui/mod.ts";
-import { Label, Text } from "$tui/src/components/mod.ts";
+import { Box, Label, Text } from "$tui/src/components/mod.ts";
 import { decodeTime } from "$std/ulid/mod.ts";
 import { getTimeRemaining } from "../../timers.ts";
 import { Timer } from "../../../shared/types.ts";
+import { getLongestLineLength } from "../../utils.ts";
 
 async function getCountdown(timer: Timer): Promise<string> {
   const timeRemainingInMiliseconds = getTimeRemaining(timer);
@@ -72,14 +73,21 @@ export const command = new Command()
     }
 
     const tui = new Tui({
-      // style: colors.bgBlack, // Make background black
-      refreshRate: 1000 / 60, // Run in 60FPS
+      // This is a fix.
+      style: colors.bgBlack, // Make background black
+      // refreshRate: 1000 / 60, // Run in 60FPS
     });
 
     const timeRemaining = new Signal(await getCountdown(timer.value));
-    const figletWidth = textWidth(
-      timeRemaining.value.slice(0, timeRemaining.value.indexOf("\n")),
-    );
+    // const figletWidth = new Signal(getLongestLineLength(timeRemaining.value));
+    const figletWidth = new Signal(textWidth(timeRemaining.value));
+    // const figletWidth = new Signal(60);
+    // const figletWidth = textWidth(
+    //   timeRemaining.value.slice(0, timeRemaining.value.indexOf("\n")),
+    // );
+    // const figletWidth = getLongestLineLength(timeRemaining.value);
+    // console.log(figletWidth);
+    // return;
     // const timeRemaining = new Signal("test");
 
     tty.clearScreen();
@@ -93,6 +101,8 @@ export const command = new Command()
     setInterval(() => {
       getCountdown(timer.value).then((value) => {
         timeRemaining.value = value;
+        // figletWidth.value = getLongestLineLength(timeRemaining.value);
+        figletWidth.value = textWidth(timeRemaining.value);
       });
       // timeRemaining.value = new Date().toLocaleTimeString();
     }, 1000);
@@ -101,39 +111,71 @@ export const command = new Command()
     //   console.log("da fak", new Date().toLocaleTimeString());
     // }, 1000);
 
-    new Label({
+    const box = new Box({
       parent: tui,
+      theme: {
+        // base: colors.bgYellow,
+      },
       rectangle: new Computed(() => {
         const tuiRectangle = tui.rectangle.value;
-        // const figletWidth = textWidth(
-        //   timeRemaining.value.slice(0, timeRemaining.value.indexOf("\n")),
-        // );
 
         return {
-          column: Math.round(tuiRectangle.width / 2 - figletWidth / 2),
+          column: Math.round(
+            tuiRectangle.width / 2 - 60 / 2,
+          ),
           row: Math.round(tuiRectangle.height / 2 - 8),
+          width: 60,
+          height: 13,
         };
       }),
+      zIndex: 0,
+    });
+
+    new Label({
+      parent: box,
+      rectangle: new Computed(() => {
+        return {
+          column: box.rectangle.value.column,
+          row: box.rectangle.value.row,
+        };
+      }),
+      // rectangle: new Computed(() => {
+      //   const tuiRectangle = tui.rectangle.value;
+      //   // const figletWidth = textWidth(
+      //   //   timeRemaining.value.slice(0, timeRemaining.value.indexOf("\n")),
+      //   // );
+
+      //   return {
+      //     column: Math.round(tuiRectangle.width / 2 - figletWidth.value / 2),
+      //     row: Math.round(tuiRectangle.height / 2 - 8),
+      //   };
+      // }),
       theme: {
         base: colors.red,
       },
       text: `Name: ${timer.value.name}`,
-      zIndex: 0,
+      zIndex: 1,
     });
 
     new Label({
       parent: tui,
       rectangle: new Computed(() => {
-        const tuiRectangle = tui.rectangle.value;
-        // const figletWidth = textWidth(
-        //   timeRemaining.value.slice(0, timeRemaining.value.indexOf("\n")),
-        // );
-
         return {
-          column: Math.round(tuiRectangle.width / 2 - figletWidth / 2),
-          row: Math.round(tuiRectangle.height / 2 - 7),
+          column: box.rectangle.value.column,
+          row: box.rectangle.value.row + 1,
         };
       }),
+      // rectangle: new Computed(() => {
+      //   const tuiRectangle = tui.rectangle.value;
+      //   // const figletWidth = textWidth(
+      //   //   timeRemaining.value.slice(0, timeRemaining.value.indexOf("\n")),
+      //   // );
+
+      //   return {
+      //     column: Math.round(tuiRectangle.width / 2 - figletWidth.value / 2),
+      //     row: Math.round(tuiRectangle.height / 2 - 7),
+      //   };
+      // }),
       theme: {
         base: colors.red,
       },
@@ -144,16 +186,22 @@ export const command = new Command()
     new Label({
       parent: tui,
       rectangle: new Computed(() => {
-        const tuiRectangle = tui.rectangle.value;
-        // const figletWidth = textWidth(
-        //   timeRemaining.value.slice(0, timeRemaining.value.indexOf("\n")),
-        // );
-
         return {
-          column: Math.round(tuiRectangle.width / 2 - figletWidth / 2),
-          row: Math.round(tuiRectangle.height / 2 - 6),
+          column: box.rectangle.value.column,
+          row: box.rectangle.value.row + 2,
         };
       }),
+      // rectangle: new Computed(() => {
+      //   const tuiRectangle = tui.rectangle.value;
+      //   // const figletWidth = textWidth(
+      //   //   timeRemaining.value.slice(0, timeRemaining.value.indexOf("\n")),
+      //   // );
+
+      //   return {
+      //     column: Math.round(tuiRectangle.width / 2 - figletWidth.value / 2),
+      //     row: Math.round(tuiRectangle.height / 2 - 6),
+      //   };
+      // }),
       theme: {
         base: colors.red,
       },
@@ -164,16 +212,22 @@ export const command = new Command()
     new Label({
       parent: tui,
       rectangle: new Computed(() => {
-        const tuiRectangle = tui.rectangle.value;
-        // const figletWidth = textWidth(
-        //   timeRemaining.value.slice(0, timeRemaining.value.indexOf("\n")),
-        // );
-
         return {
-          column: Math.round(tuiRectangle.width / 2 - figletWidth / 2),
-          row: Math.round(tuiRectangle.height / 2 - 5),
+          column: box.rectangle.value.column,
+          row: box.rectangle.value.row + 3,
         };
       }),
+      // rectangle: new Computed(() => {
+      //   const tuiRectangle = tui.rectangle.value;
+      //   // const figletWidth = textWidth(
+      //   //   timeRemaining.value.slice(0, timeRemaining.value.indexOf("\n")),
+      //   // );
+
+      //   return {
+      //     column: Math.round(tuiRectangle.width / 2 - figletWidth.value / 2),
+      //     row: Math.round(tuiRectangle.height / 2 - 5),
+      //   };
+      // }),
       theme: {
         base: colors.red,
       },
@@ -188,32 +242,53 @@ export const command = new Command()
       },
       text: timeRemaining,
       rectangle: new Computed(() => {
-        const tuiRectangle = tui.rectangle.value;
-        // const figletWidth = textWidth(
-        //   timeRemaining.value.slice(0, timeRemaining.value.indexOf("\n")),
-        // );
-
         return {
-          column: Math.round(tuiRectangle.width / 2 - figletWidth / 2),
-          row: Math.round(tuiRectangle.height / 2 - 3),
+          column: box.rectangle.value.column,
+          row: box.rectangle.value.row + 4,
+          width: figletWidth.value,
+          height: 6,
         };
       }),
+      // align: {
+      //   horizontal: "center",
+      //   vertical: "center",
+      // },
+      // rectangle: new Computed(() => {
+      //   const tuiRectangle = tui.rectangle.value;
+      //   // const figletWidth = textWidth(
+      //   //   timeRemaining.value.slice(0, timeRemaining.value.indexOf("\n")),
+      //   // );
+
+      //   // console.log(tuiRectangle.width / 2 - figletWidth.value / 2);
+
+      //   return {
+      //     column: Math.round(tuiRectangle.width / 2 - figletWidth.value / 2),
+      //     // column: 0,
+      //     row: Math.round(tuiRectangle.height / 2 - 3),
+      //   };
+      // }),
       zIndex: 0,
     });
 
     new Label({
       parent: tui,
       rectangle: new Computed(() => {
-        const tuiRectangle = tui.rectangle.value;
-        // const figletWidth = textWidth(
-        //   timeRemaining.value.slice(0, timeRemaining.value.indexOf("\n")),
-        // );
-
         return {
-          column: Math.round(tuiRectangle.width / 2 - figletWidth / 2),
-          row: Math.round(tuiRectangle.height / 2 + 4),
+          column: box.rectangle.value.column,
+          row: box.rectangle.value.row + 10,
         };
       }),
+      // rectangle: new Computed(() => {
+      //   const tuiRectangle = tui.rectangle.value;
+      //   // const figletWidth = textWidth(
+      //   //   timeRemaining.value.slice(0, timeRemaining.value.indexOf("\n")),
+      //   // );
+
+      //   return {
+      //     column: Math.round(tuiRectangle.width / 2 - figletWidth.value / 2),
+      //     row: Math.round(tuiRectangle.height / 2 + 4),
+      //   };
+      // }),
       theme: {
         base: colors.yellow,
       },

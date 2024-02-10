@@ -10,7 +10,7 @@
     "$cliffy/": "https://deno.land/x/cliffy@v1.0.0-rc.3/",
     "$std/": "https://deno.land/std@0.208.0/",
     "slug": "https://deno.land/x/slug@v1.1.0/mod.ts",
-    "$tui/": "https://deno.land/x/tui@2.1.9/",
+    "$tui/": "https://deno.land/x/tui@2.1.11/",
     "figlet": "https://deno.land/x/deno_figlet/mod.ts"
   }
 }

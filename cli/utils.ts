@@ -61,3 +61,11 @@ export function parseDuration(duration: string): number | undefined {
       return number;
   }
 }
+
+export function getLongestLineLength(text: string): number {
+  const lines = text.split("\n");
+
+  const test = lines.map((line) => line.length);
+
+  return Math.round(Math.max(...test));
+}
