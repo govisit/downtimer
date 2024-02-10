@@ -15,7 +15,7 @@ export const command = new Command()
     if (topics.length === 0) {
       console.log(
         colors.blue(
-          "No topics.\nTry creating a new topic with `timer create`.",
+          "No topics.\nTry creating a new topic with `topic create`.",
         ),
       );
 

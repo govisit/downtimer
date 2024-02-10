@@ -6,7 +6,7 @@ import React from "react";
 import { render } from "ink";
 import { Countdown, Font } from "./countdown.tsx";
 import { Table } from "$cliffy/table/table.ts";
-import { formatTimerForTable, withStatus } from "../../timers.ts";
+import { cron, formatTimerForTable, withStatus } from "../../timers.ts";
 
 const font = new EnumType(Font);
 
@@ -28,10 +28,12 @@ export const command = new Command()
   .action(async (options, id) => {
     const kv = await getDatabaseConnection();
 
+    await cron(kv);
+
     const timer = await getTimer(kv, id);
 
     if (timer.value === null) {
-      console.error(`Timer with Id '${id}' was not found.`);
+      console.error(colors.red(`Timer with Id '${id}' was not found.`));
 
       Deno.exit(1);
     }
@@ -43,18 +45,8 @@ export const command = new Command()
     const body = await formatTimerForTable(kv, timerWithStatus);
 
     table
-      // .header([
-      //   "Id",
-      //   "Name",
-      //   "Duration",
-      //   "Status",
-      //   "Topic",
-      //   "Remaining",
-      //   "Created at",
-      // ])
       .body(body)
       .padding(2)
-      // .border()
       .render();
 
     if (options.countdown) {
