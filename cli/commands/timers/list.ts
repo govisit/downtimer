@@ -30,7 +30,7 @@ export const command = new Command()
     if (timers.length === 0) {
       console.log(
         colors.blue(
-          "No timers.\nTry starting a new timer or using --all option to see all timers.",
+          "No timers.\nTry starting a new timer with `timer start` or using --all option to see all timers.",
         ),
       );
 

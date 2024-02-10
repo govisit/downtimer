@@ -31,3 +31,11 @@ Run right after running tests with the above command:
 ```bash
 deno task coverage
 ```
+
+## Compile
+
+```bash
+deno compile --unstable-kv --allow-sys --allow-read --allow-env --allow-write --allow-net --target="x86_64-pc-windows-msvc" main.ts
+```
+
+Does not work on Windows ATM. Deno has panicked.

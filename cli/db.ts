@@ -1,9 +1,16 @@
-/// <reference lib="deno.unstable" />
+import dir from "$deno_dirs";
+import { join } from "$std/path/mod.ts";
 
-export async function getDatabaseConnection(
-  path: string | undefined = undefined,
-): Promise<Deno.Kv> {
-  return await Deno.openKv(path);
+export async function getDatabaseConnection(): Promise<Deno.Kv> {
+  const homeDir = dir("home");
+
+  const dataDir = homeDir ? join(homeDir, ".dtimer") : undefined;
+
+  if (dataDir) {
+    await Deno.mkdir(dataDir, { recursive: true });
+  }
+
+  return await Deno.openKv(dataDir ? join(dataDir, "dtimer.db") : undefined);
 }
 
 export async function databaseCleanup(kv: Deno.Kv): Promise<void> {
