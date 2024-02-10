@@ -6,7 +6,7 @@ import { pauseTimer } from "../../timers.ts";
 
 export const command = new Command()
   .arguments("<id:string>")
-  .description("It pauses a timer.")
+  .description("Pauses a timer.")
   .action(async (_, id) => {
     const kv = await getDatabaseConnection();
 

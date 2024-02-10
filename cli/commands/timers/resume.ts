@@ -1,11 +1,12 @@
 import { Command } from "$cliffy/command/mod.ts";
 import { colors } from "$cliffy/ansi/colors.ts";
 import { getDatabaseConnection } from "../../db.ts";
-import { deleteTimer, getTimer } from "../../db/timers.ts";
+import { getTimer } from "../../db/timers.ts";
+import { resumeTimer } from "../../timers.ts";
 
 export const command = new Command()
   .arguments("<id:string>")
-  .description("Deletes a timer.")
+  .description("Resumes a timer.")
   .action(async (_, id) => {
     const kv = await getDatabaseConnection();
 
@@ -17,7 +18,7 @@ export const command = new Command()
       Deno.exit(1);
     }
 
-    await deleteTimer(kv, timer.id);
+    await resumeTimer(kv, timer);
 
-    console.log(colors.green(`Timer "${timer.name}" (${id}) deleted.`));
+    console.log(colors.green(`Timer "${timer.name}" (${id}) was resumed.`));
   });

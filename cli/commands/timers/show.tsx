@@ -17,7 +17,7 @@ export const command = new Command()
     "-c, --countdown",
     "Eye candy and real time monitoring.",
   )
-  .description("It shows details about a specific timer.")
+  .description("Shows details about a timer.")
   .option(
     "--font <font:font>",
     "Font for countdown feature. Possible values",

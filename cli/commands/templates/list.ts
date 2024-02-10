@@ -7,7 +7,7 @@ import { getPrettyDate, getPrettyDuration } from "../../utils.ts";
 import { colors } from "$cliffy/ansi/colors.ts";
 
 export const command = new Command()
-  .description("List all templates.")
+  .description("Lists all templates.")
   .action(async () => {
     const kv = await getDatabaseConnection();
 

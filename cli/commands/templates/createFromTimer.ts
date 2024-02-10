@@ -18,7 +18,7 @@ export const command = new Command()
   )
   .arguments("<timerId:string>")
   .description(
-    "It creates a new template from a timer. You can override timer values.",
+    "Creates a new template from a timer. You can override timer values.",
   )
   .action(async (options, timerId) => {
     const kv = await getDatabaseConnection();

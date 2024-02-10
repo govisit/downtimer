@@ -7,7 +7,7 @@ export const command = new Command()
   .option("-n, --name <name:string>", "The name of the topic.", {
     required: true,
   })
-  .description("It creates a new topic.")
+  .description("Creates a new topic.")
   .action(async (options) => {
     const kv = await getDatabaseConnection();
 

@@ -4,6 +4,8 @@ import { command as startTimerFromTemplateCommand } from "./startFromTemplate.ts
 import { command as deleteTimerCommand } from "./delete.ts";
 import { command as listTimerCommand } from "./list.ts";
 import { command as pauseTimerCommand } from "./pause.ts";
+import { command as resumeTimerCommand } from "./resume.ts";
+import { command as manualCompleteTimerCommand } from "./manualComplete.ts";
 import { command as showTimerCommand } from "./show.tsx";
 
 export const command = new Command()
@@ -15,5 +17,7 @@ export const command = new Command()
   .command("start:template", startTimerFromTemplateCommand)
   .command("list", listTimerCommand)
   .command("pause", pauseTimerCommand)
+  .command("resume", resumeTimerCommand)
+  .command("manual-complete", manualCompleteTimerCommand)
   .command("show", showTimerCommand)
   .command("delete", deleteTimerCommand);

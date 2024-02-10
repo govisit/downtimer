@@ -5,6 +5,7 @@ import { insertLog } from "./db/logs.ts";
 import { getTimers, insertTimer } from "./db/timers.ts";
 import { getLatestLogForTimer, newLog } from "./logs.ts";
 import { getTopic } from "./db/topics.ts";
+import { capitalize } from "./utils.ts";
 
 export function newTimer(
   name: string,
@@ -45,7 +46,7 @@ export function newTimerFromTemplate(
 // };
 
 interface TimerWithStatus extends Timer {
-  status: TimerStatus | null;
+  status: TimerStatus;
 }
 
 export async function withStatus(
@@ -55,9 +56,18 @@ export async function withStatus(
   const log = await getLatestLogForTimer(kv, timer.id);
 
   if (!log) {
+    console.warn(
+      `This is a mistake. If this happens, someone has deleted logs. Timer: ${timer.id}.`,
+    );
+
+    // To prevent this from making issues, I will create a new log for a timer.
+    const dummyLog = newLog(timer.id, TimerStatus.Unknown);
+
+    await insertLog(kv, dummyLog);
+
     return {
       ...timer,
-      status: null,
+      status: dummyLog.timerStatus,
     };
   }
 
@@ -121,8 +131,12 @@ async function insertNewLog(
  * @returns It returns the remaining time in miliseconds.
  */
 export function getTimeRemaining(
-  timer: Timer,
+  timer: TimerWithStatus,
 ): number {
+  if (timer.status === TimerStatus.ManualCompleted) {
+    return 0;
+  }
+
   const durationInMiliseconds = timer.duration;
 
   const now = Date.now();
@@ -211,13 +225,29 @@ export async function formatTimerForTable(kv: Deno.Kv, timer: TimerWithStatus) {
 
   const topic = timer.topicId ? await getTopic(kv, timer.topicId) : undefined;
 
+  const isManualCompleted = timer.status === TimerStatus.ManualCompleted;
+
   return [
     ["Id", timer.id],
     ["Name", timer.name],
     ["Duration", getPrettyDuration(timer.duration)],
-    ["Status", timer.status?.toString()],
-    ["Topic", topic?.value?.slug],
-    ["Remaining", getPrettyDuration(timeRemaining)],
+    ["Status", formatStatus(timer.status)],
+    topic ? ["Topic", topic.value?.slug] : null,
+    timer.templateId ? ["Template", timer.templateId] : null,
+    timeRemaining ? ["Remaining", getTimeRemainingText(timeRemaining)] : null,
     ["Created at", getPrettyDate(timer.id)],
-  ];
+    isManualCompleted ? ["Completed at", "datum (Manual)"] : null,
+  ].filter(Boolean);
+}
+
+export function formatStatus(status: TimerStatus): string {
+  switch (status.toString()) {
+    case TimerStatus.ManualCompleted: {
+      return `${capitalize(TimerStatus.Completed)} (Manual)`;
+    }
+
+    default: {
+      return capitalize(status.toString());
+    }
+  }
 }

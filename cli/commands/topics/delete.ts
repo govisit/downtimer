@@ -5,7 +5,7 @@ import { deleteTopic, getTopicBySlug } from "../../db/topics.ts";
 
 export const command = new Command()
   .arguments("<slug:string>")
-  .description("It deletes a topic.")
+  .description("Deletes a topic.")
   .action(async (_, slug) => {
     const kv = await getDatabaseConnection();
 

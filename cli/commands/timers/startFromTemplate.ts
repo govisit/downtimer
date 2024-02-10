@@ -23,7 +23,7 @@ export const command = new Command()
     "Override the topic to which the timer belongs.",
   )
   .description(
-    "It starts a new timer using a template. You can override template values.",
+    "Starts a new timer using a template. You can override template values.",
   )
   .action(async (options, templateId) => {
     const kv = await getDatabaseConnection();

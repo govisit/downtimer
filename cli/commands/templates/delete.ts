@@ -5,7 +5,7 @@ import { deleteTemplate, getTemplate } from "../../db/templates.ts";
 
 export const command = new Command()
   .arguments("<id:string>")
-  .description("It deletes a template.")
+  .description("Deletes a template.")
   .action(async (_, id) => {
     const kv = await getDatabaseConnection();
 

@@ -17,7 +17,7 @@ export const command = new Command()
     "--topic <topic:string>",
     "The topic slug to which the template belongs.",
   )
-  .description("It creates a new template.")
+  .description("Creates a new template.")
   .action(async (options) => {
     const kv = await getDatabaseConnection();
 

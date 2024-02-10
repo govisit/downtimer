@@ -11,6 +11,10 @@ export function getPrettyDate(id: string): string {
   return new Date(decodeTime(id)).toLocaleString("HR-hr");
 }
 
+export function capitalize(word: string): string {
+  return word.charAt(0).toUpperCase() + word.slice(1);
+}
+
 export function getPrettyDuration(duration: number): string {
   if (duration === 0) {
     return "-";

@@ -6,7 +6,7 @@ import { getPrettyDate } from "../../utils.ts";
 import { colors } from "$cliffy/ansi/colors.ts";
 
 export const command = new Command()
-  .description("List all topics.")
+  .description("Lists all topics.")
   .action(async () => {
     const kv = await getDatabaseConnection();
 

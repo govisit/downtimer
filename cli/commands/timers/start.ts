@@ -16,7 +16,7 @@ export const command = new Command()
     "-t, --topic <topic:string>",
     "The topic slug to which the timer belongs.",
   )
-  .description("It starts a new timer.")
+  .description("Starts a new timer.")
   .action(async (options) => {
     const kv = await getDatabaseConnection();
 
