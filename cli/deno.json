@@ -12,8 +12,8 @@
     "slug": "https://deno.land/x/slug@v1.1.0/mod.ts",
     "$tui/": "https://deno.land/x/tui@2.1.11/",
     "$deno_dirs": "https://deno.land/x/dir@1.5.2/mod.ts",
-    "ink": "npm:ink",
-    "react": "npm:react",
-    "ink-big-text": "npm:ink-big-text"
+    "ink": "npm:ink@4.4.1",
+    "react": "npm:react@18.2.0",
+    "ink-big-text": "npm:ink-big-text@2.0.0"
   }
 }

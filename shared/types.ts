@@ -19,6 +19,15 @@ export type Timer = {
   templateId: string | undefined;
 };
 
+// type TimerWithStatus = Timer & {
+//   status: TimerStatus | null;
+// };
+
+export interface TimerWithLogs extends Timer {
+  logs: Log[];
+  latestLog: Log;
+}
+
 export enum TimerStatus {
   Started = "started",
   Paused = "paused",

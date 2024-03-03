@@ -55,7 +55,7 @@ export const command = new Command()
           timer.id,
           timer.name,
           getPrettyDuration(timer.duration),
-          formatStatus(timer.status),
+          formatStatus(timer.latestLog.timerStatus),
           topic?.value?.slug,
           timer.templateId,
           timeRemaining ? getTimeRemainingText(timeRemaining) : "",

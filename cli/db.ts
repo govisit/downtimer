@@ -1,6 +1,7 @@
 import dir from "$deno_dirs";
 import { join } from "$std/path/mod.ts";
 
+// TODO: Testing requires setting path for the database.
 export async function getDatabaseConnection(): Promise<Deno.Kv> {
   const homeDir = dir("home");
 

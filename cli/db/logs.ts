@@ -1,3 +1,4 @@
+import { decodeTime } from "$std/ulid/mod.ts";
 import { Log } from "../../shared/types.ts";
 import { getTimer } from "./timers.ts";
 
@@ -61,7 +62,8 @@ export async function getLogsByTimer(
     logs.push(res.value);
   }
 
-  return logs;
+  // Always sort logs from newest to oldest.
+  return logs.sort((a, b) => decodeTime(a.id) - decodeTime(b.id));
 }
 
 export async function getLog(

@@ -1,9 +1,15 @@
 import { decodeTime } from "$std/ulid/mod.ts";
-import { Log, Template, Timer, TimerStatus } from "../shared/types.ts";
+import {
+  Log,
+  Template,
+  Timer,
+  TimerStatus,
+  TimerWithLogs,
+} from "../shared/types.ts";
 import { generateId, getPrettyDate, getPrettyDuration } from "./utils.ts";
-import { insertLog } from "./db/logs.ts";
+import { getLogsByTimer, insertLog } from "./db/logs.ts";
 import { getTimers, insertTimer } from "./db/timers.ts";
-import { getLatestLogForTimer, newLog } from "./logs.ts";
+import { newLog } from "./logs.ts";
 import { getTopic } from "./db/topics.ts";
 import { capitalize } from "./utils.ts";
 
@@ -41,39 +47,29 @@ export function newTimerFromTemplate(
   };
 }
 
-// type TimerWithStatus = Timer & {
-//   status: TimerStatus | null;
-// };
-
-interface TimerWithStatus extends Timer {
-  status: TimerStatus;
-}
-
-export async function withStatus(
+export async function withLogs(
   kv: Deno.Kv,
   timer: Timer,
-): Promise<TimerWithStatus> {
-  const log = await getLatestLogForTimer(kv, timer.id);
+): Promise<TimerWithLogs> {
+  const logs = await getLogsByTimer(kv, timer.id);
 
-  if (!log) {
-    console.warn(
+  const latestLog = logs.at(0);
+
+  if (!latestLog) {
+    throw new Error(
       `This is a mistake. If this happens, someone has deleted logs. Timer: ${timer.id}.`,
     );
+    // The code bellow is left here in case I want to do something with this in the future.
 
-    // To prevent this from making issues, I will create a new log for a timer.
-    const dummyLog = newLog(timer.id, TimerStatus.Unknown);
-
-    await insertLog(kv, dummyLog);
-
-    return {
-      ...timer,
-      status: dummyLog.timerStatus,
-    };
+    // To prevent this from making issues, I will create a new unknown log for a timer.
+    // const dummyLog = newLog(timer.id, TimerStatus.Unknown);
+    // await insertLog(kv, dummyLog);
   }
 
   return {
     ...timer,
-    status: log.timerStatus,
+    logs,
+    latestLog,
   };
 }
 
@@ -131,21 +127,70 @@ async function insertNewLog(
  * @returns It returns the remaining time in miliseconds.
  */
 export function getTimeRemaining(
-  timer: TimerWithStatus,
+  timer: TimerWithLogs,
 ): number {
-  if (timer.status === TimerStatus.ManualCompleted) {
+  if (timer.latestLog.timerStatus === TimerStatus.ManualCompleted) {
     return 0;
+  }
+
+  if (timer.latestLog.timerStatus === TimerStatus.Completed) {
+    return 0;
+  }
+
+  // Not sure about this.
+  if (timer.latestLog.timerStatus === TimerStatus.Unknown) {
+    return 0;
+  }
+
+  const startedLog = timer.logs.at(0)!;
+  const startedAt = decodeTime(startedLog.id);
+
+  let timeElapsed = 0;
+  let paused = false;
+
+  for (let i = 0; i < timer.logs.length; i++) {
+    const log = timer.logs.at(i)!;
+
+    if (i === 0 && log.timerStatus !== TimerStatus.Started) {
+      throw new Error(`The first log is not ${TimerStatus.Started}.`);
+    }
+
+    if (i === 0) {
+      continue;
+    }
+
+    if (
+      paused === false &&
+      log.timerStatus === TimerStatus.Paused
+    ) {
+      const pausedAt = decodeTime(log.id);
+
+      timeElapsed += pausedAt - startedAt;
+
+      paused = true;
+    }
+
+    if (paused === true && log.timerStatus === TimerStatus.Resumed) {
+      paused = false;
+    }
+  }
+
+  const now = Date.now();
+
+  const lastLog = timer.logs.at(-1)!;
+
+  // If the last log has status Resumed, then I need to
+  // calculate timeRemaining from resumedAt until now.
+  if (lastLog.timerStatus === TimerStatus.Resumed) {
+    const resumedAt = decodeTime(lastLog.id);
+
+    timeElapsed += now - resumedAt;
   }
 
   const durationInMiliseconds = timer.duration;
 
-  const now = Date.now();
-
-  const startedAt = decodeTime(timer.id);
-
-  const timeElapsed = now - startedAt;
-
   const timeRemaining = durationInMiliseconds - timeElapsed;
+  console.log({ timeElapsed, durationInMiliseconds }, timer.logs);
 
   if (timeRemaining < 0) {
     return 0;
@@ -182,18 +227,18 @@ const activeStatuses = [
   TimerStatus.Started,
 ];
 
-export async function getAllTimers(kv: Deno.Kv): Promise<TimerWithStatus[]> {
+export async function getAllTimers(kv: Deno.Kv): Promise<TimerWithLogs[]> {
   return (await Promise.all(
     await getTimers(kv).then((timers) =>
-      timers.map((timer) => withStatus(kv, timer))
+      timers.map((timer) => withLogs(kv, timer))
     ),
   ));
 }
 
-export async function getActiveTimers(kv: Deno.Kv): Promise<TimerWithStatus[]> {
-  return (await getAllTimers(kv)).filter((timer) =>
-    timer.status && activeStatuses.includes(timer.status)
-  );
+export async function getActiveTimers(kv: Deno.Kv): Promise<TimerWithLogs[]> {
+  return (await getAllTimers(kv)).filter((timer) => {
+    return activeStatuses.includes(timer.latestLog.timerStatus);
+  });
 }
 
 export async function cron(kv: Deno.Kv) {
@@ -220,24 +265,27 @@ export function getTemplateOverrides(
   };
 }
 
-export async function formatTimerForTable(kv: Deno.Kv, timer: TimerWithStatus) {
+export async function formatTimerForTable(kv: Deno.Kv, timer: TimerWithLogs) {
   const timeRemaining = getTimeRemaining(timer);
 
   const topic = timer.topicId ? await getTopic(kv, timer.topicId) : undefined;
 
-  const isManualCompleted = timer.status === TimerStatus.ManualCompleted;
+  const isManualCompleted =
+    timer.latestLog.timerStatus === TimerStatus.ManualCompleted;
 
-  return [
+  const test = [
     ["Id", timer.id],
     ["Name", timer.name],
     ["Duration", getPrettyDuration(timer.duration)],
-    ["Status", formatStatus(timer.status)],
-    topic ? ["Topic", topic.value?.slug] : null,
+    ["Status", formatStatus(timer.latestLog.timerStatus)],
+    topic?.value ? ["Topic", topic.value.slug] : null,
     timer.templateId ? ["Template", timer.templateId] : null,
     timeRemaining ? ["Remaining", getTimeRemainingText(timeRemaining)] : null,
     ["Created at", getPrettyDate(timer.id)],
     isManualCompleted ? ["Completed at", "datum (Manual)"] : null,
-  ].filter(Boolean);
+  ].filter(Boolean) as string[][];
+
+  return test;
 }
 
 export function formatStatus(status: TimerStatus): string {

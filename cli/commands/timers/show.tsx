@@ -1,17 +1,19 @@
-import { Command, EnumType } from "$cliffy/command/mod.ts";
+// import { Command, EnumType } from "$cliffy/command/mod.ts";
+import { Command } from "$cliffy/command/mod.ts";
 import { colors } from "$cliffy/ansi/colors.ts";
 import { getDatabaseConnection } from "../../db.ts";
 import { getTimer } from "../../db/timers.ts";
 import React from "react";
 import { render } from "ink";
-import { Countdown, Font } from "./countdown.tsx";
+// import { Countdown, Font } from "./countdown.tsx";
+import { Countdown } from "./countdown.tsx";
 import { Table } from "$cliffy/table/table.ts";
-import { cron, formatTimerForTable, withStatus } from "../../timers.ts";
+import { cron, formatTimerForTable, withLogs } from "../../timers.ts";
 
-const font = new EnumType(Font);
+// const font = new EnumType(Font);
 
 export const command = new Command()
-  .type("font", font)
+  // .type("font", font)
   .arguments("<id:string>")
   .option(
     "-c, --countdown",
@@ -38,18 +40,22 @@ export const command = new Command()
       Deno.exit(1);
     }
 
-    const timerWithStatus = await withStatus(kv, timer.value);
+    const timerWithLogs = await withLogs(kv, timer.value);
+
+    console.log("hello");
 
     const table = new Table();
 
-    const body = await formatTimerForTable(kv, timerWithStatus);
+    const body = await formatTimerForTable(kv, timerWithLogs);
 
     table
       .body(body)
       .padding(2)
       .render();
 
+    console.log(options.font);
+
     if (options.countdown) {
-      render(<Countdown timer={timer.value} font={options.font} />);
+      render(<Countdown timer={timerWithLogs} />);
     }
   });

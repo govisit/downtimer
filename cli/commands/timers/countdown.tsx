@@ -3,16 +3,16 @@ import {
   getTimeRemainingText,
   hasTimeExpired,
 } from "../../timers.ts";
-import { Timer } from "../../../shared/types.ts";
-import BigText from "ink-big-text";
+import { TimerWithLogs } from "../../../shared/types.ts";
+// import BigText from "ink-big-text";
 import { keypress, KeyPressEvent } from "$cliffy/keypress/mod.ts";
 
 import React, { useEffect, useState } from "react";
-import { useApp } from "ink";
+import { Text, useApp } from "ink";
 import { ringBell } from "../../utils.ts";
 
 type CountdownProps = {
-  timer: Timer;
+  timer: TimerWithLogs;
   font?: Font;
 };
 
@@ -62,6 +62,8 @@ export const Countdown = ({ timer, font = Font.Chrome }: CountdownProps) => {
       }
     });
   }, []);
+  // return <></>;
 
-  return <BigText font={font} text={getTimeRemainingText(timeRemaining)} />;
+  // return <BigText font={font} text={getTimeRemainingText(timeRemaining)} />;
+  return <Text>{getTimeRemainingText(timeRemaining)}</Text>;
 };
