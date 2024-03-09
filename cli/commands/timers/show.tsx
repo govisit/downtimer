@@ -6,7 +6,13 @@ import React from "react";
 import { render } from "ink";
 import { Countdown, Font } from "./countdown.tsx";
 import { Table } from "$cliffy/table/table.ts";
-import { cron, formatTimerForTable, withLogs } from "../../timers.ts";
+import {
+  cron,
+  formatTimerForTable,
+  resumeTimer,
+  withLogs,
+} from "../../timers.ts";
+import { pauseTimer } from "../../timers.ts";
 
 const font = new EnumType(Font);
 
@@ -50,6 +56,29 @@ export const command = new Command()
       .render();
 
     if (options.countdown) {
-      render(<Countdown timer={timerWithLogs} />);
+      render(
+        <Countdown
+          font={options.font}
+          timer={timerWithLogs}
+          onPause={async () => {
+            await pauseTimer(kv, timerWithLogs);
+
+            const freshTimer = await getTimer(kv, id);
+
+            const freshTimerWithLogs = await withLogs(kv, freshTimer.value!);
+
+            return freshTimerWithLogs;
+          }}
+          onResume={async () => {
+            await resumeTimer(kv, timerWithLogs);
+
+            const freshTimer = await getTimer(kv, id);
+
+            const freshTimerWithLogs = await withLogs(kv, freshTimer.value!);
+
+            return freshTimerWithLogs;
+          }}
+        />,
+      );
     }
   });

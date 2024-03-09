@@ -1,4 +1,3 @@
-import { decodeTime } from "$std/ulid/mod.ts";
 import {
   Log,
   Template,
@@ -12,6 +11,7 @@ import { getTimers, insertTimer } from "./db/timers.ts";
 import { newLog } from "./logs.ts";
 import { getTopic } from "./db/topics.ts";
 import { capitalize } from "./utils.ts";
+import { getElapsedTime } from "./timers-advanced.ts";
 
 export function newTimer(
   name: string,
@@ -53,7 +53,7 @@ export async function withLogs(
 ): Promise<TimerWithLogs> {
   const logs = await getLogsByTimer(kv, timer.id);
 
-  const latestLog = logs.at(0);
+  const latestLog = logs.at(-1);
 
   if (!latestLog) {
     throw new Error(
@@ -133,70 +133,7 @@ export function getTimeRemaining(
     return 0;
   }
 
-  if (timer.latestLog.timerStatus === TimerStatus.Completed) {
-    return 0;
-  }
-
-  // Not sure about this.
-  if (timer.latestLog.timerStatus === TimerStatus.Unknown) {
-    return 0;
-  }
-
-  const startedLog = timer.logs.at(0)!;
-  const startedAt = decodeTime(startedLog.id);
-
-  let timeElapsed = 0;
-  let paused = false;
-
-  for (let i = 0; i < timer.logs.length; i++) {
-    const log = timer.logs.at(i)!;
-
-    if (i === 0 && log.timerStatus !== TimerStatus.Started) {
-      throw new Error(`The first log is not ${TimerStatus.Started}.`);
-    }
-
-    if (i === 0) {
-      continue;
-    }
-
-    if (
-      paused === false &&
-      log.timerStatus === TimerStatus.Paused
-    ) {
-      const pausedAt = decodeTime(log.id);
-
-      timeElapsed += pausedAt - startedAt;
-
-      paused = true;
-    }
-
-    if (paused === true && log.timerStatus === TimerStatus.Resumed) {
-      paused = false;
-    }
-  }
-
-  const now = Date.now();
-
-  const lastLog = timer.logs.at(-1)!;
-
-  // If the last log has status Resumed, then I need to
-  // calculate timeRemaining from resumedAt until now.
-  if (lastLog.timerStatus === TimerStatus.Resumed) {
-    const resumedAt = decodeTime(lastLog.id);
-
-    timeElapsed += now - resumedAt;
-  }
-
-  const durationInMiliseconds = timer.duration;
-
-  const timeRemaining = durationInMiliseconds - timeElapsed;
-  console.log({ timeElapsed, durationInMiliseconds }, timer.logs);
-
-  if (timeRemaining < 0) {
-    return 0;
-  }
-
-  return timeRemaining;
+  return timer.duration - getElapsedTime(timer, timer.logs);
 }
 
 /**
@@ -222,7 +159,7 @@ export function hasTimeExpired(timeRemaining: number): boolean {
   return timeRemaining === 0;
 }
 
-const activeStatuses = [
+export const activeStatuses = [
   TimerStatus.Resumed,
   TimerStatus.Started,
 ];
