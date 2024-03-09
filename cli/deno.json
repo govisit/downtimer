@@ -1,10 +1,13 @@
 {
   "lock": false,
   "tasks": {
-    "start": "deno run --allow-net --allow-read --allow-write --allow-env --unstable-kv ./main.ts",
-    "start:debug": "deno run --unstable-kv --inspect-brk ./main.ts",
-    "test": "deno --unstable-kv test --allow-read --allow-write --coverage",
-    "coverage": "deno --unstable-kv coverage --html"
+    "start": "deno run --allow-net --allow-read --allow-write --allow-env --allow-sys --unstable-kv ./main.ts",
+    "start:debug": "deno run --allow-net --allow-read --allow-write --allow-env --allow-sys --unstable-kv --inspect-brk ./main.ts",
+    "compile-windows": "deno compile --allow-net --allow-read --allow-write --allow-env --allow-sys --unstable-kv --target=\"x86_64-pc-windows-msvc\" main.ts",
+    "compile-linux": "deno compile --allow-net --allow-read --allow-write --allow-env --allow-sys --unstable-kv --target=\"x86_64-unknown-linux-gnu\" main.ts",
+    "compile-host": "deno compile --allow-net --allow-read --allow-write --allow-env --allow-sys --unstable-kv main.ts",
+    "test": "deno test --allow-net --allow-read --allow-write --allow-env --allow-sys --unstable-kv --coverage",
+    "coverage": "deno --allow-net --allow-read --allow-write --allow-env --allow-sys --unstable-kv coverage --html"
   },
   "imports": {
     "$cliffy/": "https://deno.land/x/cliffy@v1.0.0-rc.3/",

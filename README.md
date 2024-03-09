@@ -35,7 +35,15 @@ deno task coverage
 ## Compile
 
 ```bash
-deno compile --unstable-kv --allow-sys --allow-read --allow-env --allow-write --allow-net --target="x86_64-pc-windows-msvc" main.ts
+deno task compile-host
+deno task compile-windows # For generating Windows executable.
+deno task compile-linux # For generating Linux executable.
 ```
 
-Does not work on Windows ATM. Deno has panicked.
+Cross compilation (Linux -> Windows) does not work at the moment. The workaround is to clone the repository to Windows and then run `deno task compile-host`.
+
+Related links:
+- https://github.com/denoland/deno/issues/22690
+- https://github.com/denoland/deno/discussions/22685
+- https://github.com/govisit/deno-cross-compilation-panic
+
