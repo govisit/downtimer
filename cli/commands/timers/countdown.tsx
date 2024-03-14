@@ -56,6 +56,7 @@ export const Countdown = (
       if (hasTimeExpired(timeRemaining1)) {
         ringBell();
         exit();
+        Deno.exit(0);
       }
     }, 1000);
 
@@ -69,6 +70,7 @@ export const Countdown = (
   ) => {
     if (event.key === "c" && event.ctrlKey) {
       exit();
+      Deno.exit(0);
     }
 
     if (event.key === "space") {
