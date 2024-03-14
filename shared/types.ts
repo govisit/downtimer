@@ -34,7 +34,7 @@ export enum TimerStatus {
   Resumed = "resumed",
   Completed = "completed",
   ManualCompleted = "manual-completed",
-  Unknown = "unknown",
+  // Unknown = "unknown",
 }
 
 export type Log = {

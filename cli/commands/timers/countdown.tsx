@@ -1,5 +1,6 @@
 import {
   activeStatuses,
+  formatStatus,
   getTimeRemaining,
   getTimeRemainingText,
   hasTimeExpired,
@@ -9,8 +10,9 @@ import BigText from "ink-big-text";
 import { keypress, KeyPressEvent } from "$cliffy/keypress/mod.ts";
 
 import React, { useCallback, useEffect, useState } from "react";
-import { useApp } from "ink";
-import { ringBell } from "../../utils.ts";
+import { Box, useApp } from "ink";
+import { getPrettyDate, getPrettyDuration, ringBell } from "../../utils.ts";
+import { Text } from "ink";
 
 type CountdownProps = {
   timer: TimerWithLogs;
@@ -94,5 +96,13 @@ export const Countdown = (
     };
   }, [handleKeyPresses]);
 
-  return <BigText font={font} text={getTimeRemainingText(timeRemaining)} />;
+  return (
+    <Box flexDirection="column">
+      <Text>Name: {timer.name}</Text>
+      <Text>Duration: {getPrettyDuration(timer.duration)}</Text>
+      <Text>Status: {formatStatus(timer.latestLog.timerStatus)}</Text>
+      <Text>Created at: {getPrettyDate(timer.id)}</Text>
+      <BigText font={font} text={getTimeRemainingText(timeRemaining)} />
+    </Box>
+  );
 };

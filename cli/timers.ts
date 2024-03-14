@@ -202,16 +202,20 @@ export function getTemplateOverrides(
   };
 }
 
+function getCompletedAtDateFormatted(
+  logId: string,
+  isManualCompleted: boolean,
+): string {
+  const manualSuffix = isManualCompleted ? " (Manual)" : "";
+  return `${getPrettyDate(logId)}${manualSuffix}`;
+}
+
 export async function formatTimerForTable(kv: Deno.Kv, timer: TimerWithLogs) {
   const timeRemaining = getTimeRemaining(timer);
 
   const topic = timer.topicId ? await getTopic(kv, timer.topicId) : undefined;
 
-  const isManualCompleted =
-    timer.latestLog.timerStatus === TimerStatus.ManualCompleted;
-
   const test = [
-    ["Id", timer.id],
     ["Name", timer.name],
     ["Duration", getPrettyDuration(timer.duration)],
     ["Status", formatStatus(timer.latestLog.timerStatus)],
@@ -219,7 +223,15 @@ export async function formatTimerForTable(kv: Deno.Kv, timer: TimerWithLogs) {
     timer.templateId ? ["Template", timer.templateId] : null,
     timeRemaining ? ["Remaining", getTimeRemainingText(timeRemaining)] : null,
     ["Created at", getPrettyDate(timer.id)],
-    isManualCompleted ? ["Completed at", "datum (Manual)"] : null,
+    isCompleted(timer)
+      ? [
+        "Completed at",
+        getCompletedAtDateFormatted(
+          timer.latestLog.id,
+          isManualCompleted(timer),
+        ),
+      ]
+      : null,
   ].filter(Boolean) as string[][];
 
   return test;
@@ -235,4 +247,17 @@ export function formatStatus(status: TimerStatus): string {
       return capitalize(status.toString());
     }
   }
+}
+
+export function isManualCompleted(timer: TimerWithLogs): boolean {
+  return timer.latestLog.timerStatus === TimerStatus.ManualCompleted;
+}
+
+const completedTimerStatuses = [
+  TimerStatus.Completed,
+  TimerStatus.ManualCompleted,
+];
+
+export function isCompleted(timer: TimerWithLogs): boolean {
+  return completedTimerStatuses.includes(timer.latestLog.timerStatus);
 }

@@ -46,15 +46,6 @@ export const command = new Command()
 
     const timerWithLogs = await withLogs(kv, timer.value);
 
-    const table = new Table();
-
-    const body = await formatTimerForTable(kv, timerWithLogs);
-
-    table
-      .body(body)
-      .padding(2)
-      .render();
-
     if (options.countdown) {
       render(
         <Countdown
@@ -80,5 +71,14 @@ export const command = new Command()
           }}
         />,
       );
+    } else {
+      const table = new Table();
+
+      const body = await formatTimerForTable(kv, timerWithLogs);
+
+      table
+        .body(body)
+        .padding(2)
+        .render();
     }
   });

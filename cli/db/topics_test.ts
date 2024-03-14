@@ -1,4 +1,5 @@
 import { assertEquals, assertExists, assertRejects } from "$std/assert/mod.ts";
+import { DatabasePurpose } from "../db.ts";
 import { databaseCleanup, getDatabaseConnection } from "../db.ts";
 import { createTemplate } from "../templates.ts";
 import { newTimer, startTimer } from "../timers.ts";
@@ -7,7 +8,7 @@ import { deleteTemplate } from "./templates.ts";
 import { deleteTimer } from "./timers.ts";
 import { deleteTopic, getTopic, getTopicBySlug, getTopics } from "./topics.ts";
 
-const kv = await getDatabaseConnection("test.db");
+const kv = await getDatabaseConnection(DatabasePurpose.Testing);
 
 Deno.test("it should get topics from the db", async (t) => {
   await databaseCleanup(kv);
