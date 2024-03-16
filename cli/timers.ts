@@ -133,7 +133,13 @@ export function getTimeRemaining(
     return 0;
   }
 
-  return timer.duration - getElapsedTime(timer, timer.logs);
+  const timeRemaining = timer.duration - getElapsedTime(timer, timer.logs);
+
+  if (timeRemaining < 0) {
+    return 0;
+  }
+
+  return timeRemaining;
 }
 
 /**
