@@ -1,4 +1,5 @@
 import { assertEquals, assertExists, assertRejects } from "$std/assert/mod.ts";
+import { decodeTime } from "$std/ulid/mod.ts";
 import {
   databaseCleanup,
   DatabasePurpose,
@@ -13,10 +14,43 @@ import {
   getTopics,
 } from "./db/topics.ts";
 import { createTemplate } from "./templates.ts";
-import { newTimer, startTimer } from "./timers.ts";
+import {
+  calcCompletedAtTime,
+  completeTimer,
+  getElapsedTime,
+  newTimer,
+  startTimer,
+} from "./timers.ts";
 import { createTopic } from "./topics.ts";
 
 const kv = await getDatabaseConnection(DatabasePurpose.Testing);
+
+Deno.test("it should calculate correct completed at time", async (t) => {
+  await databaseCleanup(kv);
+
+  const timer = newTimer("test", 6000);
+
+  const { timer: timer1, log: startedLog } = await startTimer(kv, timer);
+  const now = Date.now();
+
+  const completedAt = now + timer1.duration + 6000;
+
+  console.log({ completedAt }, completedAt - decodeTime(startedLog.id));
+
+  const completedLog = await completeTimer(
+    kv,
+    timer1,
+    completedAt,
+  );
+
+  console.log({ completedLog });
+
+  const elapsedTime = getElapsedTime(timer1, [startedLog, completedLog]);
+
+  assertEquals(elapsedTime, 12000);
+
+  // assertEquals(calcCompletedAtTime(elapsedTime, timer1), );
+});
 
 Deno.test("it should get topics from the db", async (t) => {
   await databaseCleanup(kv);

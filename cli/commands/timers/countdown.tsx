@@ -1,8 +1,8 @@
 import {
   activeStatuses,
   formatStatus,
-  getTimeRemaining,
-  getTimeRemainingText,
+  getRemainingTime,
+  getRemainingTimeText,
   hasTimeExpired,
 } from "../../timers.ts";
 import { TimerStatus, TimerWithLogs } from "../../../shared/types.ts";
@@ -39,7 +39,7 @@ export enum Font {
 export const Countdown = (
   { timer: timer0, onPause, onResume, font = Font.Chrome }: CountdownProps,
 ) => {
-  const [timeRemaining, setTimeRemaining] = useState(getTimeRemaining(timer0));
+  const [remainingTime, setRemainingTime] = useState(getRemainingTime(timer0));
   const [timer, setTimer] = useState(timer0);
 
   const { exit } = useApp();
@@ -51,11 +51,11 @@ export const Countdown = (
     }
 
     const interval = setInterval(() => {
-      const timeRemaining1 = getTimeRemaining(timer);
+      const remainingTime1 = getRemainingTime(timer);
 
-      setTimeRemaining(timeRemaining1);
+      setRemainingTime(remainingTime1);
 
-      if (hasTimeExpired(timeRemaining1)) {
+      if (hasTimeExpired(remainingTime1)) {
         ringBell();
         exit();
         Deno.exit(0);
@@ -65,7 +65,7 @@ export const Countdown = (
     return () => {
       clearInterval(interval);
     };
-  }, [timer, setTimeRemaining, getTimeRemaining, hasTimeExpired]);
+  }, [timer, setRemainingTime, getRemainingTime, hasTimeExpired]);
 
   const handleKeyPresses = useCallback(async (
     event: KeyPressEvent,
@@ -102,7 +102,7 @@ export const Countdown = (
       <Text>Duration: {getPrettyDuration(timer.duration)}</Text>
       <Text>Status: {formatStatus(timer.latestLog.timerStatus)}</Text>
       <Text>Created at: {getPrettyDate(timer.id)}</Text>
-      <BigText font={font} text={getTimeRemainingText(timeRemaining)} />
+      <BigText font={font} text={getRemainingTimeText(remainingTime)} />
     </Box>
   );
 };

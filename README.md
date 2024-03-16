@@ -22,6 +22,9 @@ deno task test
 
 # or watch for changes
 deno task test --watch
+
+# or run specific test
+deno task test --filter "it should calculate correct completed at time"
 ```
 
 ### Coverage

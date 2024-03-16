@@ -7,7 +7,7 @@
     "compile-linux": "deno compile --allow-net --allow-read --allow-write --allow-env --allow-sys --unstable-kv --target=\"x86_64-unknown-linux-gnu\" main.ts",
     "compile-host": "deno compile --allow-net --allow-read --allow-write --allow-env --allow-sys --unstable-kv main.ts",
     "test": "deno test --allow-net --allow-read --allow-write --allow-env --allow-sys --unstable-kv --coverage",
-    "coverage": "deno --allow-net --allow-read --allow-write --allow-env --allow-sys --unstable-kv coverage --html"
+    "coverage": "deno coverage --html --unstable-kv"
   },
   "imports": {
     "$cliffy/": "https://deno.land/x/cliffy@v1.0.0-rc.3/",

@@ -6,11 +6,11 @@ import {
   cron,
   getActiveTimers,
   getAllTimers,
-  getTimeRemaining,
+  getRemainingTime,
 } from "../../timers.ts";
 import { getPrettyDate, getPrettyDuration } from "../../utils.ts";
 import { colors } from "$cliffy/ansi/colors.ts";
-import { getTimeRemainingText } from "../../timers.ts";
+import { getRemainingTimeText } from "../../timers.ts";
 import { formatStatus } from "../../timers.ts";
 
 export const command = new Command()
@@ -45,7 +45,7 @@ export const command = new Command()
       async (
         timer,
       ) => {
-        const timeRemaining = getTimeRemaining(timer);
+        const remainingTime = getRemainingTime(timer);
 
         const topic = timer.topicId
           ? await getTopic(kv, timer.topicId)
@@ -58,7 +58,7 @@ export const command = new Command()
           formatStatus(timer.latestLog.timerStatus),
           topic?.value?.slug,
           timer.templateId,
-          timeRemaining ? getTimeRemainingText(timeRemaining) : "",
+          remainingTime ? getRemainingTimeText(remainingTime) : "",
           getPrettyDate(timer.id),
         ];
       },

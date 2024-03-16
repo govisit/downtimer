@@ -5,9 +5,10 @@ export function ringBell(): void {
   console.log("\u0007");
 }
 
-export const generateId = () => ulid();
+export const generateId = (seedTime?: number) => ulid(seedTime);
 
 export function getPrettyDate(id: string): string {
+  console.log(decodeTime(id));
   return new Date(decodeTime(id)).toLocaleString("HR-hr");
 }
 

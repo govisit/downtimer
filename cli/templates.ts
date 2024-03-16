@@ -7,9 +7,10 @@ export function newTemplate(
   name: string,
   duration: number,
   topicId: string | undefined,
+  seedTime?: number,
 ): Template {
   return {
-    id: generateId(),
+    id: generateId(seedTime),
     name: name,
     duration: duration,
     topicId: topicId,
@@ -19,11 +20,12 @@ export function newTemplate(
 export function newTemplateFromTimer(
   timer: Timer,
   overrides: Overrides,
+  seedTime?: number,
 ): Template {
   const name = overrides.name || timer.name;
 
   return {
-    id: generateId(),
+    id: generateId(seedTime),
     name: name,
     duration: overrides.duration || timer.duration,
     topicId: overrides.topicId || timer.topicId,

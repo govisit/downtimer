@@ -27,7 +27,7 @@ export const handler: Handlers<Topic | null> = {
   async POST(req, _ctx) {
     const topicRequest = (await req.json()) as TopicRequest;
 
-    // TODO: Add validation with Zog
+    // TODO: Add validation with Zod
     // TODO: Implement access token which does not change on signin.
 
     const topic: Topic = {
