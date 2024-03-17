@@ -3,11 +3,12 @@ import { Topic } from "../shared/types.ts";
 import { generateId } from "./utils.ts";
 import { insertTopic } from "./db/topics.ts";
 
-export function newTopic(name: string, seedTime?: number): Topic {
+export function newTopic(name: string, createdAt?: number): Topic {
   return {
-    id: generateId(seedTime),
+    id: generateId(),
     name: name,
     slug: slug(name),
+    createdAt: createdAt || Date.now(),
   };
 }
 

@@ -4,11 +4,12 @@ import { generateId } from "./utils.ts";
 export function newLog(
   timerId: string,
   timerStatus: TimerStatus = TimerStatus.Started,
-  seedTime?: number,
+  createdAt?: number,
 ): Log {
   return {
-    id: generateId(seedTime),
+    id: generateId(),
     timerId: timerId,
     timerStatus: timerStatus,
+    createdAt: createdAt || Date.now(),
   };
 }

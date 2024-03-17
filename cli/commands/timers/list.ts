@@ -59,7 +59,7 @@ export const command = new Command()
           topic?.value?.slug,
           timer.templateId,
           remainingTime ? getRemainingTimeText(remainingTime) : "",
-          getPrettyDate(timer.id),
+          getPrettyDate(timer.createdAt),
         ];
       },
     ));

@@ -1,15 +1,14 @@
-import { decodeTime, ulid } from "$std/ulid/mod.ts";
+import { ulid } from "$std/ulid/mod.ts";
 
 export function ringBell(): void {
   // Deno.stdout.write('\u0007');
   console.log("\u0007");
 }
 
-export const generateId = (seedTime?: number) => ulid(seedTime);
+export const generateId = () => ulid();
 
-export function getPrettyDate(id: string): string {
-  console.log(decodeTime(id));
-  return new Date(decodeTime(id)).toLocaleString("HR-hr");
+export function getPrettyDate(date: number): string {
+  return new Date(date).toLocaleString("HR-hr");
 }
 
 export function capitalize(word: string): string {

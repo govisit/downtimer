@@ -101,7 +101,7 @@ export const Countdown = (
       <Text>Name: {timer.name}</Text>
       <Text>Duration: {getPrettyDuration(timer.duration)}</Text>
       <Text>Status: {formatStatus(timer.latestLog.timerStatus)}</Text>
-      <Text>Created at: {getPrettyDate(timer.id)}</Text>
+      <Text>Created at: {getPrettyDate(timer.createdAt)}</Text>
       <BigText font={font} text={getRemainingTimeText(remainingTime)} />
     </Box>
   );

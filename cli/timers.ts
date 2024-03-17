@@ -11,21 +11,21 @@ import { getTimers, insertTimer } from "./db/timers.ts";
 import { newLog } from "./logs.ts";
 import { getTopic } from "./db/topics.ts";
 import { capitalize } from "./utils.ts";
-import { decodeTime } from "$std/ulid/mod.ts";
 
 export function newTimer(
   name: string,
   duration: number,
   topicId?: string,
   templateId?: string,
-  seedTime?: number,
+  createdAt?: number,
 ): Timer {
   return {
-    id: generateId(seedTime),
+    id: generateId(),
     name: name,
     duration: duration,
     topicId: topicId,
     templateId: templateId,
+    createdAt: createdAt || Date.now(),
   };
 }
 
@@ -38,14 +38,15 @@ export type Overrides = {
 export function newTimerFromTemplate(
   template: Template,
   overrides: Overrides,
-  seedTime?: number,
+  createdAt?: number,
 ): Timer {
   return {
-    id: generateId(seedTime),
+    id: generateId(),
     name: overrides.name || template.name,
     duration: overrides.duration || template.duration,
     topicId: overrides.topicId || template.topicId,
     templateId: template.id,
+    createdAt: createdAt || Date.now(),
   };
 }
 
@@ -76,22 +77,25 @@ export async function withLogs(
 }
 
 type TimerStartedEvent = {
-  timer: Timer;
+  timer: TimerWithLogs;
   log: Log;
 };
 
 export async function startTimer(
   kv: Deno.Kv,
   timer: Timer,
+  startedAt?: number,
 ): Promise<TimerStartedEvent> {
   await insertTimer(kv, timer);
 
-  const log = newLog(timer.id, TimerStatus.Started);
+  const log = newLog(timer.id, TimerStatus.Started, startedAt);
 
   await insertLog(kv, log);
 
+  const timerWithLogs = await withLogs(kv, timer);
+
   return {
-    timer,
+    timer: timerWithLogs,
     log,
   };
 }
@@ -145,6 +149,7 @@ type Time = number;
 type ElapsedTime = Time;
 
 export function getElapsedTime(
+  now: number,
   timer: Timer,
   logs: Log[],
   currentLog?: Log | undefined,
@@ -157,7 +162,7 @@ export function getElapsedTime(
       throw new Error("Timer has no logs, can't calculate elapsed time.");
     }
 
-    return getElapsedTime(timer, restLogs, nextLog);
+    return getElapsedTime(now, timer, restLogs, nextLog);
   }
 
   switch (currentLog.timerStatus) {
@@ -174,13 +179,13 @@ export function getElapsedTime(
 
       switch (nextLog.timerStatus) {
         case TimerStatus.Resumed:
-          return getElapsedTime(timer, restLogs, nextLog, elapsedTime);
+          return getElapsedTime(now, timer, restLogs, nextLog, elapsedTime);
         case TimerStatus.Started:
           throw new Error("This should not happen! Check logs.");
         case TimerStatus.Paused:
           // In case that there are two Paused logs one next to each other,
           // this moves things along, instead of throwing an error.
-          return getElapsedTime(timer, restLogs, nextLog, elapsedTime);
+          return getElapsedTime(now, timer, restLogs, nextLog, elapsedTime);
         case TimerStatus.Completed:
           throw new Error("This should not happen! Check logs.");
         case TimerStatus.ManualCompleted:
@@ -198,8 +203,7 @@ export function getElapsedTime(
       // If there is no next log,
       // then calculate elapsed time by subtracting startedAt from now.
       if (!nextLog) {
-        const startedAt = decodeTime(currentLog.id);
-        const now = Date.now();
+        const startedAt = currentLog.createdAt;
 
         return now - startedAt;
       }
@@ -208,26 +212,24 @@ export function getElapsedTime(
         case TimerStatus.Started:
           throw new Error("This should not happen! Check logs.");
         case TimerStatus.Paused: {
-          const startedAt = decodeTime(currentLog.id);
-          const pausedAt = decodeTime(nextLog.id);
+          const startedAt = currentLog.createdAt;
+          const pausedAt = nextLog.createdAt;
 
           const calculatedTime = elapsedTime + (pausedAt - startedAt);
 
-          return getElapsedTime(timer, restLogs, nextLog, calculatedTime);
+          return getElapsedTime(now, timer, restLogs, nextLog, calculatedTime);
         }
         case TimerStatus.Resumed:
           throw new Error("This should not happen! Check logs.");
         case TimerStatus.Completed: {
-          const startedAt = decodeTime(currentLog.id);
-          const completedAt = decodeTime(nextLog.id);
-
-          console.log({ startedAt, completedAt, elapsedTime });
+          const startedAt = currentLog.createdAt;
+          const completedAt = nextLog.createdAt;
 
           return elapsedTime + (completedAt - startedAt);
         }
         case TimerStatus.ManualCompleted: {
-          const startedAt = decodeTime(currentLog.id);
-          const manualCompletedAt = decodeTime(nextLog.id);
+          const startedAt = currentLog.createdAt;
+          const manualCompletedAt = nextLog.createdAt;
 
           return manualCompletedAt - startedAt;
         }
@@ -249,8 +251,7 @@ export function getElapsedTime(
       // then calculate elapsed time by subtracting startedAt from now
       // and adding that to already elapsed time.
       if (!nextLog) {
-        const resumedAt = decodeTime(currentLog.id);
-        const now = Date.now();
+        const resumedAt = currentLog.createdAt;
 
         return elapsedTime + (now - resumedAt);
       }
@@ -259,26 +260,26 @@ export function getElapsedTime(
         case TimerStatus.Started:
           throw new Error("This should not happen! Check logs.");
         case TimerStatus.Paused: {
-          const resumedAt = decodeTime(currentLog.id);
-          const pausedAt = decodeTime(nextLog.id);
+          const resumedAt = currentLog.createdAt;
+          const pausedAt = nextLog.createdAt;
 
           const calculatedTime = elapsedTime + (pausedAt - resumedAt);
 
-          return getElapsedTime(timer, restLogs, nextLog, calculatedTime);
+          return getElapsedTime(now, timer, restLogs, nextLog, calculatedTime);
         }
         case TimerStatus.Resumed:
           // In case that there are two Resumed logs one next to each other,
           // this moves things along, instead of throwing an error.
-          return getElapsedTime(timer, restLogs, nextLog, elapsedTime);
+          return getElapsedTime(now, timer, restLogs, nextLog, elapsedTime);
         case TimerStatus.Completed: {
-          const resumedAt = decodeTime(currentLog.id);
-          const completedAt = decodeTime(nextLog.id);
+          const resumedAt = currentLog.createdAt;
+          const completedAt = nextLog.createdAt;
 
           return elapsedTime + (completedAt - resumedAt);
         }
         case TimerStatus.ManualCompleted: {
-          const resumedAt = decodeTime(currentLog.id);
-          const manualCompletedAt = decodeTime(nextLog.id);
+          const resumedAt = currentLog.createdAt;
+          const manualCompletedAt = nextLog.createdAt;
 
           return elapsedTime + (manualCompletedAt - resumedAt);
         }
@@ -308,7 +309,7 @@ export function getRemainingTime(
   }
 
   const elapsedTime1 = typeof elapsedTime === "undefined"
-    ? getElapsedTime(timer, timer.logs)
+    ? getElapsedTime(Date.now(), timer, timer.logs)
     : elapsedTime;
 
   const remainingTime = timer.duration - elapsedTime1;
@@ -363,16 +364,18 @@ export async function getActiveTimers(kv: Deno.Kv): Promise<TimerWithLogs[]> {
 }
 
 export async function cron(kv: Deno.Kv) {
+  const now = Date.now();
+
   const activeTimers = await getActiveTimers(kv);
 
   for (const timer of activeTimers) {
-    const elapsedTime = getElapsedTime(timer, timer.logs);
+    const elapsedTime = getElapsedTime(now, timer, timer.logs);
     const remainingTime = getRemainingTime(timer, elapsedTime);
 
-    console.log({ elapsedTime, remainingTime }, "cron", timer.duration);
-
     if (remainingTime === 0) {
-      const completedAt = calcCompletedAtTime(elapsedTime, timer);
+      const completedAt = calcCompletedAtTime(elapsedTime, timer, now);
+      // const diff = elapsedTime - timer.duration;
+      // const completedAt = now - diff;
 
       await completeTimer(kv, timer, completedAt);
     }
@@ -392,11 +395,11 @@ export function getTemplateOverrides(
 }
 
 function getCompletedAtDateFormatted(
-  logId: string,
+  completedAt: number,
   isManualCompleted: boolean,
 ): string {
   const manualSuffix = isManualCompleted ? " (Manual)" : "";
-  return `${getPrettyDate(logId)}${manualSuffix}`;
+  return `${getPrettyDate(completedAt)}${manualSuffix}`;
 }
 
 export async function formatTimerForTable(kv: Deno.Kv, timer: TimerWithLogs) {
@@ -411,12 +414,12 @@ export async function formatTimerForTable(kv: Deno.Kv, timer: TimerWithLogs) {
     topic?.value ? ["Topic", topic.value.slug] : null,
     timer.templateId ? ["Template", timer.templateId] : null,
     remainingTime ? ["Remaining", getRemainingTimeText(remainingTime)] : null,
-    ["Created at", getPrettyDate(timer.id)],
+    ["Created at", getPrettyDate(timer.createdAt)],
     isCompleted(timer)
       ? [
         "Completed at",
         getCompletedAtDateFormatted(
-          timer.latestLog.id,
+          timer.latestLog.createdAt,
           isManualCompleted(timer),
         ),
       ]
@@ -452,19 +455,43 @@ export function isCompleted(timer: TimerWithLogs): boolean {
 }
 
 /**
- * Use only on timer that has timeRemaining 0.
+ * Use only on timer that has remainingTime 0.
  */
 export function calcCompletedAtTime(
   elapsedTime: number,
-  timer: Timer,
+  timer: TimerWithLogs,
+  now: number,
 ): number {
-  const diff = timer.duration - elapsedTime;
-
-  if (diff > 0) {
-    throw new Error("Dogodila se greska. Stoperica nije istekla.");
-  }
-
-  const now = Date.now();
-
+  console.log({ elapsedTime, now }, timer.duration);
+  const diff = elapsedTime - timer.duration;
   return now - diff;
+  // const startedAtLog = timer.logs.find((log) =>
+  //   log.timerStatus === TimerStatus.Started
+  // );
+
+  // if (!startedAtLog) {
+  //   throw new Error("Timer does not have a starting log.");
+  // }
+
+  // const completedAtLog = timer.logs.find((log) =>
+  //   log.timerStatus === TimerStatus.Completed
+  // );
+
+  // if (completedAtLog) {
+  //   return completedAtLog.createdAt;
+  // }
+
+  // const diff = elapsedTime - timer.duration;
+
+  // if (diff < 0) {
+  //   throw new Error(
+  //     "Error ocurred. Timer has not elapsed. It has remaining time greater than 0.",
+  //   );
+  // }
+
+  // console.log(startedAtLog.createdAt, elapsedTime, diff, timer.duration);
+
+  // // `diff` is always a positive number or zero here.
+  // // NOTE: Could be better implemented for future error handling.
+  // return startedAtLog.createdAt + timer.duration - diff;
 }

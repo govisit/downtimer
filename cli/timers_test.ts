@@ -1,5 +1,4 @@
 import { assertEquals, assertExists, assertRejects } from "$std/assert/mod.ts";
-import { decodeTime } from "$std/ulid/mod.ts";
 import {
   databaseCleanup,
   DatabasePurpose,
@@ -28,28 +27,52 @@ const kv = await getDatabaseConnection(DatabasePurpose.Testing);
 Deno.test("it should calculate correct completed at time", async (t) => {
   await databaseCleanup(kv);
 
-  const timer = newTimer("test", 6000);
-
-  const { timer: timer1, log: startedLog } = await startTimer(kv, timer);
   const now = Date.now();
 
-  const completedAt = now + timer1.duration + 6000;
+  const timer = newTimer("test", 6000, undefined, undefined, now - 7000);
 
-  console.log({ completedAt }, completedAt - decodeTime(startedLog.id));
-
-  const completedLog = await completeTimer(
+  const { timer: timer1, log: startedLog } = await startTimer(
     kv,
-    timer1,
-    completedAt,
+    timer,
+    now - 7000,
   );
 
-  console.log({ completedLog });
+  await t.step("when there is only a started log", () => {
+    const completedAt = now - 1000;
 
-  const elapsedTime = getElapsedTime(timer1, [startedLog, completedLog]);
+    const elapsedTime = getElapsedTime(now, timer1, [
+      startedLog,
+    ]);
 
-  assertEquals(elapsedTime, 12000);
+    assertEquals(elapsedTime, 7000);
 
-  // assertEquals(calcCompletedAtTime(elapsedTime, timer1), );
+    assertEquals(
+      calcCompletedAtTime(elapsedTime, timer1, now),
+      completedAt,
+    );
+  });
+
+  await t.step("when there is a completed log", async () => {
+    const completedAt = now - 1000;
+
+    const completedLog = await completeTimer(
+      kv,
+      timer1,
+      completedAt,
+    );
+
+    const elapsedTime = getElapsedTime(now, timer1, [
+      startedLog,
+      completedLog,
+    ]);
+
+    assertEquals(elapsedTime, 6000);
+
+    assertEquals(
+      calcCompletedAtTime(elapsedTime, timer1, now),
+      completedAt,
+    );
+  });
 });
 
 Deno.test("it should get topics from the db", async (t) => {

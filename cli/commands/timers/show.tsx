@@ -7,10 +7,8 @@ import { render } from "ink";
 import { Countdown, Font } from "./countdown.tsx";
 import { Table } from "$cliffy/table/table.ts";
 import {
-  calcCompletedAtTime,
   cron,
   formatTimerForTable,
-  getElapsedTime,
   resumeTimer,
   withLogs,
 } from "../../timers.ts";
@@ -75,13 +73,6 @@ export const command = new Command()
       );
     } else {
       const table = new Table();
-
-      const elapsedTime = getElapsedTime(timerWithLogs, timerWithLogs.logs);
-      console.log(
-        elapsedTime,
-        timerWithLogs.duration,
-        calcCompletedAtTime(elapsedTime, timerWithLogs),
-      );
 
       const body = await formatTimerForTable(kv, timerWithLogs);
 

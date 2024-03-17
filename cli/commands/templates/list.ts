@@ -38,7 +38,7 @@ export const command = new Command()
           template.name,
           getPrettyDuration(template.duration),
           topic?.value?.slug,
-          getPrettyDate(template.id),
+          getPrettyDate(template.createdAt),
         ];
       },
     ));

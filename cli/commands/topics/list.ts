@@ -31,7 +31,7 @@ export const command = new Command()
         topic.id,
         topic.name,
         topic.slug,
-        getPrettyDate(topic.id),
+        getPrettyDate(topic.createdAt),
       ],
     );
 
