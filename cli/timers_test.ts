@@ -1,11 +1,16 @@
-import { assertEquals, assertExists, assertRejects } from "$std/assert/mod.ts";
+import {
+  assertEquals,
+  assertExists,
+  assertRejects,
+  assertThrows,
+} from "$std/assert/mod.ts";
 import {
   databaseCleanup,
   DatabasePurpose,
   getDatabaseConnection,
 } from "./db.ts";
 import { deleteTemplate } from "./db/templates.ts";
-import { deleteTimer } from "./db/timers.ts";
+import { deleteTimer, getTimer } from "./db/timers.ts";
 import {
   deleteTopic,
   getTopic,
@@ -19,6 +24,7 @@ import {
   getElapsedTime,
   newTimer,
   startTimer,
+  withLogs,
 } from "./timers.ts";
 import { createTopic } from "./topics.ts";
 
@@ -31,18 +37,24 @@ Deno.test("it should calculate correct completed at time", async (t) => {
 
   const timer = newTimer("test", 6000, undefined, undefined, now - 7000);
 
-  const { timer: timer1, log: startedLog } = await startTimer(
+  const { timer: timer1 } = await startTimer(
     kv,
     timer,
     now - 7000,
   );
 
+  await t.step("when the timer has not elapsed", () => {
+    const elapsedTime = 4000;
+
+    assertThrows(() => {
+      calcCompletedAtTime(elapsedTime, timer1, now);
+    });
+  });
+
   await t.step("when there is only a started log", () => {
     const completedAt = now - 1000;
 
-    const elapsedTime = getElapsedTime(now, timer1, [
-      startedLog,
-    ]);
+    const elapsedTime = getElapsedTime(now, timer1, timer1.logs);
 
     assertEquals(elapsedTime, 7000);
 
@@ -55,21 +67,20 @@ Deno.test("it should calculate correct completed at time", async (t) => {
   await t.step("when there is a completed log", async () => {
     const completedAt = now - 1000;
 
-    const completedLog = await completeTimer(
+    await completeTimer(
       kv,
       timer1,
       completedAt,
     );
 
-    const elapsedTime = getElapsedTime(now, timer1, [
-      startedLog,
-      completedLog,
-    ]);
+    const timer2 = await withLogs(kv, (await getTimer(kv, timer.id)).value!);
+
+    const elapsedTime = getElapsedTime(now, timer2, timer2.logs);
 
     assertEquals(elapsedTime, 6000);
 
     assertEquals(
-      calcCompletedAtTime(elapsedTime, timer1, now),
+      calcCompletedAtTime(elapsedTime, timer2, now),
       completedAt,
     );
   });

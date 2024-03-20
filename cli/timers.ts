@@ -62,11 +62,6 @@ export async function withLogs(
     throw new Error(
       `This is a mistake. If this happens, someone has deleted logs. Timer: ${timer.id}.`,
     );
-    // The code bellow is left here in case I want to do something with this in the future.
-
-    // To prevent this from making issues, I will create a new unknown log for a timer.
-    // const dummyLog = newLog(timer.id, TimerStatus.Unknown);
-    // await insertLog(kv, dummyLog);
   }
 
   return {
@@ -104,8 +99,8 @@ export async function completeTimer(
   kv: Deno.Kv,
   timer: Timer,
   completedAt?: number,
-): Promise<Log> {
-  return await insertNewLog(kv, timer.id, TimerStatus.Completed, completedAt);
+): Promise<void> {
+  await insertNewLog(kv, timer.id, TimerStatus.Completed, completedAt);
 }
 
 export async function pauseTimer(
@@ -374,8 +369,6 @@ export async function cron(kv: Deno.Kv) {
 
     if (remainingTime === 0) {
       const completedAt = calcCompletedAtTime(elapsedTime, timer, now);
-      // const diff = elapsedTime - timer.duration;
-      // const completedAt = now - diff;
 
       await completeTimer(kv, timer, completedAt);
     }
@@ -462,36 +455,25 @@ export function calcCompletedAtTime(
   timer: TimerWithLogs,
   now: number,
 ): number {
-  console.log({ elapsedTime, now }, timer.duration);
-  const diff = elapsedTime - timer.duration;
-  return now - diff;
-  // const startedAtLog = timer.logs.find((log) =>
-  //   log.timerStatus === TimerStatus.Started
-  // );
+  if (elapsedTime < timer.duration) {
+    throw new Error("Timer has not elapsed.");
+  }
 
-  // if (!startedAtLog) {
-  //   throw new Error("Timer does not have a starting log.");
-  // }
+  const latestLog = timer.latestLog;
 
-  // const completedAtLog = timer.logs.find((log) =>
-  //   log.timerStatus === TimerStatus.Completed
-  // );
-
-  // if (completedAtLog) {
-  //   return completedAtLog.createdAt;
-  // }
-
-  // const diff = elapsedTime - timer.duration;
-
-  // if (diff < 0) {
-  //   throw new Error(
-  //     "Error ocurred. Timer has not elapsed. It has remaining time greater than 0.",
-  //   );
-  // }
-
-  // console.log(startedAtLog.createdAt, elapsedTime, diff, timer.duration);
-
-  // // `diff` is always a positive number or zero here.
-  // // NOTE: Could be better implemented for future error handling.
-  // return startedAtLog.createdAt + timer.duration - diff;
+  switch (latestLog.timerStatus) {
+    case TimerStatus.Started:
+    case TimerStatus.Paused:
+    case TimerStatus.Resumed: {
+      const diff = elapsedTime - timer.duration;
+      return now - diff;
+    }
+    case TimerStatus.Completed:
+    case TimerStatus.ManualCompleted:
+      return latestLog.createdAt;
+    default: {
+      const _exhaustiveCheck: never = latestLog.timerStatus;
+      return _exhaustiveCheck;
+    }
+  }
 }

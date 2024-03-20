@@ -43,10 +43,11 @@ deno task compile-windows # For generating Windows executable.
 deno task compile-linux # For generating Linux executable.
 ```
 
-Cross compilation (Linux -> Windows) does not work at the moment. The workaround is to clone the repository to Windows and then run `deno task compile-host`.
+Cross compilation (Linux -> Windows) does not work at the moment. The workaround
+is to clone the repository to Windows and then run `deno task compile-host`.
 
 Related links:
+
 - https://github.com/denoland/deno/issues/22690
 - https://github.com/denoland/deno/discussions/22685
 - https://github.com/govisit/deno-cross-compilation-panic
-
