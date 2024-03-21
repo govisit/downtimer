@@ -8,7 +8,13 @@ export function ringBell(): void {
 export const generateId = () => ulid();
 
 export function getPrettyDate(date: number): string {
-  return new Date(date).toLocaleString("HR-hr");
+  const dateString = new Date(date).toLocaleDateString("HR-hr").replaceAll(
+    ". ",
+    ".",
+  );
+  const timeString = new Date(date).toLocaleTimeString("HR-hr");
+
+  return `${dateString} ${timeString}`;
 }
 
 export function capitalize(word: string): string {

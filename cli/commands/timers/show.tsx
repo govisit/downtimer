@@ -7,12 +7,15 @@ import { render } from "ink";
 import { Countdown, Font } from "./countdown.tsx";
 import { Table } from "$cliffy/table/table.ts";
 import {
+  completedTimerStatuses,
   cron,
+  formatStatus,
   formatTimerForTable,
   resumeTimer,
   withLogs,
 } from "../../timers.ts";
 import { pauseTimer } from "../../timers.ts";
+import { getPrettyDate } from "../../utils.ts";
 
 const font = new EnumType(Font);
 
@@ -22,6 +25,10 @@ export const command = new Command()
   .option(
     "-c, --countdown",
     "Eye candy and real time monitoring.",
+  )
+  .option(
+    "-l, --logs",
+    "Displays logs for the timer.",
   )
   .description("Shows details about a timer.")
   .option(
@@ -46,7 +53,10 @@ export const command = new Command()
 
     const timerWithLogs = await withLogs(kv, timer.value);
 
-    if (options.countdown) {
+    if (
+      options.countdown &&
+      !completedTimerStatuses.includes(timerWithLogs.latestLog.timerStatus)
+    ) {
       render(
         <Countdown
           font={options.font}
@@ -80,5 +90,24 @@ export const command = new Command()
         .body(body)
         .padding(2)
         .render();
+
+      if (options.logs) {
+        const logsTable = new Table();
+        console.log("");
+        console.log("Logs:");
+
+        const body = timerWithLogs.logs.map((log) => {
+          return [
+            formatStatus(log.timerStatus),
+            getPrettyDate(log.createdAt),
+          ];
+        });
+
+        logsTable
+          .header(["Status", "Timestamp"])
+          .body(body)
+          .border()
+          .render();
+      }
     }
   });

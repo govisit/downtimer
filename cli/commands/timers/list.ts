@@ -12,6 +12,7 @@ import { getPrettyDate, getPrettyDuration } from "../../utils.ts";
 import { colors } from "$cliffy/ansi/colors.ts";
 import { getRemainingTimeText } from "../../timers.ts";
 import { formatStatus } from "../../timers.ts";
+import { getTemplate } from "../../db/templates.ts";
 
 export const command = new Command()
   .description("Lists all active timers by default.")
@@ -51,14 +52,18 @@ export const command = new Command()
           ? await getTopic(kv, timer.topicId)
           : undefined;
 
+        const template = timer.templateId
+          ? await getTemplate(kv, timer.templateId)
+          : undefined;
+
         return [
           timer.id,
           timer.name,
           getPrettyDuration(timer.duration),
           formatStatus(timer.latestLog.timerStatus),
-          topic?.value?.slug,
-          timer.templateId,
-          remainingTime ? getRemainingTimeText(remainingTime) : "",
+          topic?.value ? topic.value.name : "n/a",
+          template?.value ? template.value.name : "n/a",
+          remainingTime ? getRemainingTimeText(remainingTime) : "n/a",
           getPrettyDate(timer.createdAt),
         ];
       },

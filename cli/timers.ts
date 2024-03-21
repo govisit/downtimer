@@ -11,6 +11,8 @@ import { getTimers, insertTimer } from "./db/timers.ts";
 import { newLog } from "./logs.ts";
 import { getTopic } from "./db/topics.ts";
 import { capitalize } from "./utils.ts";
+import { colors } from "$cliffy/ansi/colors.ts";
+import { getTemplate } from "./db/templates.ts";
 
 export function newTimer(
   name: string,
@@ -399,13 +401,18 @@ export async function formatTimerForTable(kv: Deno.Kv, timer: TimerWithLogs) {
   const remainingTime = getRemainingTime(timer);
 
   const topic = timer.topicId ? await getTopic(kv, timer.topicId) : undefined;
+  const template = timer.templateId
+    ? await getTemplate(kv, timer.templateId)
+    : undefined;
 
   const test = [
     ["Name", timer.name],
     ["Duration", getPrettyDuration(timer.duration)],
     ["Status", formatStatus(timer.latestLog.timerStatus)],
-    topic?.value ? ["Topic", topic.value.slug] : null,
-    timer.templateId ? ["Template", timer.templateId] : null,
+    topic?.value ? ["Topic", `${topic.value.name} #${topic.value.slug}`] : null,
+    template?.value
+      ? ["Template", `${template.value.name} (${template.value.id})`]
+      : null,
     remainingTime ? ["Remaining", getRemainingTimeText(remainingTime)] : null,
     ["Created at", getPrettyDate(timer.createdAt)],
     isCompleted(timer)
@@ -425,7 +432,17 @@ export async function formatTimerForTable(kv: Deno.Kv, timer: TimerWithLogs) {
 export function formatStatus(status: TimerStatus): string {
   switch (status.toString()) {
     case TimerStatus.ManualCompleted: {
-      return `${capitalize(TimerStatus.Completed)} (Manual)`;
+      return colors.brightGreen(
+        `${capitalize(TimerStatus.Completed)} (Manual)`,
+      );
+    }
+
+    case TimerStatus.Completed: {
+      return colors.green(capitalize(TimerStatus.Completed));
+    }
+
+    case TimerStatus.Started: {
+      return colors.blue(capitalize(TimerStatus.Started));
     }
 
     default: {
@@ -438,7 +455,7 @@ export function isManualCompleted(timer: TimerWithLogs): boolean {
   return timer.latestLog.timerStatus === TimerStatus.ManualCompleted;
 }
 
-const completedTimerStatuses = [
+export const completedTimerStatuses = [
   TimerStatus.Completed,
   TimerStatus.ManualCompleted,
 ];
