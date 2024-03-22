@@ -4,21 +4,9 @@ import { Line, ValidPrompts } from "../islands/ShellLine.tsx";
 import { getTimestamp } from "../islands/ShellPrompt.tsx";
 
 const lines = signal<Line[]>([
-  // {
-  //   timestamp: getTimestamp(),
-  //   prompt: ValidPrompts.Hello,
-  // },
   {
     timestamp: getTimestamp(),
     prompt: ValidPrompts.About,
-  },
-  {
-    timestamp: getTimestamp(),
-    prompt: ValidPrompts.Features,
-  },
-  {
-    timestamp: getTimestamp(),
-    prompt: ValidPrompts.Download,
   },
 ]);
 
