@@ -7,16 +7,22 @@ const prompt = signal("");
 
 type ShellProps = {
   lines: Signal<Line[]>;
+  history: Signal<string[]>;
 };
 
 const initialLoad = signal(true);
 
-export default function Shell({ lines }: ShellProps) {
+export default function Shell({ lines, history }: ShellProps) {
   const linesRef = useRef<HTMLDivElement>(null);
   const shellPromptRef = useRef<HTMLInputElement>(null);
 
   function addNewLine(line: Line): void {
     lines.value = [...lines.value, line];
+
+    // Prevents repeating prompts in history.
+    if (line.prompt !== lines.value.at(-2)?.prompt) {
+      history.value = [line.prompt, ...history.value];
+    }
   }
 
   function scrollToBottom() {
@@ -47,8 +53,6 @@ export default function Shell({ lines }: ShellProps) {
       if (event.ctrlKey && event.key === "l") {
         event.preventDefault();
 
-        console.log("hmm");
-
         clearLines();
       }
     }
@@ -70,17 +74,6 @@ export default function Shell({ lines }: ShellProps) {
   function clearLines() {
     lines.value = [];
   }
-
-  const history = lines.value
-    .map((line) => line.prompt)
-    // Removes repeating items.
-    .filter(
-      function (elem, index, self) {
-        return elem !== self[index - 1];
-      },
-    )
-    // Sorts prompts from latest to oldest. The latest prompt is first.
-    .toReversed();
 
   return (
     <div class="flex flex-col justify-between h-full gap-8">
@@ -104,7 +97,7 @@ export default function Shell({ lines }: ShellProps) {
         ref={shellPromptRef}
         onReturn={addNewLine}
         prompt={prompt}
-        history={["", ...history]}
+        history={["", ...history.value]}
       />
     </div>
   );
