@@ -59,7 +59,7 @@ function HelloWorldResponse() {
 function SofiaResponse() {
   return (
     <PlainResponse className="text-green-500 font-bold">
-      Bok Sofia, voli te tata! ❤️
+      Bok Sofia, voli te tata puno! ❤️
     </PlainResponse>
   );
 }
