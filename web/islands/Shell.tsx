@@ -13,6 +13,7 @@ const initialLoad = signal(true);
 
 export default function Shell({ lines }: ShellProps) {
   const linesRef = useRef<HTMLDivElement>(null);
+  const shellPromptRef = useRef<HTMLInputElement>(null);
 
   function addNewLine(line: Line): void {
     lines.value = [...lines.value, line];
@@ -29,6 +30,10 @@ export default function Shell({ lines }: ShellProps) {
 
   function setShellPrompt(prompt0: string) {
     prompt.value = prompt0;
+
+    if (shellPromptRef.current) {
+      shellPromptRef.current.focus();
+    }
   }
 
   useEffect(() => {
@@ -36,16 +41,22 @@ export default function Shell({ lines }: ShellProps) {
   }, []);
 
   return (
-    <div class="flex flex-col justify-between h-full gap-10">
+    <div class="flex flex-col justify-between h-full gap-8">
       <div
         ref={linesRef}
-        class="flex flex-col gap-4 grow overflow-y-auto pr-12"
+        class="flex flex-col gap-4 grow overflow-y-auto pr-6 sm:pr-12"
       >
-        {lines.value.map((line) => {
-          return <ShellLine line={line} setShellPrompt={setShellPrompt} />;
+        {lines.value.map((line, index) => {
+          return (
+            <ShellLine
+              key={index}
+              line={line}
+              setShellPrompt={setShellPrompt}
+            />
+          );
         })}
       </div>
-      <ShellPrompt onReturn={addNewLine} prompt={prompt} />
+      <ShellPrompt ref={shellPromptRef} onReturn={addNewLine} prompt={prompt} />
     </div>
   );
 }

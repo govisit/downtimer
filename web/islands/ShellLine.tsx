@@ -17,24 +17,20 @@ export enum ValidPrompts {
   Features = "features",
   Privacy = "privacy",
   Download = "download",
+  Help = "help",
 }
 
 type PlainResponseProps = {
-  textColor?: string;
   children: ComponentChildren;
-  fontWeight?: string;
+  className?: string;
 };
 
 function PlainResponse(
-  { textColor: textColor0, children, fontWeight: fontWeight0 }:
-    PlainResponseProps,
+  { children, className }: PlainResponseProps,
 ) {
-  const textColor = textColor0 || "text-[#FFFFF2]";
-  const fontWeight = fontWeight0 || "font-normal";
-
   return (
     <div
-      class={`bg-[#24242E] ${textColor} ${fontWeight} rounded-lg px-8 py-5 break-word`}
+      class={`bg-[#24242E] rounded-lg px-8 py-5 break-word font-normal text-[#FFFFF2] ${className}`}
     >
       {children}
     </div>
@@ -43,7 +39,7 @@ function PlainResponse(
 
 function ErrorResponse({ prompt }: { prompt: string }) {
   return (
-    <PlainResponse textColor="text-red-500" fontWeight="font-bold">
+    <PlainResponse className="text-red-500 font-bold">
       Error: command not found: {prompt}
     </PlainResponse>
   );
@@ -51,8 +47,61 @@ function ErrorResponse({ prompt }: { prompt: string }) {
 
 function HelloWorldResponse() {
   return (
-    <PlainResponse textColor="text-green-500" fontWeight="font-bold">
+    <PlainResponse className="text-green-500 font-bold">
       Hello, World!
+    </PlainResponse>
+  );
+}
+
+function HelpResponse() {
+  return (
+    <PlainResponse>
+      <p>These are the available commands that you can enter in the prompt:</p>
+      <br />
+      <ul>
+        <li>
+          about{" "}
+          <SmallText>
+            it displays information about this application.
+          </SmallText>
+        </li>
+        <li>
+          download{" "}
+          <SmallText>
+            it displays a list of download links.
+          </SmallText>
+        </li>
+        <li>
+          features{" "}
+          <SmallText>
+            it displays the features of this application.
+          </SmallText>
+        </li>
+        <li>
+          goto{" "}
+          <SmallText>
+            it displays a list of links to which you can navigate to.
+          </SmallText>
+        </li>
+        <li>
+          hello{" "}
+          <SmallText>
+            it displays a hello message.
+          </SmallText>
+        </li>
+        <li>
+          help{" "}
+          <SmallText>
+            it displays this help text.
+          </SmallText>
+        </li>
+        <li>
+          privacy{" "}
+          <SmallText>
+            it displays a privacy notice.
+          </SmallText>
+        </li>
+      </ul>
     </PlainResponse>
   );
 }
@@ -66,9 +115,6 @@ function AboutResponse({ setShellPrompt }: AboutResponseProps) {
     <PlainResponse>
       <ResponseTitle title="About" />
       <br />
-      <p>
-        When your phone or PC timer is not enough.
-      </p>
       <p>
         I needed a way to manage multiple timers, so I have created this
         application. The CLI application is free to download and use. It has no
@@ -86,6 +132,13 @@ function AboutResponse({ setShellPrompt }: AboutResponseProps) {
         </button>{" "}
         in the shell prompt bellow.
       </p>
+      <br />
+      <p>
+        In the future I plan to add a web app and implement the sync feature in
+        the CLI application so that you can sync your timers across devices.
+        These both features will require some form of payment, but the CLI
+        application will remain free forever.
+      </p>
     </PlainResponse>
   );
 }
@@ -101,13 +154,13 @@ function DownloadResponse() {
       <br />
       <ul class="list-disc list-inside">
         <li>
-          <a href="/files/dt">Linux</a>
+          <a class="hover:opacity-70" href="/files/dt">Linux</a>
         </li>
         <li>
-          <a href="/files/dt.exe">Windows</a>
+          <a class="hover:opacity-70" href="/files/dt.exe">Windows</a>
         </li>
         <li>
-          <a href="/files/dt.dmg">Mac</a>
+          <a class="hover:opacity-70" href="/files/dt.dmg">Mac</a>
         </li>
       </ul>
     </PlainResponse>
@@ -142,7 +195,12 @@ function PrivacyResponse() {
       <p>
         <h3>Analytics</h3>
         I use a self-hosted version of{" "}
-        <a href="https://plausible.io" rel="nofollow noopener" target="_blank">
+        <a
+          class="underline hover:opacity-70"
+          href="https://plausible.io"
+          rel="nofollow noopener"
+          target="_blank"
+        >
           Plausible Analytics
         </a>{" "}
         for the purpose of collecting and analyzing website visit frequency. It
@@ -188,8 +246,8 @@ function FeaturesResponse() {
         <li>
           Logs{" "}
           <SmallText>
-            each timer has a log of events that have happened during the life
-            time of the timer (started, paused, resumed, completed, manual
+            each timer has a log of events that have happened during the
+            lifetime of the timer (started, paused, resumed, completed, manual
             completed).
           </SmallText>
         </li>
@@ -232,19 +290,19 @@ function GoToResponse() {
       <br />
       <ul class="list-disc list-inside">
         <li>
-          <a href="/about">About</a>
+          <a class="hover:opacity-70" href="/about">About</a>
         </li>
         <li>
-          <a href="/download">Download</a>
+          <a class="hover:opacity-70" href="/download">Download</a>
         </li>
         <li>
-          <a href="/features">Features</a>
+          <a class="hover:opacity-70" href="/features">Features</a>
         </li>
         <li>
-          <a href="/">Home</a>
+          <a class="hover:opacity-70" href="/">Home</a>
         </li>
         <li>
-          <a href="/privacy">Privacy</a>
+          <a class="hover:opacity-70" href="/privacy">Privacy</a>
         </li>
       </ul>
       <br />
@@ -261,6 +319,10 @@ export default function ShellLine({ line, setShellPrompt }: ShellLineProps) {
     switch (line.prompt) {
       case ValidPrompts.Hello: {
         return <HelloWorldResponse />;
+      }
+
+      case ValidPrompts.Help: {
+        return <HelpResponse />;
       }
 
       case ValidPrompts.GoTo: {
@@ -290,7 +352,7 @@ export default function ShellLine({ line, setShellPrompt }: ShellLineProps) {
   })();
 
   return (
-    <div class="flex gap-3">
+    <div class="flex flex-col sm:flex-row gap-3">
       <div class="text-sm text-[#D5CFC3] leading-6">{line.timestamp}</div>
       <div class="grow flex flex-col gap-4">
         <div class="text-[#FFFFF2] italic break-word font-bold">
