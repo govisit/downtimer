@@ -20,6 +20,7 @@ export enum ValidPrompts {
   Download = "download",
   Help = "help",
   Clear = "clear",
+  Sofia = "sofia",
 }
 
 type PlainResponseProps = {
@@ -51,6 +52,14 @@ function HelloWorldResponse() {
   return (
     <PlainResponse className="text-green-500 font-bold">
       Hello, World!
+    </PlainResponse>
+  );
+}
+
+function SofiaResponse() {
+  return (
+    <PlainResponse className="text-green-500 font-bold">
+      Bok Sofia, voli te tata! ❤️
     </PlainResponse>
   );
 }
@@ -352,6 +361,10 @@ export default function ShellLine(
       case ValidPrompts.Clear: {
         clearLines();
         return;
+      }
+
+      case ValidPrompts.Sofia: {
+        return <SofiaResponse />;
       }
 
       default: {

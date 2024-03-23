@@ -43,6 +43,27 @@ export default function Shell({ lines }: ShellProps) {
   }
 
   useEffect(() => {
+    function handleClearKeybinding(event: KeyboardEvent) {
+      if (event.ctrlKey && event.key === "l") {
+        event.preventDefault();
+
+        console.log("hmm");
+
+        clearLines();
+      }
+    }
+
+    globalThis.document.addEventListener("keydown", handleClearKeybinding);
+
+    return () => {
+      globalThis.document.removeEventListener(
+        "keydown",
+        handleClearKeybinding,
+      );
+    };
+  }, []);
+
+  useEffect(() => {
     initialLoad.value = false;
   }, []);
 
