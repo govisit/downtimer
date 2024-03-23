@@ -71,6 +71,17 @@ export default function Shell({ lines }: ShellProps) {
     lines.value = [];
   }
 
+  const history = lines.value
+    .map((line) => line.prompt)
+    // Removes repeating items.
+    .filter(
+      function (elem, index, self) {
+        return elem !== self[index - 1];
+      },
+    )
+    // Sorts prompts from latest to oldest. The latest prompt is first.
+    .toReversed();
+
   return (
     <div class="flex flex-col justify-between h-full gap-8">
       <div
@@ -93,6 +104,7 @@ export default function Shell({ lines }: ShellProps) {
         ref={shellPromptRef}
         onReturn={addNewLine}
         prompt={prompt}
+        history={["", ...history]}
       />
     </div>
   );

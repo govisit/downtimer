@@ -14,12 +14,15 @@ type ShellPromptProps = {
   onReturn: (line: Line) => void;
   prompt: Signal<string>;
   scrollToBottom: () => void;
+  history: string[];
 };
 
 const promptValidationError = signal<string | undefined>(undefined);
 
+const historyIndex = signal<number>(0);
+
 const ShellPrompt = forwardRef<HTMLInputElement, ShellPromptProps>(
-  ({ onReturn, prompt, scrollToBottom }, ref) => {
+  ({ onReturn, prompt, scrollToBottom, history }, ref) => {
     return (
       <div class="flex flex-col gap-2">
         <div class="text-red-500 text-sm">
@@ -44,12 +47,40 @@ const ShellPrompt = forwardRef<HTMLInputElement, ShellPromptProps>(
             });
 
             prompt.value = "";
+            historyIndex.value = 0;
           }}
         >
           <label for="shell-prompt" class="text-[#DAD4C6]">~dtimer$</label>
           <input
             ref={ref}
             autofocus
+            onKeyDown={(event) => {
+              if (["ArrowUp", "ArrowDown"].includes(event.key)) {
+                event.preventDefault();
+              }
+
+              if (
+                event.key === "ArrowUp" && history.length &&
+                historyIndex.value < history.length - 1
+              ) {
+                historyIndex.value++;
+
+                prompt.value = history.at(historyIndex.value)!;
+
+                return;
+              }
+
+              if (
+                event.key === "ArrowDown" && history.length &&
+                historyIndex.value > 0
+              ) {
+                historyIndex.value--;
+
+                prompt.value = history.at(historyIndex.value)!;
+
+                return;
+              }
+            }}
             id="shell-prompt"
             value={prompt}
             onInput={(event) => {

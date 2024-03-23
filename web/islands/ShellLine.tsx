@@ -33,7 +33,7 @@ function PlainResponse(
 ) {
   return (
     <div
-      class={`bg-[#24242E] rounded-lg px-8 py-5 break-word font-normal text-[#FFFFF2] ${className}`}
+      class={`bg-[#24242E] rounded-lg px-8 py-5 break-all font-normal text-[#FFFFF2] ${className}`}
     >
       {children}
     </div>
@@ -377,7 +377,7 @@ export default function ShellLine(
     <div class="flex flex-col sm:flex-row gap-3">
       <div class="text-sm text-[#D5CFC3] leading-6">{line.timestamp}</div>
       <div class="grow flex flex-col gap-4">
-        <div class="text-[#FFFFF2] italic break-word font-bold">
+        <div class="text-[#FFFFF2] italic break-all font-bold">
           {line.prompt}
         </div>
         {response}
