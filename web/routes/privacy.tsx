@@ -7,25 +7,17 @@ import { Head } from "$fresh/runtime.ts";
 const lines = signal<Line[]>([
   {
     timestamp: getTimestamp(),
-    prompt: ValidPrompts.About,
-  },
-  {
-    timestamp: getTimestamp(),
-    prompt: ValidPrompts.Features,
-  },
-  {
-    timestamp: getTimestamp(),
-    prompt: ValidPrompts.Download,
+    prompt: ValidPrompts.Privacy,
   },
 ]);
 
-export default function Home() {
+export default function Privacy() {
   return (
     <>
       <Head>
-        <title>dtimer - When your phone or PC timer is not enough</title>
+        <title>dtimer - Privacy</title>
       </Head>
-      <h1 class="hidden">Home</h1>
+      <h1 class="hidden">Privacy</h1>
       <Shell lines={lines} />
     </>
   );

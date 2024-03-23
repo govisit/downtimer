@@ -6,8 +6,11 @@ import * as $_404 from "./routes/_404.tsx";
 import * as $_app from "./routes/_app.tsx";
 import * as $_layout from "./routes/_layout.tsx";
 import * as $about from "./routes/about.tsx";
+import * as $download from "./routes/download.tsx";
+import * as $features from "./routes/features.tsx";
 import * as $greet_name_ from "./routes/greet/[name].tsx";
 import * as $index from "./routes/index.tsx";
+import * as $privacy from "./routes/privacy.tsx";
 import * as $Shell from "./islands/Shell.tsx";
 import * as $ShellLine from "./islands/ShellLine.tsx";
 import * as $ShellPrompt from "./islands/ShellPrompt.tsx";
@@ -19,8 +22,11 @@ const manifest = {
     "./routes/_app.tsx": $_app,
     "./routes/_layout.tsx": $_layout,
     "./routes/about.tsx": $about,
+    "./routes/download.tsx": $download,
+    "./routes/features.tsx": $features,
     "./routes/greet/[name].tsx": $greet_name_,
     "./routes/index.tsx": $index,
+    "./routes/privacy.tsx": $privacy,
   },
   islands: {
     "./islands/Shell.tsx": $Shell,

@@ -19,14 +19,20 @@ export default function Shell({ lines }: ShellProps) {
     lines.value = [...lines.value, line];
   }
 
-  useEffect(() => {
-    if (linesRef.current && !initialLoad.value) {
+  function scrollToBottom() {
+    if (linesRef.current) {
       linesRef.current.scrollTo({
         behavior: "smooth",
         top: linesRef.current.scrollHeight,
       });
     }
-  }, [lines.value, linesRef]);
+  }
+
+  useEffect(() => {
+    if (!initialLoad.value) {
+      scrollToBottom();
+    }
+  }, [lines.value, linesRef.current]);
 
   function setShellPrompt(prompt0: string) {
     prompt.value = prompt0;
@@ -40,6 +46,10 @@ export default function Shell({ lines }: ShellProps) {
     initialLoad.value = false;
   }, []);
 
+  function clearLines() {
+    lines.value = [];
+  }
+
   return (
     <div class="flex flex-col justify-between h-full gap-8">
       <div
@@ -52,11 +62,17 @@ export default function Shell({ lines }: ShellProps) {
               key={index}
               line={line}
               setShellPrompt={setShellPrompt}
+              clearLines={clearLines}
             />
           );
         })}
       </div>
-      <ShellPrompt ref={shellPromptRef} onReturn={addNewLine} prompt={prompt} />
+      <ShellPrompt
+        scrollToBottom={scrollToBottom}
+        ref={shellPromptRef}
+        onReturn={addNewLine}
+        prompt={prompt}
+      />
     </div>
   );
 }

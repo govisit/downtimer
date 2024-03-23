@@ -8,6 +8,7 @@ export type Line = {
 type ShellLineProps = {
   line: Line;
   setShellPrompt: (prompt: string) => void;
+  clearLines: () => void;
 };
 
 export enum ValidPrompts {
@@ -18,6 +19,7 @@ export enum ValidPrompts {
   Privacy = "privacy",
   Download = "download",
   Help = "help",
+  Clear = "clear",
 }
 
 type PlainResponseProps = {
@@ -314,7 +316,9 @@ function GoToResponse() {
   );
 }
 
-export default function ShellLine({ line, setShellPrompt }: ShellLineProps) {
+export default function ShellLine(
+  { line, setShellPrompt, clearLines }: ShellLineProps,
+) {
   const response = (() => {
     switch (line.prompt) {
       case ValidPrompts.Hello: {
@@ -343,6 +347,11 @@ export default function ShellLine({ line, setShellPrompt }: ShellLineProps) {
 
       case ValidPrompts.Features: {
         return <FeaturesResponse />;
+      }
+
+      case ValidPrompts.Clear: {
+        clearLines();
+        return;
       }
 
       default: {
