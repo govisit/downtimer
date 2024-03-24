@@ -40,7 +40,7 @@ function PlainResponse(
 ) {
   return (
     <div
-      class={`bg-[#24242E] rounded-lg px-8 py-5 break-all font-normal text-[#FFFFF2] ${className}`}
+      class={`bg-gray-800 rounded-lg px-8 py-5 break-all font-normal text-gray-300 ${className}`}
     >
       {children}
     </div>
@@ -51,7 +51,7 @@ function ErrorResponse(
   { prompt, message }: { prompt: string; message?: string },
 ) {
   return (
-    <PlainResponse className="text-red-500 font-bold">
+    <PlainResponse className="text-red-400 font-bold">
       Error: {message || "command not found"}: {prompt}
     </PlainResponse>
   );
@@ -59,7 +59,7 @@ function ErrorResponse(
 
 function HelloWorldResponse({ name }: { name?: string }) {
   return (
-    <PlainResponse className="text-green-500 font-bold">
+    <PlainResponse className="text-green-400 font-bold">
       Hello, {name || "World"}!
     </PlainResponse>
   );
@@ -70,7 +70,7 @@ function EchoResponse(
 ) {
   return (
     <PlainResponse
-      className={`${error ? "text-red-500" : "text-green-500"} font-bold`}
+      className={`${error ? "text-red-400" : "text-green-400"} font-bold`}
     >
       {output.join(" ").replaceAll('"', "")}
     </PlainResponse>
@@ -79,7 +79,7 @@ function EchoResponse(
 
 function SofiaResponse() {
   return (
-    <PlainResponse className="text-green-500 font-bold">
+    <PlainResponse className="text-green-400 font-bold">
       Bok Sofia, voli te tata puno! ❤️
     </PlainResponse>
   );
@@ -94,20 +94,19 @@ function HelpResponse() {
         <li>
           about{" "}
           <SmallText>
-            it displays information about this application.
+            displays information about this application.
           </SmallText>
         </li>
         <li>
           download{" "}
           <SmallText>
-            it displays a list of download links.
+            displays a list of download links.
           </SmallText>
         </li>
         <li>
           echo &lt;output&gt;{" "}
           <SmallText>
-            it prints given output to the console. You can pipe the output to:
-            {" "}
+            prints given output to the console. You can pipe the output to:{" "}
             <code>/dev/null</code>, <code>/dev/stdout</code> or{" "}
             <code>/dev/stderr</code>.
           </SmallText>
@@ -115,33 +114,32 @@ function HelpResponse() {
         <li>
           features{" "}
           <SmallText>
-            it displays the features of this application.
+            displays the features of this application.
           </SmallText>
         </li>
         <li>
           goto [page]{" "}
           <SmallText>
-            it displays a list of links to which you can navigate to. You can
-            also pass the page name as the second parameter to navigate to that
-            page.
+            displays a list of links to which you can navigate to. You can also
+            pass the page name as the second parameter to navigate to that page.
           </SmallText>
         </li>
         <li>
           hello [name]{" "}
           <SmallText>
-            it displays a hello message.
+            displays a hello message.
           </SmallText>
         </li>
         <li>
           help{" "}
           <SmallText>
-            it displays this help text.
+            displays this help text.
           </SmallText>
         </li>
         <li>
           privacy{" "}
           <SmallText>
-            it displays a privacy notice.
+            displays a privacy notice.
           </SmallText>
         </li>
       </ul>
@@ -169,7 +167,7 @@ function AboutResponse({ setShellPrompt }: AboutResponseProps) {
         restrictions. You can download the binary if you type{" "}
         <button
           type="button"
-          class="bg-white py px-1 rounded text-black"
+          class="bg-gray-100 py px-1 rounded text-gray-900 hover:opacity-70"
           onClick={() => {
             if (setShellPrompt) {
               setShellPrompt(ValidPrompts.Download.toString());
@@ -200,7 +198,7 @@ function DownloadResponse() {
         Download the binary file for your operating system:
       </p>
       <br />
-      <ul class="list-disc list-inside">
+      <menu class="list-disc list-inside">
         <li>
           <a class="hover:opacity-70" href="/files/dt">Linux</a>
         </li>
@@ -210,14 +208,14 @@ function DownloadResponse() {
         <li>
           <a class="hover:opacity-70" href="/files/dt.dmg">Mac</a>
         </li>
-      </ul>
+      </menu>
     </PlainResponse>
   );
 }
 
 function ResponseTitle({ title }: { title: string }) {
   return (
-    <h2 class="text-lg text-violet-500">
+    <h2 class="text-gray-300">
       <b>{title}</b>
     </h2>
   );
@@ -267,7 +265,7 @@ function PrivacyResponse() {
 
 function SmallText({ children }: { children: ComponentChildren }) {
   return (
-    <span class="text-sm">
+    <span class="text-gray-400">
       - {children}
     </span>
   );
@@ -278,7 +276,7 @@ function FeaturesResponse() {
     <PlainResponse>
       <ResponseTitle title="Features" />
       <br />
-      <ul class="list-disc list-inside">
+      <menu class="list-disc list-inside">
         <li>
           Multiple timers{" "}
           <SmallText>
@@ -326,7 +324,7 @@ function FeaturesResponse() {
             computer battery dies. <b>No more lost time.</b>
           </SmallText>
         </li>
-      </ul>
+      </menu>
     </PlainResponse>
   );
 }
@@ -338,10 +336,9 @@ function GoToResponse({ setShellPrompt }: GoToResponseProps) {
     <PlainResponse>
       <p>
         Click on the link bellow or type{" "}
-        timer.latestLog, onPause, onResume, setTimer
         <button
           type="button"
-          class="bg-white py px-1 rounded text-black"
+          class="bg-gray-100 py px-1 rounded text-gray-900 hover:opacity-70"
           onClick={() => {
             if (setShellPrompt) {
               setShellPrompt("goto home");
@@ -353,7 +350,7 @@ function GoToResponse({ setShellPrompt }: GoToResponseProps) {
         in the shell prompt to navigate to that web page.
       </p>
       <br />
-      <ul class="list-disc list-inside">
+      <menu class="list-disc list-inside">
         <li>
           <a class="hover:opacity-70" href="/about">about</a>
         </li>
@@ -369,11 +366,12 @@ function GoToResponse({ setShellPrompt }: GoToResponseProps) {
         <li>
           <a class="hover:opacity-70" href="/privacy">privacy</a>
         </li>
-      </ul>
+      </menu>
       <br />
-      <p class="text-sm">
-        <span class="text-red-500">*</span>
-        Clicking on the links above will reset shell history.
+      <p class="text-gray-400">
+        <span class="text-red-400">*</span>
+        Clicking on the links above or using the <code>goto</code>{" "}
+        command will reset shell history.
       </p>
     </PlainResponse>
   );
@@ -509,9 +507,9 @@ export default function ShellLine(
 
   return (
     <div class="flex flex-col sm:flex-row gap-3">
-      <div class="text-sm text-[#D5CFC3] leading-6">{line.timestamp}</div>
+      <div class="text-sm pt-1 text-gray-400">{line.timestamp}</div>
       <div class="grow flex flex-col gap-4">
-        <div class="text-[#FFFFF2] italic break-all font-bold">
+        <div class="text-gray-200 italic break-all font-bold">
           {line.prompt}
         </div>
         {response}
