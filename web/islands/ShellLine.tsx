@@ -40,7 +40,7 @@ function PlainResponse(
 ) {
   return (
     <div
-      class={`bg-gray-800 rounded-lg px-8 py-5 break-all font-normal text-gray-300 ${className}`}
+      class={`bg-gray-200 dark:bg-gray-800 rounded-lg px-8 py-5 break-all font-normal text-gray-700 dark:text-gray-300 ${className}`}
     >
       {children}
     </div>
@@ -51,7 +51,7 @@ function ErrorResponse(
   { prompt, message }: { prompt: string; message?: string },
 ) {
   return (
-    <PlainResponse className="text-red-400 font-bold">
+    <PlainResponse className="text-red-600 dark:text-red-400 font-bold">
       Error: {message || "command not found"}: {prompt}
     </PlainResponse>
   );
@@ -59,7 +59,7 @@ function ErrorResponse(
 
 function HelloWorldResponse({ name }: { name?: string }) {
   return (
-    <PlainResponse className="text-green-400 font-bold">
+    <PlainResponse className="text-green-600 dark:text-green-400 font-bold">
       Hello, {name || "World"}!
     </PlainResponse>
   );
@@ -70,7 +70,11 @@ function EchoResponse(
 ) {
   return (
     <PlainResponse
-      className={`${error ? "text-red-400" : "text-green-400"} font-bold`}
+      className={`${
+        error
+          ? "text-red-600 dark:text-red-400"
+          : "text-green-600 dark:text-green-400"
+      } font-bold`}
     >
       {output.join(" ").replaceAll('"', "")}
     </PlainResponse>
@@ -79,7 +83,7 @@ function EchoResponse(
 
 function SofiaResponse() {
   return (
-    <PlainResponse className="text-green-400 font-bold">
+    <PlainResponse className="text-green-600 dark:text-green-400 font-bold">
       Bok Sofia, voli te tata puno! ❤️
     </PlainResponse>
   );
@@ -95,6 +99,13 @@ function HelpResponse() {
           about{" "}
           <SmallText>
             displays information about this application.
+          </SmallText>
+        </li>
+        <li>
+          clear{" "}
+          <SmallText>
+            clears the terminal, but history remains intact. Use keybinding
+            ctrl+l to trigger this command.
           </SmallText>
         </li>
         <li>
@@ -167,7 +178,7 @@ function AboutResponse({ setShellPrompt }: AboutResponseProps) {
         restrictions. You can download the binary if you type{" "}
         <button
           type="button"
-          class="bg-gray-100 py px-1 rounded text-gray-900 hover:opacity-70"
+          class="bg-gray-900 dark:bg-gray-100 py px-2 rounded text-gray-100 dark:text-gray-900 hover:opacity-70"
           onClick={() => {
             if (setShellPrompt) {
               setShellPrompt(ValidPrompts.Download.toString());
@@ -215,7 +226,7 @@ function DownloadResponse() {
 
 function ResponseTitle({ title }: { title: string }) {
   return (
-    <h2 class="text-gray-300">
+    <h2 class="text-gray-700 dark:text-gray-300">
       <b>{title}</b>
     </h2>
   );
@@ -265,7 +276,7 @@ function PrivacyResponse() {
 
 function SmallText({ children }: { children: ComponentChildren }) {
   return (
-    <span class="text-gray-400">
+    <span class="text-gray-600 dark:text-gray-400">
       - {children}
     </span>
   );
@@ -338,7 +349,7 @@ function GoToResponse({ setShellPrompt }: GoToResponseProps) {
         Click on the link bellow or type{" "}
         <button
           type="button"
-          class="bg-gray-100 py px-1 rounded text-gray-900 hover:opacity-70"
+          class="bg-gray-900 dark:bg-gray-100 py px-2 rounded text-gray-100 dark:text-gray-900 hover:opacity-70"
           onClick={() => {
             if (setShellPrompt) {
               setShellPrompt("goto home");
@@ -368,8 +379,8 @@ function GoToResponse({ setShellPrompt }: GoToResponseProps) {
         </li>
       </menu>
       <br />
-      <p class="text-gray-400">
-        <span class="text-red-400">*</span>
+      <p class="text-gray-600 dark:text-gray-400">
+        <span class="text-red-600 dark:text-red-400">*</span>
         Clicking on the links above or using the <code>goto</code>{" "}
         command will reset shell history.
       </p>
@@ -459,7 +470,7 @@ export default function ShellLine(
 
         const result = isValidCommand.exec(args);
 
-        if (!result) {
+        if (!result || !args.length) {
           return (
             <ErrorResponse
               prompt={line.prompt}
@@ -507,9 +518,11 @@ export default function ShellLine(
 
   return (
     <div class="flex flex-col sm:flex-row gap-3">
-      <div class="text-sm pt-1 text-gray-400">{line.timestamp}</div>
+      <div class="text-sm pt-1 text-gray-600 dark:text-gray-400">
+        {line.timestamp}
+      </div>
       <div class="grow flex flex-col gap-4">
-        <div class="text-gray-200 italic break-all font-bold">
+        <div class="text-gray-800 dark:text-gray-200 italic break-all font-bold">
           {line.prompt}
         </div>
         {response}

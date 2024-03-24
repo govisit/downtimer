@@ -25,11 +25,11 @@ const ShellPrompt = forwardRef<HTMLInputElement, ShellPromptProps>(
   ({ onReturn, prompt, scrollToBottom, history }, ref) => {
     return (
       <div class="flex flex-col gap-2">
-        <div class="text-red-400 text-sm">
+        <div class="text-red-600 dark:text-red-400 text-sm">
           {promptValidationError.value || <>&nbsp;</>}
         </div>
         <form
-          class="bg-gray-700 rounded-lg px-8 py-5 flex gap-3"
+          class="bg-gray-300 dark:bg-gray-700 rounded-lg px-8 py-5 flex gap-3"
           onSubmit={(e) => {
             e.preventDefault();
 
@@ -50,7 +50,9 @@ const ShellPrompt = forwardRef<HTMLInputElement, ShellPromptProps>(
             historyIndex.value = 0;
           }}
         >
-          <label for="shell-prompt" class="text-gray-300">~dtimer$</label>
+          <label for="shell-prompt" class="text-gray-700 dark:text-gray-300">
+            ~dtimer$
+          </label>
           <input
             ref={ref}
             autofocus
@@ -90,9 +92,13 @@ const ShellPrompt = forwardRef<HTMLInputElement, ShellPromptProps>(
             type="text"
             placeholder="type 'help' for more commands"
             autocomplete="off"
-            class="grow bg-transparent border-none p-0 focus:ring-0 text-gray-200"
+            class="grow bg-transparent border-none p-0 focus:ring-0 text-gray-800 dark:text-gray-200"
           />
-          <button type="submit" class="text-gray-300 px-2" title="Return">
+          <button
+            type="submit"
+            class="text-gray-700 dark:text-gray-300 px-2"
+            title="Return"
+          >
             <ReturnIcon />
           </button>
         </form>

@@ -9,7 +9,7 @@ export default function App({ Component }: PageProps) {
         <title>dtimer</title>
         <link rel="stylesheet" href="/styles.css" />
       </head>
-      <body class="bg-gray-900">
+      <body class="bg-gray-100 dark:bg-gray-900">
         <Component />
       </body>
     </html>
