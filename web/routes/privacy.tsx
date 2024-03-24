@@ -11,6 +11,13 @@ const lines = signal<Line[]>([
   },
 ]);
 
+const history = signal(
+  lines.value
+    .map((line) => line.prompt)
+    // Sorts prompts from latest to oldest. The latest prompt is first.
+    .toReversed(),
+);
+
 export default function Privacy() {
   return (
     <>
@@ -18,7 +25,7 @@ export default function Privacy() {
         <title>dtimer - Privacy</title>
       </Head>
       <h1 class="hidden">Privacy</h1>
-      <Shell lines={lines} />
+      <Shell lines={lines} history={history} />
     </>
   );
 }

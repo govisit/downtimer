@@ -21,12 +21,19 @@ export enum ValidPrompts {
   Help = "help",
   Clear = "clear",
   Sofia = "sofia",
+  Echo = "echo",
 }
 
 type PlainResponseProps = {
   children: ComponentChildren;
   className?: string;
 };
+
+enum EchoOutput {
+  DevNull = "/dev/null",
+  DevStdout = "/dev/stdout",
+  DevStderr = "/dev/stderr",
+}
 
 function PlainResponse(
   { children, className }: PlainResponseProps,
@@ -40,18 +47,32 @@ function PlainResponse(
   );
 }
 
-function ErrorResponse({ prompt }: { prompt: string }) {
+function ErrorResponse(
+  { prompt, message }: { prompt: string; message?: string },
+) {
   return (
     <PlainResponse className="text-red-500 font-bold">
-      Error: command not found: {prompt}
+      Error: {message || "command not found"}: {prompt}
     </PlainResponse>
   );
 }
 
-function HelloWorldResponse() {
+function HelloWorldResponse({ name }: { name?: string }) {
   return (
     <PlainResponse className="text-green-500 font-bold">
-      Hello, World!
+      Hello, {name || "World"}!
+    </PlainResponse>
+  );
+}
+
+function EchoResponse(
+  { output, error = false }: { output: string[]; error?: boolean },
+) {
+  return (
+    <PlainResponse
+      className={`${error ? "text-red-500" : "text-green-500"} font-bold`}
+    >
+      {output.join(" ").replaceAll('"', "")}
     </PlainResponse>
   );
 }
@@ -83,19 +104,30 @@ function HelpResponse() {
           </SmallText>
         </li>
         <li>
+          echo &lt;output&gt;{" "}
+          <SmallText>
+            it prints given output to the console. You can pipe the output to:
+            {" "}
+            <code>/dev/null</code>, <code>/dev/stdout</code> or{" "}
+            <code>/dev/stderr</code>.
+          </SmallText>
+        </li>
+        <li>
           features{" "}
           <SmallText>
             it displays the features of this application.
           </SmallText>
         </li>
         <li>
-          goto{" "}
+          goto [page]{" "}
           <SmallText>
-            it displays a list of links to which you can navigate to.
+            it displays a list of links to which you can navigate to. You can
+            also pass the page name as the second parameter to navigate to that
+            page.
           </SmallText>
         </li>
         <li>
-          hello{" "}
+          hello [name]{" "}
           <SmallText>
             it displays a hello message.
           </SmallText>
@@ -113,6 +145,11 @@ function HelpResponse() {
           </SmallText>
         </li>
       </ul>
+      <br />
+      <p>
+        Angle brackets (&lt;&gt;) mean that the argument is required, and square
+        brackets ([]) mean that the argument is optional.
+      </p>
     </PlainResponse>
   );
 }
@@ -294,26 +331,43 @@ function FeaturesResponse() {
   );
 }
 
-function GoToResponse() {
+type GoToResponseProps = AboutResponseProps;
+
+function GoToResponse({ setShellPrompt }: GoToResponseProps) {
   return (
     <PlainResponse>
-      <p>Click on the link bellow to navigate to that web page.</p>
+      <p>
+        Click on the link bellow or type{" "}
+        timer.latestLog, onPause, onResume, setTimer
+        <button
+          type="button"
+          class="bg-white py px-1 rounded text-black"
+          onClick={() => {
+            if (setShellPrompt) {
+              setShellPrompt("goto home");
+            }
+          }}
+        >
+          goto &lt;page&gt;
+        </button>{" "}
+        in the shell prompt to navigate to that web page.
+      </p>
       <br />
       <ul class="list-disc list-inside">
         <li>
-          <a class="hover:opacity-70" href="/about">About</a>
+          <a class="hover:opacity-70" href="/about">about</a>
         </li>
         <li>
-          <a class="hover:opacity-70" href="/download">Download</a>
+          <a class="hover:opacity-70" href="/download">download</a>
         </li>
         <li>
-          <a class="hover:opacity-70" href="/features">Features</a>
+          <a class="hover:opacity-70" href="/features">features</a>
         </li>
         <li>
-          <a class="hover:opacity-70" href="/">Home</a>
+          <a class="hover:opacity-70" href="/">home</a>
         </li>
         <li>
-          <a class="hover:opacity-70" href="/privacy">Privacy</a>
+          <a class="hover:opacity-70" href="/privacy">privacy</a>
         </li>
       </ul>
       <br />
@@ -329,9 +383,13 @@ export default function ShellLine(
   { line, setShellPrompt, clearLines }: ShellLineProps,
 ) {
   const response = (() => {
-    switch (line.prompt) {
+    const [command, ...other] = line.prompt.split(" ");
+
+    switch (command) {
       case ValidPrompts.Hello: {
-        return <HelloWorldResponse />;
+        const [name] = other;
+
+        return <HelloWorldResponse name={name} />;
       }
 
       case ValidPrompts.Help: {
@@ -339,7 +397,34 @@ export default function ShellLine(
       }
 
       case ValidPrompts.GoTo: {
-        return <GoToResponse />;
+        const [page] = other;
+
+        if (page) {
+          switch (page) {
+            case "about": {
+              globalThis.window.location.href = "/about";
+              return;
+            }
+            case "download": {
+              globalThis.window.location.href = "/download";
+              return;
+            }
+            case "features": {
+              globalThis.window.location.href = "/features";
+              return;
+            }
+            case "home": {
+              globalThis.window.location.href = "/";
+              return;
+            }
+            case "privacy": {
+              globalThis.window.location.href = "/privacy";
+              return;
+            }
+          }
+        }
+
+        return <GoToResponse setShellPrompt={setShellPrompt} />;
       }
 
       case ValidPrompts.About: {
@@ -365,6 +450,55 @@ export default function ShellLine(
 
       case ValidPrompts.Sofia: {
         return <SofiaResponse />;
+      }
+
+      case ValidPrompts.Echo: {
+        const isValidCommand = new RegExp(
+          /(^((".*"){1}|(\S*){1})(( > ){1}(\S+){1})?$)/,
+        );
+
+        const args = other.join(" ").trim();
+
+        const result = isValidCommand.exec(args);
+
+        if (!result) {
+          return (
+            <ErrorResponse
+              prompt={line.prompt}
+              message="invalid syntax"
+            />
+          );
+        }
+
+        const output = result.at(7)!;
+
+        if (!output) {
+          return <EchoResponse output={other} />;
+        }
+
+        switch (output) {
+          case EchoOutput.DevNull: {
+            return;
+          }
+          case EchoOutput.DevStderr: {
+            const withoutRedirect = other.slice(0, -2);
+
+            return <EchoResponse output={withoutRedirect} error />;
+          }
+          case EchoOutput.DevStdout: {
+            const withoutRedirect = other.slice(0, -2);
+
+            return <EchoResponse output={withoutRedirect} />;
+          }
+          default: {
+            return (
+              <ErrorResponse
+                prompt={line.prompt}
+                message="output not supported. Use one of the following: /dev/null, /dev/stdout, /dev/stderr."
+              />
+            );
+          }
+        }
       }
 
       default: {
