@@ -46,7 +46,7 @@ export const getPreferredTheme = (): Theme => {
 
 export const setTheme = (theme: Theme) => {
   if (
-    theme === Theme.Dark &&
+    theme === Theme.Auto &&
     globalThis.window.matchMedia("(prefers-color-scheme: dark)").matches
   ) {
     globalThis.document.documentElement.setAttribute(
