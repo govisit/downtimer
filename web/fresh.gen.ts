@@ -13,6 +13,7 @@ import * as $privacy from "./routes/privacy.tsx";
 import * as $Shell from "./islands/Shell.tsx";
 import * as $ShellLine from "./islands/ShellLine.tsx";
 import * as $ShellPrompt from "./islands/ShellPrompt.tsx";
+import * as $ThemeSwitcher from "./islands/ThemeSwitcher.tsx";
 import { type Manifest } from "$fresh/server.ts";
 
 const manifest = {
@@ -30,6 +31,7 @@ const manifest = {
     "./islands/Shell.tsx": $Shell,
     "./islands/ShellLine.tsx": $ShellLine,
     "./islands/ShellPrompt.tsx": $ShellPrompt,
+    "./islands/ThemeSwitcher.tsx": $ThemeSwitcher,
   },
   baseUrl: import.meta.url,
 } satisfies Manifest;

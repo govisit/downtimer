@@ -6,5 +6,5 @@ export default {
     "{routes,islands,components}/**/*.{ts,tsx}",
   ],
   plugins: [tailwindCssForms],
-  darkMode: "class",
+  darkMode: "selector",
 } satisfies Config;
