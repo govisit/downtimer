@@ -23,7 +23,7 @@ export default function Header() {
         <NavLink href="/privacy" title="Privacy" />
       </nav>
       <div class="font-bold lg:w-1/3 flex items-center lg:justify-center gap-2">
-        <Logo /> dtimer
+        <Logo /> DownTimer
       </div>
       <div class="hidden lg:block lg:w-1/3 text-right">
         <ThemeSwitcher />

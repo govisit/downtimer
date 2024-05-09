@@ -13,7 +13,7 @@ export default function App({ Component }: PageProps) {
           name="description"
           content="When your phone or PC timer is not enough."
         />
-        <title>dtimer</title>
+        <title>DownTimer</title>
         <link rel="stylesheet" href="/styles.css" />
         <script type="text/javascript" src="/init.js" />
         <link rel="icon" href="favicon.svg" />

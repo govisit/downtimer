@@ -11,7 +11,7 @@ import { getTimers, insertTimer } from "./db/timers.ts";
 import { newLog } from "./logs.ts";
 import { getTopic } from "./db/topics.ts";
 import { capitalize } from "./utils.ts";
-import { colors } from "$cliffy/ansi/colors.ts";
+import { colors } from "@cliffy/ansi";
 import { getTemplate } from "./db/templates.ts";
 
 export function newTimer(

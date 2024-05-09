@@ -1,5 +1,5 @@
-import dir from "$deno_dirs";
-import { join } from "$std/path/mod.ts";
+import { join } from "@std/path";
+import { dir, DirectoryTypes } from "@cross/dir";
 
 export enum DatabasePurpose {
   Testing = "testing",
@@ -7,9 +7,9 @@ export enum DatabasePurpose {
 }
 
 async function getNormalDataDir(): Promise<string | undefined> {
-  const homeDir = dir("home");
+  const homeDir = await dir(DirectoryTypes.home);
 
-  const dataDir = homeDir ? join(homeDir, ".dtimer") : undefined;
+  const dataDir = homeDir ? join(homeDir, ".dt") : undefined;
 
   if (dataDir) {
     await Deno.mkdir(dataDir, { recursive: true });
@@ -44,7 +44,7 @@ function getDbName(
     case DatabasePurpose.Testing:
       return "test.db";
     case DatabasePurpose.Normal:
-      return "dtimer.db";
+      return "dt.db";
     default: {
       const _exhaustiveCheck: never = purpose;
       return _exhaustiveCheck;

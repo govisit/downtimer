@@ -1,4 +1,4 @@
-import { assertEquals } from "$std/assert/mod.ts";
+import { assertEquals } from "@std/assert";
 import { getPrettyDuration, parseDuration } from "./utils.ts";
 
 Deno.test("duration should be pretty automatically", () => {

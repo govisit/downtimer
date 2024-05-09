@@ -1,4 +1,4 @@
-# DTimer
+# DownTimer
 
 When your phone or PC is not enough.
 

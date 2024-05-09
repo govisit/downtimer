@@ -7,7 +7,7 @@ import {
 } from "../../timers.ts";
 import { TimerStatus, TimerWithLogs } from "../../../shared/types.ts";
 import BigText from "ink-big-text";
-import { keypress, KeyPressEvent } from "$cliffy/keypress/mod.ts";
+import { keypress, KeyPressEvent } from "@cliffy/keypress";
 
 import React, { useCallback, useEffect, useState } from "react";
 import { Box, useApp } from "ink";

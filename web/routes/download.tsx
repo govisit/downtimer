@@ -22,7 +22,7 @@ export default function Download() {
   return (
     <>
       <Head>
-        <title>dtimer - Download</title>
+        <title>DownTimer - Download</title>
       </Head>
       <h1 class="hidden">Download</h1>
       <Shell lines={lines} history={history} />

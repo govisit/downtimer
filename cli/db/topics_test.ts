@@ -1,4 +1,4 @@
-import { assertEquals, assertExists, assertRejects } from "$std/assert/mod.ts";
+import { assertEquals, assertExists, assertRejects } from "@std/assert";
 import { DatabasePurpose } from "../db.ts";
 import { databaseCleanup, getDatabaseConnection } from "../db.ts";
 import { createTemplate } from "../templates.ts";

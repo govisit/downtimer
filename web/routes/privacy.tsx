@@ -22,7 +22,7 @@ export default function Privacy() {
   return (
     <>
       <Head>
-        <title>dtimer - Privacy</title>
+        <title>DownTimer - Privacy</title>
       </Head>
       <h1 class="hidden">Privacy</h1>
       <Shell lines={lines} history={history} />

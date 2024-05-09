@@ -1,9 +1,9 @@
-import { Command } from "$cliffy/command/mod.ts";
-import { Table } from "$cliffy/table/table.ts";
+import { Command } from "@cliffy/command";
+import { Table } from "@cliffy/table";
 import { getDatabaseConnection } from "../../db.ts";
 import { getTopics } from "../../db/topics.ts";
 import { getPrettyDate } from "../../utils.ts";
-import { colors } from "$cliffy/ansi/colors.ts";
+import { colors } from "@cliffy/ansi";
 
 export const command = new Command()
   .description("Lists all topics.")

@@ -1,10 +1,10 @@
-import { Command } from "$cliffy/command/mod.ts";
-import { Table } from "$cliffy/table/table.ts";
+import { Command } from "@cliffy/command";
+import { Table } from "@cliffy/table";
 import { getDatabaseConnection } from "../../db.ts";
 import { getTemplates } from "../../db/templates.ts";
 import { getTopic } from "../../db/topics.ts";
 import { getPrettyDate, getPrettyDuration } from "../../utils.ts";
-import { colors } from "$cliffy/ansi/colors.ts";
+import { colors } from "@cliffy/ansi";
 
 export const command = new Command()
   .description("Lists all templates.")

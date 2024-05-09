@@ -1,5 +1,5 @@
-import { Command } from "$cliffy/command/mod.ts";
-import { Table } from "$cliffy/table/table.ts";
+import { Command } from "@cliffy/command";
+import { Table } from "@cliffy/table";
 import { getDatabaseConnection } from "../../db.ts";
 import { getTopic } from "../../db/topics.ts";
 import {
@@ -9,7 +9,7 @@ import {
   getRemainingTime,
 } from "../../timers.ts";
 import { getPrettyDate, getPrettyDuration } from "../../utils.ts";
-import { colors } from "$cliffy/ansi/colors.ts";
+import { colors } from "@cliffy/ansi";
 import { getRemainingTimeText } from "../../timers.ts";
 import { formatStatus } from "../../timers.ts";
 import { getTemplate } from "../../db/templates.ts";

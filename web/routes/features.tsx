@@ -22,7 +22,7 @@ export default function Features() {
   return (
     <>
       <Head>
-        <title>dtimer - Features</title>
+        <title>DownTimer - Features</title>
       </Head>
       <h1 class="hidden">Features</h1>
       <Shell lines={lines} history={history} />

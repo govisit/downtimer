@@ -1,4 +1,4 @@
-import { slug } from "slug";
+import { Slugify as slugify } from "@officialrajdeepsingh/slugify";
 import { Topic } from "../shared/types.ts";
 import { generateId } from "./utils.ts";
 import { insertTopic } from "./db/topics.ts";
@@ -7,7 +7,7 @@ export function newTopic(name: string, createdAt?: number): Topic {
   return {
     id: generateId(),
     name: name,
-    slug: slug(name),
+    slug: slugify(name),
     createdAt: createdAt || Date.now(),
   };
 }

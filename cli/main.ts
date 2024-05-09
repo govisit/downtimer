@@ -1,10 +1,10 @@
-import { Command } from "$cliffy/command/mod.ts";
+import { Command } from "@cliffy/command";
 import { command as topicCommand } from "./commands/topics/index.ts";
 import { command as templateCommand } from "./commands/templates/index.ts";
 import { command as timerCommand } from "./commands/timers/index.ts";
 
 const main = new Command()
-  .name("dtimer")
+  .name("DownTimer")
   .version("0.1.0")
   .description("When your phone or PC timer is not enough.")
   .action(() => {

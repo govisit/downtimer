@@ -3,7 +3,7 @@ import {
   assertExists,
   assertRejects,
   assertThrows,
-} from "$std/assert/mod.ts";
+} from "@std/assert";
 import {
   databaseCleanup,
   DatabasePurpose,

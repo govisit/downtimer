@@ -1,11 +1,11 @@
-import { Command, EnumType } from "$cliffy/command/mod.ts";
-import { colors } from "$cliffy/ansi/colors.ts";
+import { Command, EnumType } from "@cliffy/command";
+import { colors } from "@cliffy/ansi";
 import { getDatabaseConnection } from "../../db.ts";
 import { getTimer } from "../../db/timers.ts";
 import React from "react";
 import { render } from "ink";
 import { Countdown, Font } from "./countdown.tsx";
-import { Table } from "$cliffy/table/table.ts";
+import { Table } from "@cliffy/table";
 import {
   completedTimerStatuses,
   cron,

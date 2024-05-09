@@ -30,7 +30,7 @@ export default function Home() {
   return (
     <>
       <Head>
-        <title>dtimer - When your phone or PC timer is not enough</title>
+        <title>DownTimer - When your phone or PC timer is not enough</title>
       </Head>
       <h1 class="hidden">Home</h1>
       <Shell lines={lines} history={history} />

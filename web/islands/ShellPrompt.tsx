@@ -51,7 +51,7 @@ const ShellPrompt = forwardRef<HTMLInputElement, ShellPromptProps>(
           }}
         >
           <label for="shell-prompt" class="text-gray-700 dark:text-gray-300">
-            ~dtimer$
+            ~dt$
           </label>
           <input
             ref={ref}

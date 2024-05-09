@@ -1,5 +1,5 @@
-import { Command } from "$cliffy/command/mod.ts";
-import { colors } from "$cliffy/ansi/colors.ts";
+import { Command } from "@cliffy/command";
+import { colors } from "@cliffy/ansi";
 import { getDatabaseConnection } from "../../db.ts";
 import { createTopic } from "../../topics.ts";
 

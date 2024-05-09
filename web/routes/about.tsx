@@ -22,7 +22,7 @@ export default function About() {
   return (
     <>
       <Head>
-        <title>dtimer - About</title>
+        <title>DownTimer - About</title>
       </Head>
       <h1 class="hidden">About</h1>
       <Shell lines={lines} history={history} />

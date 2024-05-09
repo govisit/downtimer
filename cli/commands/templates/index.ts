@@ -1,4 +1,4 @@
-import { Command } from "$cliffy/command/mod.ts";
+import { Command } from "@cliffy/command";
 import { command as createTemplateCommand } from "./create.ts";
 import { command as deleteTemplateCommand } from "./delete.ts";
 import { command as listTemplateCommand } from "./list.ts";

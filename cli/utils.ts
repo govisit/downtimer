@@ -1,4 +1,4 @@
-import { ulid } from "$std/ulid/mod.ts";
+import { ulid } from "@std/ulid";
 
 export function ringBell(): void {
   // Deno.stdout.write('\u0007');

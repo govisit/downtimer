@@ -1,4 +1,4 @@
-import { Command } from "$cliffy/command/mod.ts";
+import { Command } from "@cliffy/command";
 import { command as startTimerCommand } from "./start.ts";
 import { command as startTimerFromTemplateCommand } from "./startFromTemplate.ts";
 import { command as deleteTimerCommand } from "./delete.ts";
