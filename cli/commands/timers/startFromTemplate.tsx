@@ -3,7 +3,7 @@ import { Select } from "@cliffy/prompt";
 import { colors } from "@cliffy/ansi";
 import { getDatabaseConnection } from "../../db.ts";
 import { getTemplate, getTemplates } from "../../db/templates.ts";
-import { getTopicBySlug } from "../../db/topics.ts";
+import { getTopic, getTopicBySlug } from "../../db/topics.ts";
 import React from "react";
 import {
   completedTimerStatuses,
@@ -17,6 +17,55 @@ import { parseDuration } from "../../utils.ts";
 import { render } from "ink";
 import { countdownOnPause, countdownOnResume, font } from "./show.tsx";
 import { Countdown } from "./countdown.tsx";
+import { Template, Topic } from "../../../shared/types.ts";
+
+async function getTopicIfAny(
+  kv: Deno.Kv,
+  template: Template,
+): Promise<Topic | null> {
+  if (!template.topicId) {
+    return null;
+  }
+
+  const topic = await getTopic(kv, template.topicId);
+
+  if (!topic) {
+    throw new Error(
+      `Topic '${template.topicId}' not found for template '${template.id}'`,
+    );
+  }
+
+  return topic.value;
+}
+
+async function getTemplateId(
+  kv: Deno.Kv,
+  templateId0: string | undefined,
+): Promise<string> {
+  if (typeof templateId0 === "string") {
+    return templateId0;
+  }
+
+  const templates = await getTemplates(kv);
+
+  const options = await Promise.all(templates.map(async (template) => {
+    const topic = await getTopicIfAny(kv, template);
+
+    const topicName = topic ? `#${topic.slug}` : "";
+
+    return {
+      name: `${template.name} ${topicName}`,
+      value: template.id,
+    };
+  }));
+
+  const result = await Select.prompt<string>({
+    message: "Choose a template",
+    options: options,
+  });
+
+  return result;
+}
 
 export const command = new Command()
   .type("font", font)
@@ -47,26 +96,7 @@ export const command = new Command()
   .action(async (options, templateId0) => {
     const kv = await getDatabaseConnection();
 
-    const templateId = await (async () => {
-      if (typeof templateId0 === "undefined") {
-        // TODO: Implement Ink UI for picking a template.
-        // `dt timer start:template -c --countdown --font "name"`
-
-        const templates = await getTemplates(kv);
-
-        const result = await Select.prompt<string>({
-          message: "Choose a template",
-          options: templates.map((template) => ({
-            name: template.name,
-            value: template.id,
-          })),
-        });
-
-        return result;
-      }
-
-      return templateId0;
-    })();
+    const templateId = await getTemplateId(kv, templateId0);
 
     const template = await getTemplate(kv, templateId);
 
