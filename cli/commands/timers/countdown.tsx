@@ -1,9 +1,9 @@
 import {
-  activeStatuses,
   formatStatus,
   getRemainingTime,
   getRemainingTimeText,
   hasTimeExpired,
+  runningStatuses,
 } from "../../timers.ts";
 import { TimerStatus, TimerWithLogs } from "../../../shared/types.ts";
 import BigText from "ink-big-text";
@@ -45,7 +45,7 @@ export const Countdown = (
   const { exit } = useApp();
 
   useEffect(() => {
-    if (!activeStatuses.includes(timer.latestLog.timerStatus)) {
+    if (!runningStatuses.includes(timer.latestLog.timerStatus)) {
       return () => {
       };
     }
@@ -76,7 +76,7 @@ export const Countdown = (
     }
 
     if (event.key === "space") {
-      if (activeStatuses.includes(timer.latestLog.timerStatus)) {
+      if (runningStatuses.includes(timer.latestLog.timerStatus)) {
         const freshTimer = await onPause();
         setTimer(freshTimer);
       }

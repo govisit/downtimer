@@ -341,9 +341,15 @@ export function hasTimeExpired(remainingTime: number): boolean {
   return remainingTime === 0;
 }
 
+export const runningStatuses = [
+  TimerStatus.Resumed,
+  TimerStatus.Started,
+];
+
 export const activeStatuses = [
   TimerStatus.Resumed,
   TimerStatus.Started,
+  TimerStatus.Paused,
 ];
 
 export async function getAllTimers(kv: Deno.Kv): Promise<TimerWithLogs[]> {
@@ -354,18 +360,26 @@ export async function getAllTimers(kv: Deno.Kv): Promise<TimerWithLogs[]> {
   ));
 }
 
+export async function getRunningTimers(kv: Deno.Kv): Promise<TimerWithLogs[]> {
+  return (await getAllTimers(kv)).filter((timer) => {
+    return runningStatuses.includes(timer.latestLog.timerStatus);
+  });
+}
+
 export async function getActiveTimers(kv: Deno.Kv): Promise<TimerWithLogs[]> {
   return (await getAllTimers(kv)).filter((timer) => {
-    return activeStatuses.includes(timer.latestLog.timerStatus);
+    return activeStatuses.includes(
+      timer.latestLog.timerStatus,
+    );
   });
 }
 
 export async function cron(kv: Deno.Kv) {
   const now = Date.now();
 
-  const activeTimers = await getActiveTimers(kv);
+  const runningTimers = await getRunningTimers(kv);
 
-  for (const timer of activeTimers) {
+  for (const timer of runningTimers) {
     const elapsedTime = getElapsedTime(now, timer, timer.logs);
     const remainingTime = getRemainingTime(timer, elapsedTime);
 
