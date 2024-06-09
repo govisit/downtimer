@@ -16,8 +16,35 @@ import {
 } from "../../timers.ts";
 import { pauseTimer } from "../../timers.ts";
 import { getPrettyDate } from "../../utils.ts";
+import { TimerWithLogs } from "../../../shared/types.ts";
 
-const font = new EnumType(Font);
+export async function countdownOnPause(
+  kv: Deno.Kv,
+  timerWithLogs: TimerWithLogs,
+) {
+  await pauseTimer(kv, timerWithLogs);
+
+  const freshTimer = await getTimer(kv, timerWithLogs.id);
+
+  const freshTimerWithLogs = await withLogs(kv, freshTimer.value!);
+
+  return freshTimerWithLogs;
+}
+
+export async function countdownOnResume(
+  kv: Deno.Kv,
+  timerWithLogs: TimerWithLogs,
+) {
+  await resumeTimer(kv, timerWithLogs);
+
+  const freshTimer = await getTimer(kv, timerWithLogs.id);
+
+  const freshTimerWithLogs = await withLogs(kv, freshTimer.value!);
+
+  return freshTimerWithLogs;
+}
+
+export const font = new EnumType(Font);
 
 export const command = new Command()
   .type("font", font)
@@ -61,24 +88,8 @@ export const command = new Command()
         <Countdown
           font={options.font}
           timer={timerWithLogs}
-          onPause={async () => {
-            await pauseTimer(kv, timerWithLogs);
-
-            const freshTimer = await getTimer(kv, id);
-
-            const freshTimerWithLogs = await withLogs(kv, freshTimer.value!);
-
-            return freshTimerWithLogs;
-          }}
-          onResume={async () => {
-            await resumeTimer(kv, timerWithLogs);
-
-            const freshTimer = await getTimer(kv, id);
-
-            const freshTimerWithLogs = await withLogs(kv, freshTimer.value!);
-
-            return freshTimerWithLogs;
-          }}
+          onPause={async () => await countdownOnPause(kv, timerWithLogs)}
+          onResume={async () => await countdownOnResume(kv, timerWithLogs)}
         />,
       );
     } else {

@@ -1,18 +1,26 @@
 import { Command } from "@cliffy/command";
+import { Select } from "@cliffy/prompt";
 import { colors } from "@cliffy/ansi";
 import { getDatabaseConnection } from "../../db.ts";
-import { getTemplate } from "../../db/templates.ts";
+import { getTemplate, getTemplates } from "../../db/templates.ts";
 import { getTopicBySlug } from "../../db/topics.ts";
+import React from "react";
 import {
+  completedTimerStatuses,
   getTemplateOverrides,
   newTimerFromTemplate,
   Overrides,
   startTimer,
+  withLogs,
 } from "../../timers.ts";
 import { parseDuration } from "../../utils.ts";
+import { render } from "ink";
+import { countdownOnPause, countdownOnResume, font } from "./show.tsx";
+import { Countdown } from "./countdown.tsx";
 
 export const command = new Command()
-  .arguments("<templateId:string>")
+  .type("font", font)
+  .arguments("[templateId:string]")
   .option("-n, --name <name:string>", "Override the name of the timer.")
   .option(
     "-d, --duration <duration:string>",
@@ -22,11 +30,43 @@ export const command = new Command()
     "-t, --topic <topic:string>",
     "Override the topic to which the timer belongs.",
   )
+  .option(
+    "--font <font:font>",
+    "Font for countdown feature. Possible values",
+    {
+      required: false,
+    },
+  )
+  .option(
+    "-c, --countdown",
+    "Eye candy and real time monitoring.",
+  )
   .description(
     "Starts a new timer using a template. You can override template values.",
   )
-  .action(async (options, templateId) => {
+  .action(async (options, templateId0) => {
     const kv = await getDatabaseConnection();
+
+    const templateId = await (async () => {
+      if (typeof templateId0 === "undefined") {
+        // TODO: Implement Ink UI for picking a template.
+        // `dt timer start:template -c --countdown --font "name"`
+
+        const templates = await getTemplates(kv);
+
+        const result = await Select.prompt<string>({
+          message: "Choose a template",
+          options: templates.map((template) => ({
+            name: template.name,
+            value: template.id,
+          })),
+        });
+
+        return result;
+      }
+
+      return templateId0;
+    })();
 
     const template = await getTemplate(kv, templateId);
 
@@ -74,5 +114,21 @@ export const command = new Command()
 
     await startTimer(kv, timer);
 
-    console.log(colors.green(`Timer "${timer.id}" started.`));
+    const timerWithLogs = await withLogs(kv, timer);
+
+    if (
+      options.countdown &&
+      !completedTimerStatuses.includes(timerWithLogs.latestLog.timerStatus)
+    ) {
+      render(
+        <Countdown
+          font={options.font}
+          timer={timerWithLogs}
+          onPause={async () => await countdownOnPause(kv, timerWithLogs)}
+          onResume={async () => await countdownOnResume(kv, timerWithLogs)}
+        />,
+      );
+    } else {
+      console.log(colors.green(`Timer "${timer.id}" started.`));
+    }
   });

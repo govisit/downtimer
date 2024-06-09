@@ -1,6 +1,6 @@
 import { Command } from "@cliffy/command";
 import { command as startTimerCommand } from "./start.ts";
-import { command as startTimerFromTemplateCommand } from "./startFromTemplate.ts";
+import { command as startTimerFromTemplateCommand } from "./startFromTemplate.tsx";
 import { command as deleteTimerCommand } from "./delete.ts";
 import { command as listTimerCommand } from "./list.ts";
 import { command as pauseTimerCommand } from "./pause.ts";
