@@ -1,5 +1,5 @@
 import { Command, EnumType } from "@cliffy/command";
-import { colors } from "@cliffy/ansi";
+import { colors } from "@cliffy/ansi/colors";
 import { getDatabaseConnection } from "../../db.ts";
 import { getTimer } from "../../db/timers.ts";
 import React from "react";

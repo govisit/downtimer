@@ -1,6 +1,6 @@
 import { Command } from "@cliffy/command";
 import { Select } from "@cliffy/prompt";
-import { colors } from "@cliffy/ansi";
+import { colors } from "@cliffy/ansi/colors";
 import { getDatabaseConnection } from "../../db.ts";
 import { getTemplate, getTemplates } from "../../db/templates.ts";
 import { getTopic, getTopicBySlug } from "../../db/topics.ts";

@@ -1,5 +1,5 @@
 import { Command } from "@cliffy/command";
-import { colors } from "@cliffy/ansi";
+import { colors } from "@cliffy/ansi/colors";
 import { getDatabaseConnection } from "../../db.ts";
 import { getTopicBySlug } from "../../db/topics.ts";
 import { newTimer, startTimer } from "../../timers.ts";

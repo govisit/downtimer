@@ -4,7 +4,7 @@ import { getDatabaseConnection } from "../../db.ts";
 import { getTemplates } from "../../db/templates.ts";
 import { getTopic } from "../../db/topics.ts";
 import { getPrettyDate, getPrettyDuration } from "../../utils.ts";
-import { colors } from "@cliffy/ansi";
+import { colors } from "@cliffy/ansi/colors";
 
 export const command = new Command()
   .description("Lists all templates.")

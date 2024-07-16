@@ -3,7 +3,7 @@ import { Table } from "@cliffy/table";
 import { getDatabaseConnection } from "../../db.ts";
 import { getTopics } from "../../db/topics.ts";
 import { getPrettyDate } from "../../utils.ts";
-import { colors } from "@cliffy/ansi";
+import { colors } from "@cliffy/ansi/colors";
 
 export const command = new Command()
   .description("Lists all topics.")

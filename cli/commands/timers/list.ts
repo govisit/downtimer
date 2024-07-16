@@ -9,7 +9,7 @@ import {
   getRemainingTime,
 } from "../../timers.ts";
 import { getPrettyDate, getPrettyDuration } from "../../utils.ts";
-import { colors } from "@cliffy/ansi";
+import { colors } from "@cliffy/ansi/colors";
 import { getRemainingTimeText } from "../../timers.ts";
 import { formatStatus } from "../../timers.ts";
 import { getTemplate } from "../../db/templates.ts";
