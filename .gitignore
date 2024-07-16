@@ -13,3 +13,5 @@ node_modules/
 test.db*
 
 coverage/
+
+cli/cli
