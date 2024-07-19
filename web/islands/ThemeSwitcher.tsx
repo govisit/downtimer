@@ -11,7 +11,7 @@ enum Theme {
 }
 
 const getStoredTheme = (): Theme | null => {
-  const theme = globalThis.localStorage.getItem("theme");
+  const theme = globalThis?.localStorage?.getItem("theme") || null;
 
   if (theme === null) {
     return null;
