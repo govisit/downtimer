@@ -11,7 +11,7 @@ enum Theme {
 }
 
 const getStoredTheme = (): Theme | null => {
-  const theme = globalThis?.localStorage?.getItem("theme") || null;
+  const theme = globalThis.localStorage.getItem("theme");
 
   if (theme === null) {
     return null;
@@ -74,7 +74,11 @@ function ThemeIcon({ theme }: { theme: Theme }) {
 }
 
 export default function ThemeSwitcher() {
-  const currentTheme = signal(getPreferredTheme());
+  const currentTheme = signal(Theme.Auto);
+
+  useEffect(() => {
+    currentTheme.value = getPreferredTheme();
+  }, []);
 
   useEffect(() => {
     function handleChange() {
