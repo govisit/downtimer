@@ -1,4 +1,4 @@
-import { Topic } from "../../shared/types.ts";
+import { Topic } from "../types.ts";
 import { getTimersByTopic } from "./timers.ts";
 import { getTemplatesByTopic } from "./templates.ts";
 

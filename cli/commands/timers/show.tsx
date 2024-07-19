@@ -16,7 +16,7 @@ import {
 } from "../../timers.ts";
 import { pauseTimer } from "../../timers.ts";
 import { getPrettyDate } from "../../utils.ts";
-import { TimerWithLogs } from "../../../shared/types.ts";
+import { TimerWithLogs } from "../../types.ts";
 
 export async function countdownOnPause(
   kv: Deno.Kv,

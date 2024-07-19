@@ -1,4 +1,4 @@
-import { Template, Timer } from "../shared/types.ts";
+import { Template, Timer } from "./types.ts";
 import { generateId } from "./utils.ts";
 import { Overrides } from "./timers.ts";
 import { insertTemplate } from "./db/templates.ts";

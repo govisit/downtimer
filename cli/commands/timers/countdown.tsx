@@ -5,7 +5,7 @@ import {
   hasTimeExpired,
   runningStatuses,
 } from "../../timers.ts";
-import { TimerStatus, TimerWithLogs } from "../../../shared/types.ts";
+import { TimerStatus, TimerWithLogs } from "../../types.ts";
 import BigText from "ink-big-text";
 import { keypress, KeyPressEvent } from "@cliffy/keypress";
 

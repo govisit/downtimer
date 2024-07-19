@@ -25,16 +25,15 @@
   ],
   "imports": {
     "$fresh/": "https://deno.land/x/fresh@1.6.8/",
-    "@preact/signals": "https://esm.sh/*@preact/signals@1.2.3",
-    "@preact/signals-core": "https://esm.sh/*@preact/signals-core@1.6.0",
-    "@std/dotenv": "jsr:@std/dotenv@^0.224.0",
+    "@preact/signals": "https://esm.sh/*@preact/signals@1.2.2",
+    "@preact/signals-core": "https://esm.sh/*@preact/signals-core@1.5.1",
+    "@std/dotenv": "jsr:@std/dotenv@^0.225.0",
     "@tailwindcss/forms": "npm:@tailwindcss/forms@^0.5.7",
-    "preact": "https://esm.sh/preact@10.21.0",
-    "preact/": "https://esm.sh/preact@10.21.0/",
-    "preact/compat": "https://esm.sh/preact@10.21.0/compat",
-    "tailwindcss": "npm:tailwindcss@3.4.3",
-    "tailwindcss/": "npm:/tailwindcss@3.4.3/",
-    "tailwindcss/plugin": "npm:/tailwindcss@3.4.3/plugin.js"
+    "preact": "https://esm.sh/preact@10.19.6",
+    "preact/": "https://esm.sh/preact@10.19.6/",
+    "preact/compat": "https://esm.sh/preact@10.19.6/compat",
+    "tailwindcss": "npm:tailwindcss@3.4.6",
+    "tailwindcss/plugin": "npm:/tailwindcss@3.4.6/plugin.js"
   },
   "compilerOptions": {
     "jsx": "react-jsx",

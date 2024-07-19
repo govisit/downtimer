@@ -17,7 +17,7 @@ import { parseDuration } from "../../utils.ts";
 import { render } from "ink";
 import { countdownOnPause, countdownOnResume, font } from "./show.tsx";
 import { Countdown } from "./countdown.tsx";
-import { Template, Topic } from "../../../shared/types.ts";
+import { Template, Topic } from "../../types.ts";
 
 async function getTopicIfAny(
   kv: Deno.Kv,

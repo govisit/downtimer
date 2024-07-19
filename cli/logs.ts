@@ -1,4 +1,4 @@
-import { Log, TimerStatus } from "../shared/types.ts";
+import { Log, TimerStatus } from "./types.ts";
 import { generateId } from "./utils.ts";
 
 export function newLog(

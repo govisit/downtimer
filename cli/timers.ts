@@ -1,10 +1,4 @@
-import {
-  Log,
-  Template,
-  Timer,
-  TimerStatus,
-  TimerWithLogs,
-} from "../shared/types.ts";
+import { Log, Template, Timer, TimerStatus, TimerWithLogs } from "./types.ts";
 import { generateId, getPrettyDate, getPrettyDuration } from "./utils.ts";
 import { getLogsByTimer, insertLog } from "./db/logs.ts";
 import { getTimers, insertTimer } from "./db/timers.ts";
