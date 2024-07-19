@@ -15,3 +15,6 @@ test.db*
 coverage/
 
 cli/cli
+cli/cli.exe
+cli/cli.dmg
+cli/cli-arm.dmg

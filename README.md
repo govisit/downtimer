@@ -11,7 +11,7 @@ Make sure to install Deno: https://deno.land/manual/getting_started/installation
 This repository contains two projects:
 
 - cli
-- web/api
+- web
 
 ## Testing
 
@@ -38,9 +38,11 @@ deno task coverage
 ## Compile
 
 ```bash
-deno task compile-host
-deno task compile-windows # For generating Windows executable.
-deno task compile-linux # For generating Linux executable.
+deno task compile:host
+deno task compile:windows # For generating Windows executable.
+deno task compile:linux # For generating Linux executable.
+deno task compile:mac # For generating Mac executable.
+deno task compile:mac-arm # For generating Mac ARM executable.
 ```
 
 Cross compilation (Linux -> Windows) does not work at the moment. The workaround
