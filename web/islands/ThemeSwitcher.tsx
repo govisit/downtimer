@@ -11,7 +11,7 @@ enum Theme {
 }
 
 const getStoredTheme = (): Theme | null => {
-  const theme = localStorage.getItem("theme");
+  const theme = globalThis.localStorage.getItem("theme");
 
   if (theme === null) {
     return null;
@@ -30,7 +30,7 @@ const getStoredTheme = (): Theme | null => {
 };
 
 const setStoredTheme = (theme: Theme): void =>
-  localStorage.setItem("theme", theme.toString());
+  globalThis.localStorage.setItem("theme", theme.toString());
 
 export const getPreferredTheme = (): Theme => {
   const storedTheme = getStoredTheme();
