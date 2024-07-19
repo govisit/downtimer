@@ -32,7 +32,7 @@ const getStoredTheme = (): Theme | null => {
 const setStoredTheme = (theme: Theme): void =>
   globalThis.localStorage.setItem("theme", theme.toString());
 
-export const getPreferredTheme = (): Theme => {
+const getPreferredTheme = (): Theme => {
   const storedTheme = getStoredTheme();
 
   if (storedTheme) {
@@ -44,7 +44,7 @@ export const getPreferredTheme = (): Theme => {
   // return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
 };
 
-export const setTheme = (theme: Theme) => {
+const setTheme = (theme: Theme) => {
   if (
     theme === Theme.Auto &&
     globalThis.window.matchMedia("(prefers-color-scheme: dark)").matches
@@ -74,7 +74,11 @@ function ThemeIcon({ theme }: { theme: Theme }) {
 }
 
 export default function ThemeSwitcher() {
-  const currentTheme = signal(getPreferredTheme());
+  const currentTheme = signal(Theme.Auto);
+
+  useEffect(() => {
+    currentTheme.value = getPreferredTheme();
+  }, []);
 
   useEffect(() => {
     function handleChange() {
