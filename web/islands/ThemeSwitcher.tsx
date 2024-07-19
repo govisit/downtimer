@@ -1,8 +1,7 @@
-import { useEffect } from "preact/hooks";
 import ThemeAuto from "../components/icons/theme-auto.tsx";
 import ThemeDark from "../components/icons/theme-dark.tsx";
 import ThemeLight from "../components/icons/theme-light.tsx";
-import { signal } from "@preact/signals";
+import { signal, useSignalEffect } from "@preact/signals";
 
 enum Theme {
   Auto = "auto",
@@ -76,11 +75,9 @@ function ThemeIcon({ theme }: { theme: Theme }) {
 const currentTheme = signal(Theme.Auto);
 
 export default function ThemeSwitcher() {
-  useEffect(() => {
+  useSignalEffect(() => {
     currentTheme.value = getPreferredTheme();
-  }, []);
 
-  useEffect(() => {
     function handleChange() {
       const storedTheme = getStoredTheme();
 
@@ -100,7 +97,7 @@ export default function ThemeSwitcher() {
       globalThis.window.matchMedia("(prefers-color-scheme: dark)")
         .removeEventListener("change", handleChange);
     };
-  }, []);
+  });
 
   /**
    * auto -> dark -> light -> auto
