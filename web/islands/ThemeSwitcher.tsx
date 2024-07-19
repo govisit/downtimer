@@ -73,9 +73,9 @@ function ThemeIcon({ theme }: { theme: Theme }) {
   }
 }
 
-export default function ThemeSwitcher() {
-  const currentTheme = signal(Theme.Auto);
+const currentTheme = signal(Theme.Auto);
 
+export default function ThemeSwitcher() {
   useEffect(() => {
     currentTheme.value = getPreferredTheme();
   }, []);
