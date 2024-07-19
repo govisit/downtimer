@@ -96,7 +96,7 @@ export default function ThemeSwitcher() {
       globalThis.window.matchMedia("(prefers-color-scheme: dark)")
         .removeEventListener("change", handleChange);
     };
-  }, []);
+  }, [setTheme, getStoredTheme, getPreferredTheme]);
 
   /**
    * auto -> dark -> light -> auto
