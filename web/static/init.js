@@ -14,7 +14,7 @@ const getPreferredTheme = () => {
 const setTheme = (theme) => {
   if (
     theme === "auto" &&
-    globalThis.matchMedia("(prefers-color-scheme: dark)").matches
+    window.matchMedia("(prefers-color-scheme: dark)").matches
   ) {
     document.documentElement.classList.add("dark");
   } else {

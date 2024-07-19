@@ -11,7 +11,7 @@ enum Theme {
 }
 
 const getStoredTheme = (): Theme | null => {
-  const theme = globalThis.localStorage.getItem("theme");
+  const theme = localStorage.getItem("theme");
 
   if (theme === null) {
     return null;
@@ -30,7 +30,7 @@ const getStoredTheme = (): Theme | null => {
 };
 
 const setStoredTheme = (theme: Theme): void =>
-  globalThis.localStorage.setItem("theme", theme.toString());
+  localStorage.setItem("theme", theme.toString());
 
 const getPreferredTheme = (): Theme => {
   const storedTheme = getStoredTheme();
@@ -49,12 +49,12 @@ const setTheme = (theme: Theme) => {
     theme === Theme.Auto &&
     globalThis.window.matchMedia("(prefers-color-scheme: dark)").matches
   ) {
-    globalThis.document.documentElement.setAttribute(
+    document.documentElement.setAttribute(
       "class",
       Theme.Dark.toString(),
     );
   } else {
-    globalThis.document.documentElement.setAttribute("class", theme.toString());
+    document.documentElement.setAttribute("class", theme.toString());
   }
 };
 
