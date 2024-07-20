@@ -127,15 +127,14 @@ export default function ThemeSwitcher() {
   }
 
   return (
-    <div>
-      <button
-        type="button"
-        onClick={() => {
-          changeTheme();
-        }}
-      >
-        <ThemeIcon theme={currentTheme.value} />
-      </button>
-    </div>
+    <button
+      type="button"
+      title="Toggle theme"
+      onClick={() => {
+        changeTheme();
+      }}
+    >
+      <ThemeIcon theme={currentTheme.value} />
+    </button>
   );
 }

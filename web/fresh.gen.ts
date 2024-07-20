@@ -10,6 +10,7 @@ import * as $download from "./routes/download.tsx";
 import * as $features from "./routes/features.tsx";
 import * as $index from "./routes/index.tsx";
 import * as $privacy from "./routes/privacy.tsx";
+import * as $Header from "./islands/Header.tsx";
 import * as $Shell from "./islands/Shell.tsx";
 import * as $ShellLine from "./islands/ShellLine.tsx";
 import * as $ShellPrompt from "./islands/ShellPrompt.tsx";
@@ -28,6 +29,7 @@ const manifest = {
     "./routes/privacy.tsx": $privacy,
   },
   islands: {
+    "./islands/Header.tsx": $Header,
     "./islands/Shell.tsx": $Shell,
     "./islands/ShellLine.tsx": $ShellLine,
     "./islands/ShellPrompt.tsx": $ShellPrompt,

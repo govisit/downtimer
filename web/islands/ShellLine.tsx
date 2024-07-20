@@ -40,7 +40,7 @@ function PlainResponse(
 ) {
   return (
     <div
-      class={`bg-gray-200 dark:bg-gray-800 rounded-lg px-8 py-5 break-all font-normal text-gray-700 dark:text-gray-300 ${className}`}
+      class={`bg-gray-200 dark:bg-gray-800 rounded-lg px-8 py-5 break-word font-normal text-gray-700 dark:text-gray-300 ${className}`}
     >
       {children}
     </div>

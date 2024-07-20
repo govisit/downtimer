@@ -29,7 +29,7 @@ const ShellPrompt = forwardRef<HTMLInputElement, ShellPromptProps>(
           {promptValidationError.value || <>&nbsp;</>}
         </div>
         <form
-          class="bg-gray-300 dark:bg-gray-700 rounded-lg px-8 py-5 flex gap-3"
+          class="bg-gray-300 dark:bg-gray-700 rounded-lg px-8 py-5 flex gap-3 justify-between"
           onSubmit={(e) => {
             e.preventDefault();
 
@@ -92,7 +92,8 @@ const ShellPrompt = forwardRef<HTMLInputElement, ShellPromptProps>(
             type="text"
             placeholder="type 'help' for more commands"
             autocomplete="off"
-            class="grow bg-transparent border-none p-0 focus:ring-0 text-gray-800 dark:text-gray-200"
+            class="grow bg-transparent border-none p-0 focus:ring-0 text-gray-800 dark:text-gray-200 w-full"
+            autocapitalize="off"
           />
           <button
             type="submit"
