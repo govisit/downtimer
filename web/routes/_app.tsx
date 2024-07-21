@@ -16,6 +16,7 @@ export default function App({ Component }: PageProps) {
         <title>DownTimer</title>
         <link rel="stylesheet" href="/styles.css" />
         <script type="text/javascript" src="/init.js" />
+        <script defer data-domain="downtimer.govisit.pro" src="https://plausible.laravelista.com/js/script.js"></script>
         <link rel="icon" href="favicon.svg" />
       </head>
       <body class="bg-gray-100 dark:bg-gray-900">
