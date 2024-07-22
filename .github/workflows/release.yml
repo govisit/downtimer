@@ -25,8 +25,15 @@ jobs:
       - name: Build step
         run: "deno task --cwd ./cli compile:all"
 
+      - name: Compress assets
+        run: |
+          tar -czvf ./cli/dist/dt-x86_64-unknown-linux-gnu.tar.gz ./cli/dist/dt-x86_64-unknown-linux-gnu 
+          tar -czvf ./cli/dist/dt-x86_64-pc-windows-msvc.tar.gz ./cli/dist/dt-x86_64-pc-windows-msvc.exe
+          tar -czvf ./cli/dist/dt-x86_64-apple-darwin.tar.gz ./cli/dist/dt-x86_64-apple-darwin.dmg 
+          tar -czvf ./cli/dist/dt-aarch64-apple-darwin.tar.gz ./cli/dist/dt-aarch64-apple-darwin.dmg
+
       - name: Create release and upload assets (private)
-        run: 'gh release create ${{ github.ref_name }} ./cli/dist/*'
+        run: 'gh release create ${{ github.ref_name }} ./cli/dist/*.tar.gz'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
