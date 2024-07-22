@@ -38,6 +38,7 @@ export default function Header() {
             <NavLink
               href="https://github.com/mabasic/DownTimer-docs"
               title="Docs"
+              external={true}
             />
             <NavLink href="/download" title="Download" />
             <NavLink href="/features" title="Features" />
@@ -63,6 +64,7 @@ export default function Header() {
           <NavLink
             href="https://github.com/mabasic/DownTimer-docs"
             title="Docs"
+            external={true}
           />
           <NavLink href="/download" title="Download" />
           <NavLink href="/features" title="Features" />
