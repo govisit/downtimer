@@ -1,6 +1,8 @@
 import { useSignal } from "@preact/signals";
 import ThemeSwitcher from "../islands/ThemeSwitcher.tsx";
 import Logo from "../components/icons/logo.tsx";
+import ExternalIcon from "../components/icons/external.tsx";
+import { docsUrl } from "../config.ts";
 
 function NavLink(
   { href, title, external = false }: {
@@ -11,7 +13,7 @@ function NavLink(
 ) {
   return (
     <a
-      class="aria-[current='page']:underline hover:opacity-70"
+      class="aria-[current='page']:underline hover:opacity-70 flex gap-1 items-center"
       href={href}
       {...(external && {
         rel: "noopener",
@@ -19,6 +21,7 @@ function NavLink(
       })}
     >
       {title}
+      {external && <ExternalIcon />}
     </a>
   );
 }
@@ -36,7 +39,7 @@ export default function Header() {
           <nav class="hidden md:flex md:flex-row md:gap-3">
             <NavLink href="/about" title="About" />
             <NavLink
-              href="https://github.com/mabasic/DownTimer-docs"
+              href={docsUrl}
               title="Docs"
               external={true}
             />
@@ -62,7 +65,7 @@ export default function Header() {
         <nav class="mt-4 md:hidden flex-col flex gap-3">
           <NavLink href="/about" title="About" />
           <NavLink
-            href="https://github.com/mabasic/DownTimer-docs"
+            href={docsUrl}
             title="Docs"
             external={true}
           />
