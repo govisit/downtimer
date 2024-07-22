@@ -38,7 +38,7 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create release and upload assets (public)
-        run: 'gh release create ${{ github.ref_name }} ./cli/dist/* -R https://github.com/govisit/DownTimer-docs'
+        run: 'gh release create ${{ github.ref_name }} ./cli/dist/*.tar.gz -R https://github.com/govisit/DownTimer-docs'
         env:
           GH_TOKEN: ${{ secrets.DOCS_GITHUB_TOKEN }}
 
