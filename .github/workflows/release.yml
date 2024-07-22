@@ -23,7 +23,7 @@ jobs:
           deno-version: v1.x
 
       - name: Build step
-        run: "deno task --cwd ./cli compile-all"
+        run: "deno task --cwd ./cli compile:all"
 
       - name: Create release and upload assets (private)
         run: 'gh release create ${{ github.ref_name }} ./cli/dist/*'
