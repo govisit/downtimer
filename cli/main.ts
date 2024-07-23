@@ -5,7 +5,7 @@ import { command as timerCommand } from "./commands/timers/index.ts";
 
 const main = new Command()
   .name("DownTimer")
-  .version("0.2.0")
+  .version("0.3.1")
   .description("When your phone or PC timer is not enough.")
   .action(() => {
     main.showHelp();
