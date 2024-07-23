@@ -53,3 +53,19 @@ Related links:
 - https://github.com/denoland/deno/issues/22690
 - https://github.com/denoland/deno/discussions/22685
 - https://github.com/govisit/deno-cross-compilation-panic
+
+## Deployment/release
+
+I'm using github actions to trigger a new release on tag. Currently the tag
+format is `v0.1.0-cli`.
+
+This runs a workflow in which deno is installed, and the cli program is compiled
+for each operating system and placed in `/cli/dist` directory. Then I execute
+`tar` on each generated binary file to reduce its size. After that, I use
+`gh release create` (GitHub CLI) to publish a new release with the newly created
+tarred binary files. Finally, I use an
+[repository secret for GitHub actions](https://github.com/govisit/DownTimer/settings/secrets/actions)
+named `DOCS_GITHUB_TOKEN`, which I generated on this page
+[Fine-grained personal access tokens](https://github.com/settings/tokens?type=beta)
+for repository `govisit/DownTimer-docs` only; to publish the release on
+`govisit/DownTimer-docs` which is publically available.
