@@ -2,17 +2,19 @@ import { useEffect, useRef } from "preact/hooks";
 import ShellLine, { Line } from "./ShellLine.tsx";
 import ShellPrompt from "./ShellPrompt.tsx";
 import { Signal, signal } from "@preact/signals";
+import { Asset } from "../types.ts";
 
 const prompt = signal("");
 
 type ShellProps = {
   lines: Signal<Line[]>;
   history: Signal<string[]>;
+  assets: Asset[];
 };
 
 const initialLoad = signal(true);
 
-export default function Shell({ lines, history }: ShellProps) {
+export default function Shell({ lines, history, assets }: ShellProps) {
   const linesRef = useRef<HTMLDivElement>(null);
   const shellPromptRef = useRef<HTMLInputElement>(null);
 
@@ -84,6 +86,7 @@ export default function Shell({ lines, history }: ShellProps) {
         {lines.value.map((line, index) => {
           return (
             <ShellLine
+              assets={assets}
               key={index}
               line={line}
               setShellPrompt={setShellPrompt}

@@ -1,18 +1,21 @@
 import { Head } from "$fresh/runtime.ts";
 import { RouteConfig } from "$fresh/server.ts";
+import { getLatestReleaseForHeader } from "../github.ts";
 import { LayoutComponent as Layout } from "./_layout.tsx";
 
 export const config: RouteConfig = {
   skipInheritedLayouts: true, // Skip already inherited layouts
 };
 
-export default function Error404() {
+export default async function Error404() {
+  const latestRelease = await getLatestReleaseForHeader();
+
   return (
     <>
       <Head>
         <title>404 - Page not found</title>
       </Head>
-      <Layout isScreen={false}>
+      <Layout latestRelease={latestRelease} isScreen={false}>
         <div class="px-4 py-8 mx-auto bg-[#86efac]">
           <div class="max-w-screen-md mx-auto flex flex-col items-center justify-center">
             <img

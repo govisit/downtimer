@@ -1,4 +1,8 @@
 import { ComponentChildren } from "preact";
+import { Asset } from "../types.ts";
+import { docsUrl } from "../config.ts";
+import { Menu, MenuItem, MenuItemLink } from "../components/menu.tsx";
+import { Code } from "../components/typography.tsx";
 
 export type Line = {
   timestamp: string;
@@ -9,6 +13,7 @@ type ShellLineProps = {
   line: Line;
   setShellPrompt: (prompt: string) => void;
   clearLines: () => void;
+  assets: Asset[];
 };
 
 export enum ValidPrompts {
@@ -118,8 +123,8 @@ function HelpResponse() {
           echo &lt;output&gt;{" "}
           <SmallText>
             prints given output to the console. You can pipe the output to:{" "}
-            <code>/dev/null</code>, <code>/dev/stdout</code> or{" "}
-            <code>/dev/stderr</code>.
+            <Code>/dev/null</Code>, <Code>/dev/stdout</Code> or{" "}
+            <Code>/dev/stderr</Code>.
           </SmallText>
         </li>
         <li>
@@ -196,30 +201,42 @@ function AboutResponse({ setShellPrompt }: AboutResponseProps) {
         These both features will require some form of payment, but the CLI
         application will remain free forever.
       </p>
+      <br />
+      <p>
+        Quick links:<br />
+        <Menu>
+          <MenuItemLink href={docsUrl} name="Documentation" isExternal={true} />
+          <MenuItemLink
+            href={docsUrl + "/issues"}
+            name="Issues"
+            isExternal={true}
+          />
+        </Menu>
+      </p>
     </PlainResponse>
   );
 }
 
-function DownloadResponse() {
+function DownloadResponse({ assets }: { assets: Asset[] }) {
   return (
     <PlainResponse>
       <ResponseTitle title="Download" />
       <br />
       <p>
-        Download the binary file for your operating system:
+        Download the latest version for your operating system:
       </p>
       <br />
-      <menu class="list-disc list-inside">
-        <li>
-          <a class="hover:opacity-70" href="/files/dt">Linux</a>
-        </li>
-        <li>
-          <a class="hover:opacity-70" href="/files/dt.exe">Windows</a>
-        </li>
-        <li>
-          <a class="hover:opacity-70" href="/files/dt.dmg">Mac</a>
-        </li>
-      </menu>
+      <Menu>
+        {assets.map((asset) => (
+          <MenuItemLink href={asset.url} name={asset.name} isExternal={true} />
+        ))}
+      </Menu>
+      <br />
+      <p>
+        Remember to extract the file. I recommend to name the binary file{" "}
+        <Code>dt</Code> after extracting it.<br />
+        Add binary to PATH and then just call it with <Code>dt --help</Code>.
+      </p>
     </PlainResponse>
   );
 }
@@ -287,55 +304,55 @@ function FeaturesResponse() {
     <PlainResponse>
       <ResponseTitle title="Features" />
       <br />
-      <menu class="list-disc list-inside">
-        <li>
+      <Menu>
+        <MenuItem>
           Multiple timers{" "}
           <SmallText>
             Most apps limit you to just one timer, not this one.
           </SmallText>
-        </li>
-        <li>
+        </MenuItem>
+        <MenuItem>
           Countdown view{" "}
           <SmallText>
             If you spend your days in the terminal you will love this feature.
           </SmallText>
-        </li>
-        <li>
+        </MenuItem>
+        <MenuItem>
           Logs{" "}
           <SmallText>
             each timer has a log of events that have happened during the
             lifetime of the timer (started, paused, resumed, completed, manual
             completed).
           </SmallText>
-        </li>
-        <li>
+        </MenuItem>
+        <MenuItem>
           Topics{" "}
           <SmallText>
             group timers by topic. Useful when having multiple timers for a
             specific topic.
           </SmallText>
-        </li>
-        <li>
+        </MenuItem>
+        <MenuItem>
           Templates{" "}
           <SmallText>
             if you notice that you reuse the same timer multiple times, you can
             create a template from that timer.
           </SmallText>
-        </li>
-        <li>
+        </MenuItem>
+        <MenuItem>
           Cross platform{" "}
           <SmallText>
             works on all major operating systems.
           </SmallText>
-        </li>
-        <li>
+        </MenuItem>
+        <MenuItem>
           Disasterproof{" "}
           <SmallText>
             it will continue to work even if you close the terminal or if your
             computer battery dies. <b>No more lost time.</b>
           </SmallText>
-        </li>
-      </menu>
+        </MenuItem>
+      </Menu>
     </PlainResponse>
   );
 }
@@ -361,27 +378,17 @@ function GoToResponse({ setShellPrompt }: GoToResponseProps) {
         in the shell prompt to navigate to that web page.
       </p>
       <br />
-      <menu class="list-disc list-inside">
-        <li>
-          <a class="hover:opacity-70" href="/about">about</a>
-        </li>
-        <li>
-          <a class="hover:opacity-70" href="/download">download</a>
-        </li>
-        <li>
-          <a class="hover:opacity-70" href="/features">features</a>
-        </li>
-        <li>
-          <a class="hover:opacity-70" href="/">home</a>
-        </li>
-        <li>
-          <a class="hover:opacity-70" href="/privacy">privacy</a>
-        </li>
-      </menu>
+      <Menu>
+        <MenuItemLink href="/about" name="about" />
+        <MenuItemLink href="/download" name="download" />
+        <MenuItemLink href="/features" name="features" />
+        <MenuItemLink href="/home" name="home" />
+        <MenuItemLink href="/privacy" name="privacy" />
+      </Menu>
       <br />
       <p class="text-gray-600 dark:text-gray-400">
         <span class="text-red-600 dark:text-red-400">*</span>
-        Clicking on the links above or using the <code>goto</code>{" "}
+        Clicking on the links above or using the <Code>goto</Code>{" "}
         command will reset shell history.
       </p>
     </PlainResponse>
@@ -389,7 +396,7 @@ function GoToResponse({ setShellPrompt }: GoToResponseProps) {
 }
 
 export default function ShellLine(
-  { line, setShellPrompt, clearLines }: ShellLineProps,
+  { line, setShellPrompt, clearLines, assets }: ShellLineProps,
 ) {
   const response = (() => {
     const [command, ...other] = line.prompt.split(" ");
@@ -441,7 +448,7 @@ export default function ShellLine(
       }
 
       case ValidPrompts.Download: {
-        return <DownloadResponse />;
+        return <DownloadResponse assets={assets} />;
       }
 
       case ValidPrompts.Privacy: {

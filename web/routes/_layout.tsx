@@ -1,18 +1,23 @@
-import { PageProps } from "$fresh/server.ts";
-import { ComponentChildren } from "https://esm.sh/v128/preact@10.19.6/src/index.js";
+import { defineLayout } from "$fresh/server.ts";
+import { ComponentChildren } from "preact";
 import Header from "../islands/Header.tsx";
+import { getLatestReleaseForHeader } from "../github.ts";
+import { Release } from "../types.ts";
 
-export default function Layout({ Component }: PageProps) {
+export default defineLayout(async (_req, ctx) => {
+  const latestRelease = await getLatestReleaseForHeader();
+
   return (
-    <LayoutComponent>
-      <Component />
+    <LayoutComponent latestRelease={latestRelease}>
+      <ctx.Component />
     </LayoutComponent>
   );
-}
+});
 
-export function LayoutComponent({ children, isScreen = true }: {
+export function LayoutComponent({ children, isScreen = true, latestRelease }: {
   isScreen?: boolean;
   children: ComponentChildren;
+  latestRelease: Release;
 }) {
   return (
     <div
@@ -21,7 +26,7 @@ export function LayoutComponent({ children, isScreen = true }: {
         isScreen ? "h-screen" : "",
       ].join(" ")}
     >
-      <Header />
+      <Header latestRelease={latestRelease} />
       <div
         class={["mt-10 h-full h-full", isScreen ? "overflow-hidden" : ""].join(
           " ",

@@ -3,6 +3,7 @@ import Shell from "../islands/Shell.tsx";
 import { Line, ValidPrompts } from "../islands/ShellLine.tsx";
 import { getTimestamp } from "../islands/ShellPrompt.tsx";
 import { Head } from "$fresh/runtime.ts";
+import { getLatestDownloadAssets } from "../github.ts";
 
 const lines = signal<Line[]>([
   {
@@ -18,14 +19,16 @@ const history = signal(
     .toReversed(),
 );
 
-export default function Features() {
+export default async function Features() {
+  const downloadAssets = await getLatestDownloadAssets();
+
   return (
     <>
       <Head>
         <title>DownTimer - Features</title>
       </Head>
       <h1 class="hidden">Features</h1>
-      <Shell lines={lines} history={history} />
+      <Shell lines={lines} history={history} assets={downloadAssets} />
     </>
   );
 }

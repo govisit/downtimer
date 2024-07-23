@@ -4,9 +4,9 @@
     "check": "deno fmt --check && deno lint && deno check **/*.ts && deno check **/*.tsx",
     "cli": "echo \"import '\\$fresh/src/dev/cli.ts'\" | deno run -A -",
     "manifest": "deno task cli manifest $(pwd)",
-    "start": "deno run -A --watch=static/,routes/ dev.ts",
-    "build": "deno run -A dev.ts build",
-    "preview": "deno run -A main.ts",
+    "start": "deno run -A --watch=static/,routes/ --allow-env --allow-read dev.ts",
+    "build": "deno run -A --allow-env --allow-read dev.ts build",
+    "preview": "deno run -A --allow-env --allow-read main.ts",
     "update": "deno run -A -r https://fresh.deno.dev/update ."
   },
   "lint": {
@@ -33,7 +33,9 @@
     "preact/": "https://esm.sh/preact@10.19.6/",
     "preact/compat": "https://esm.sh/preact@10.19.6/compat",
     "tailwindcss": "npm:tailwindcss@3.4.6",
-    "tailwindcss/plugin": "npm:/tailwindcss@3.4.6/plugin.js"
+    "tailwindcss/plugin": "npm:/tailwindcss@3.4.6/plugin.js",
+    "octokit": "https://esm.sh/@octokit/core@6.1.2",
+    "octokit/types": "https://esm.sh/@octokit/types@13.5.0"
   },
   "compilerOptions": {
     "jsx": "react-jsx",
