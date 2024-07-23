@@ -203,8 +203,12 @@ function AboutResponse({ setShellPrompt }: AboutResponseProps) {
       </p>
       <br />
       <p>
-        Quick links:<br />
         <Menu>
+          <MenuItemLink
+            href={docsUrl + "/wiki/quickstart"}
+            name="Quickstart"
+            isExternal={true}
+          />
           <MenuItemLink href={docsUrl} name="Documentation" isExternal={true} />
           <MenuItemLink
             href={docsUrl + "/issues"}
