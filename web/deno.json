@@ -4,50 +4,36 @@
     "check": "deno fmt --check && deno lint && deno check **/*.ts && deno check **/*.tsx",
     "cli": "echo \"import '\\$fresh/src/dev/cli.ts'\" | deno run -A -",
     "manifest": "deno task cli manifest $(pwd)",
-    "start": "deno run -A --watch=static/,routes/ --allow-env --allow-read dev.ts",
-    "build": "deno run -A --allow-env --allow-read dev.ts build",
-    "preview": "deno run -A --allow-env --allow-read main.ts",
+    "start": "deno run -A --watch=static/,routes/ dev.ts",
+    "build": "deno run -A dev.ts build",
+    "preview": "deno run -A main.ts",
     "update": "deno run -A -r https://fresh.deno.dev/update ."
   },
   "lint": {
-    "exclude": [
-      "static/"
-    ],
-    "rules": {
-      "tags": [
-        "fresh",
-        "recommended"
-      ]
-    }
+    "exclude": ["static/"],
+    "rules": { "tags": ["fresh", "recommended"] }
   },
-  "exclude": [
-    "**/_fresh/*"
-  ],
+  "exclude": ["**/_fresh/*"],
   "imports": {
-    "$fresh/": "https://deno.land/x/fresh@1.6.8/",
+    "$fresh/": "https://deno.land/x/fresh@1.7.3/",
     "@preact/signals": "https://esm.sh/*@preact/signals@1.2.2",
     "@preact/signals-core": "https://esm.sh/*@preact/signals-core@1.5.1",
     "@std/dotenv": "jsr:@std/dotenv@^0.225.0",
-    "@tailwindcss/forms": "npm:@tailwindcss/forms@^0.5.7",
-    "preact": "https://esm.sh/preact@10.19.6",
-    "preact/": "https://esm.sh/preact@10.19.6/",
+    "@tailwindcss/forms": "npm:@tailwindcss/forms@^0.5.9",
+    "preact": "https://esm.sh/preact@10.22.0",
+    "preact/": "https://esm.sh/preact@10.22.0/",
     "preact/compat": "https://esm.sh/preact@10.19.6/compat",
-    "tailwindcss": "npm:tailwindcss@3.4.6",
-    "tailwindcss/plugin": "npm:/tailwindcss@3.4.6/plugin.js",
-    "tailwindcss/defaultTheme": "npm:/tailwindcss@3.4.6/defaultTheme.js",
+    "tailwindcss": "npm:tailwindcss@3.4.15",
+    "tailwindcss/plugin": "npm:/tailwindcss@3.4.15/plugin.js",
+    "tailwindcss/defaultTheme": "npm:/tailwindcss@3.4.15/defaultTheme.js",
     "octokit": "https://esm.sh/@octokit/core@6.1.2",
     "octokit/types": "https://esm.sh/@octokit/types@13.5.0"
   },
-  "compilerOptions": {
-    "jsx": "react-jsx",
-    "jsxImportSource": "preact"
-  },
-  "nodeModulesDir": true,
+  "compilerOptions": { "jsx": "react-jsx", "jsxImportSource": "preact" },
+  "nodeModulesDir": "auto",
   "deploy": {
     "project": "61a70179-303f-40f2-8c13-80b46066e22d",
-    "exclude": [
-      "**/node_modules"
-    ],
+    "exclude": ["**/node_modules"],
     "include": [],
     "entrypoint": "main.ts"
   }

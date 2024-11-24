@@ -19,8 +19,8 @@ export const command = new Command()
 
     try {
       await deleteTopic(kv, topic.id);
-    } catch (error) {
-      console.error(colors.red(error.message));
+    } catch (_err) {
+      console.error(colors.red("Unable to delete topic."));
 
       Deno.exit(1);
     }
