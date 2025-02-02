@@ -1,15 +1,19 @@
 [[language]]
 name = "typescript"
-shebangs = ["deno"]
-roots = ["deno.json", "deno.jsonc"]
-file-types = ["js", "ts", "jsx", "tsx"]
-language-servers = ["deno-lsp"]
+roots = ["deno.json", "deno.jsonc", "package.json"]
 auto-format = true
+language-servers = ["deno-lsp"]
+
+[[language]]
+name = "javascript"
+roots = ["deno.json", "deno.jsonc", "package.json"]
+auto-format = true
+language-servers = ["deno-lsp"]
 
 [language-server.deno-lsp]
 command = "deno"
 args = ["lsp"]
-environment = { NO_COLOR = "1" }
+config.deno.enable = true
 
 [language-server.deno-lsp.config.deno]
 enable = true
@@ -28,4 +32,5 @@ suggest = { completeFunctionCalls = false, imports = { hosts = { "https://deno.l
 # inlayHints.propertyDeclarationTypes.enabled  = true
 # inlayHints.functionLikeReturnTypes.enabled = true
 # inlayHints.enumMemberValues.enabled = true
+lint = true
 

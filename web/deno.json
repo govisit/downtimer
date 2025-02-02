@@ -1,5 +1,4 @@
 {
-  "lock": false,
   "tasks": {
     "check": "deno fmt --check && deno lint && deno check **/*.ts && deno check **/*.tsx",
     "cli": "echo \"import '\\$fresh/src/dev/cli.ts'\" | deno run -A -",
@@ -29,8 +28,6 @@
     "octokit": "https://esm.sh/@octokit/core@6.1.2",
     "octokit/types": "https://esm.sh/@octokit/types@13.5.0"
   },
-  "compilerOptions": { "jsx": "react-jsx", "jsxImportSource": "preact" },
-  "nodeModulesDir": "auto",
   "deploy": {
     "project": "61a70179-303f-40f2-8c13-80b46066e22d",
     "exclude": ["**/node_modules"],

@@ -9,6 +9,7 @@
 _fresh/
 # npm dependencies
 node_modules/
+vendor/
 
 test.db*
 
