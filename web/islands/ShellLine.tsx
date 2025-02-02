@@ -202,7 +202,7 @@ function AboutResponse({ setShellPrompt }: AboutResponseProps) {
         application will remain free forever.
       </p>
       <br />
-      <p>
+      <div>
         <Menu>
           <MenuItemLink
             href={docsUrl + "/wiki/quickstart"}
@@ -216,7 +216,7 @@ function AboutResponse({ setShellPrompt }: AboutResponseProps) {
             isExternal={true}
           />
         </Menu>
-      </p>
+      </div>
     </PlainResponse>
   );
 }
@@ -270,8 +270,8 @@ function PrivacyResponse() {
 
       <br />
 
+      <h3>Analytics</h3>
       <p>
-        <h3>Analytics</h3>
         I use a self-hosted version of{" "}
         <a
           class="underline hover:opacity-70"
@@ -288,9 +288,7 @@ function PrivacyResponse() {
 
       <br />
 
-      <p>
-        <h3>Cookies</h3> This website does not use cookies.
-      </p>
+      <h3>Cookies</h3> This website does not use cookies.
     </PlainResponse>
   );
 }

@@ -19,14 +19,14 @@
     "@preact/signals-core": "https://esm.sh/*@preact/signals-core@1.5.1",
     "@std/dotenv": "jsr:@std/dotenv@^0.225.0",
     "@tailwindcss/forms": "npm:@tailwindcss/forms@^0.5.9",
-    "preact": "https://esm.sh/preact@10.22.0",
-    "preact/": "https://esm.sh/preact@10.22.0/",
-    "preact/compat": "https://esm.sh/preact@10.19.6/compat",
+    "preact": "https://esm.sh/preact@10.25.4",
+    "preact/": "https://esm.sh/preact@10.25.4/",
+    "preact/compat": "https://esm.sh/preact@10.25.4/compat",
     "tailwindcss": "npm:tailwindcss@3.4.15",
     "tailwindcss/plugin": "npm:/tailwindcss@3.4.15/plugin.js",
     "tailwindcss/defaultTheme": "npm:/tailwindcss@3.4.15/defaultTheme.js",
-    "octokit": "https://esm.sh/@octokit/core@6.1.2",
-    "octokit/types": "https://esm.sh/@octokit/types@13.5.0"
+    "octokit": "https://esm.sh/@octokit/core@^6.1.2",
+    "octokit/types": "https://esm.sh/@octokit/types@^13.5.0"
   },
   "deploy": {
     "project": "61a70179-303f-40f2-8c13-80b46066e22d",
@@ -34,7 +34,6 @@
     "include": [],
     "entrypoint": "main.ts"
   },
-  "vendor": true,
   "lock": false,
   "compilerOptions": {
     "jsx": "react-jsx",

@@ -13,7 +13,6 @@ language-servers = ["deno-lsp"]
 [language-server.deno-lsp]
 command = "deno"
 args = ["lsp"]
-config.deno.enable = true
 
 [language-server.deno-lsp.config.deno]
 enable = true

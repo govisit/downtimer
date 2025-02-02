@@ -6,12 +6,18 @@ When your phone or PC is not enough.
 
 Make sure to install Deno: https://deno.land/manual/getting_started/installation
 
+> Do not use workspace because ink react is not compatible with fresh preact.
+
 ## Structure
 
 This repository contains two projects:
 
 - cli
 - web
+
+### Web
+
+Do not use `"vendor": true` in `deno.json` because build fails then.
 
 ## Testing
 
