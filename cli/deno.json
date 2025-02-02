@@ -1,4 +1,6 @@
 {
+  "vendor": true,
+  "lock": false,
   "tasks": {
     "start": "deno run --allow-net --allow-read --allow-write --allow-env --allow-sys --unstable-kv ./main.ts",
     "start:debug": "deno run --allow-net --allow-read --allow-write --allow-env --allow-sys --unstable-kv --inspect-brk ./main.ts",
