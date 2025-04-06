@@ -207,13 +207,13 @@ function AboutResponse({ setShellPrompt }: AboutResponseProps) {
           <MenuItemLink
             href={docsUrl + "/wiki/quickstart"}
             name="Quickstart"
-            isExternal={true}
+            isExternal
           />
-          <MenuItemLink href={docsUrl} name="Documentation" isExternal={true} />
+          <MenuItemLink href={docsUrl} name="Documentation" isExternal />
           <MenuItemLink
             href={docsUrl + "/issues"}
             name="Issues"
-            isExternal={true}
+            isExternal
           />
         </Menu>
       </div>
@@ -232,7 +232,7 @@ function DownloadResponse({ assets }: { assets: Asset[] }) {
       <br />
       <Menu>
         {assets.map((asset) => (
-          <MenuItemLink href={asset.url} name={asset.name} isExternal={true} />
+          <MenuItemLink href={asset.url} name={asset.name} isExternal />
         ))}
       </Menu>
       <br />

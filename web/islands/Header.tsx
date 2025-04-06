@@ -42,10 +42,10 @@ export default function Header({ latestRelease }: { latestRelease: Release }) {
             <Logo /> DownTimer
           </a>
           <NavLink
-            small={true}
+            small
             href={latestRelease.url}
             title={latestRelease.name}
-            external={true}
+            external
           />
         </div>
         <div class="flex justify-end gap-3 items-center">
@@ -54,7 +54,7 @@ export default function Header({ latestRelease }: { latestRelease: Release }) {
             <NavLink
               href={docsUrl}
               title="Docs"
-              external={true}
+              external
             />
             <NavLink href="/download" title="Download" />
             <NavLink href="/features" title="Features" />
@@ -80,7 +80,7 @@ export default function Header({ latestRelease }: { latestRelease: Release }) {
           <NavLink
             href={docsUrl}
             title="Docs"
-            external={true}
+            external
           />
           <NavLink href="/download" title="Download" />
           <NavLink href="/features" title="Features" />

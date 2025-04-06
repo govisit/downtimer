@@ -1,35 +1,18 @@
 [[language]]
 name = "typescript"
 roots = ["deno.json", "deno.jsonc", "package.json"]
+file-types = ["ts", "tsx"]
 auto-format = true
 language-servers = ["deno-lsp"]
 
 [[language]]
 name = "javascript"
 roots = ["deno.json", "deno.jsonc", "package.json"]
+file-types = ["js", "jsx"]
 auto-format = true
 language-servers = ["deno-lsp"]
 
 [language-server.deno-lsp]
 command = "deno"
 args = ["lsp"]
-
-[language-server.deno-lsp.config.deno]
-enable = true
-# Uncomment to enable completion of unstable features of Deno
-unstable = true
-# Uncomment to cache dependencies on save
-cacheOnSave = true
-# Enable completion of importing from registries
-# Enable completion of function calls
-suggest = { completeFunctionCalls = false, imports = { hosts = { "https://deno.land" = true } } }
-# suggest = { imports = { hosts = { "https://deno.land" = true, "https://crux.land" = true, "https://x.nest.land" = true } } }
-# Uncomment to enable inlay hints
-# inlayHints.parameterNames.enabled = "all"
-# inlayHints.parameterTypes.enabled = true
-# inlayHints.variableTypes.enabled = true
-# inlayHints.propertyDeclarationTypes.enabled  = true
-# inlayHints.functionLikeReturnTypes.enabled = true
-# inlayHints.enumMemberValues.enabled = true
-lint = true
-
+config.deno.enable = true
