@@ -6,6 +6,7 @@
     "./cli"
   ],
   "imports": {
+    "effect": "npm:effect@^3.14.22",
     "preact": "https://esm.sh/preact@10.26.6",
     "preact/": "https://esm.sh/preact@10.26.6/",
     "preact/compat": "https://esm.sh/preact@10.26.6/compat",
@@ -33,5 +34,9 @@
     "ink": "npm:ink@^5.2.1",
     "ink-big-text": "npm:ink-big-text@2.0.0",
     "react": "npm:react@^18.3.1"
+  },
+  "compilerOptions": {
+    "strict": true,
+    "exactOptionalPropertyTypes": true  
   }
 }

@@ -2,10 +2,11 @@ import { Command } from "@cliffy/command";
 import { command as topicCommand } from "./commands/topics/index.ts";
 import { command as templateCommand } from "./commands/templates/index.ts";
 import { command as timerCommand } from "./commands/timers/index.ts";
+import packageInfo from "./deno.json" with { type: "json" };
 
 const main = new Command()
   .name("DownTimer")
-  .version("0.3.1")
+  .version(packageInfo.version)
   .description("When your phone or PC timer is not enough.")
   .action(() => {
     main.showHelp();

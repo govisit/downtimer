@@ -1,5 +1,6 @@
 import { join } from "@std/path";
 import { dir, DirectoryTypes } from "@cross/dir";
+import { Match } from "effect";
 
 export enum DatabasePurpose {
   Testing = "testing",
@@ -25,31 +26,21 @@ function getTestingDataDir(): string {
 async function getDataDir(
   purpose: DatabasePurpose,
 ): Promise<string | undefined> {
-  switch (purpose) {
-    case DatabasePurpose.Testing:
-      return getTestingDataDir();
-    case DatabasePurpose.Normal:
-      return await getNormalDataDir();
-    default: {
-      const _exhaustiveCheck: never = purpose;
-      return _exhaustiveCheck;
-    }
-  }
+  return await Match.value(purpose).pipe(
+    Match.when(DatabasePurpose.Testing, () => getTestingDataDir()),
+    Match.when(DatabasePurpose.Normal, () => getNormalDataDir()),
+    Match.exhaustive,
+  );
 }
 
 function getDbName(
   purpose: DatabasePurpose,
 ): string {
-  switch (purpose) {
-    case DatabasePurpose.Testing:
-      return "test.db";
-    case DatabasePurpose.Normal:
-      return "dt.db";
-    default: {
-      const _exhaustiveCheck: never = purpose;
-      return _exhaustiveCheck;
-    }
-  }
+  return Match.value(purpose).pipe(
+    Match.when(DatabasePurpose.Testing, () => "test.db"),
+    Match.when(DatabasePurpose.Normal, () => "dt.db"),
+    Match.exhaustive,
+  );
 }
 
 export async function getDatabaseConnection(
@@ -58,7 +49,13 @@ export async function getDatabaseConnection(
   const dataDir = await getDataDir(purpose);
   const dbName = getDbName(purpose);
 
-  return await Deno.openKv(dataDir ? join(dataDir, dbName) : undefined);
+  return Deno.openKv(
+    Match.value(dataDir).pipe(
+      Match.when(Match.undefined, () => undefined),
+      Match.when(Match.string, (dir) => join(dir, dbName)),
+      Match.exhaustive,
+    ),
+  );
 }
 
 export async function databaseCleanup(kv: Deno.Kv): Promise<void> {

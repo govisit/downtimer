@@ -1,4 +1,7 @@
 {
+  "name": "@downtimer/web",
+  "version": "0.1.0",
+  "exports": {},
   "tasks": {
     "check": "deno fmt --check && deno lint && deno check",
     "cli": "echo \"import '\\$fresh/src/dev/cli.ts'\" | deno run -A -",
