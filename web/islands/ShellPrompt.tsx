@@ -1,7 +1,7 @@
 import ReturnIcon from "../components/icons/return-icon.tsx";
-import { Signal, signal } from "@preact/signals-core";
 import { Line } from "./ShellLine.tsx";
 import { forwardRef } from "preact/compat";
+import { Signal, signal } from "@preact/signals";
 
 export function getTimestamp(): string {
   return (new Date()).toLocaleTimeString("hr-hr", {
