@@ -1,5 +1,5 @@
 import { Slugify as slugify } from "@officialrajdeepsingh/slugify";
-import { Topic } from "./types.ts";
+import type { Topic } from "./types.ts";
 import { generateId } from "./utils.ts";
 import { insertTopic } from "./db/topics.ts";
 

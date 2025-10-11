@@ -5,11 +5,11 @@ import {
   hasTimeExpired,
   runningStatuses,
 } from "../../timers.ts";
-import { TimerStatus, TimerWithLogs } from "../../types.ts";
+import { TimerStatus, type TimerWithLogs } from "../../types.ts";
 import BigText from "ink-big-text";
-import { keypress, KeyPressEvent } from "@cliffy/keypress";
+import { keypress, type KeyPressEvent } from "@cliffy/keypress";
 
-import React, { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Box, useApp } from "ink";
 import { getPrettyDate, getPrettyDuration, ringBell } from "../../utils.ts";
 import { Text } from "ink";
@@ -18,7 +18,7 @@ type CountdownProps = {
   timer: TimerWithLogs;
   onPause: () => Promise<TimerWithLogs>;
   onResume: () => Promise<TimerWithLogs>;
-  font?: Font;
+  font?: Font | undefined;
 };
 
 export enum Font {

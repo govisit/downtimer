@@ -1,4 +1,5 @@
 {
+  "$schema": "https://raw.githubusercontent.com/denoland/deno/main/cli/schemas/config-file.v1.json",
   "nodeModulesDir": "auto",
   "vendor": true,
   "workspace": [
@@ -6,37 +7,39 @@
     "./cli"
   ],
   "imports": {
-    "effect": "npm:effect@^3.14.22",
+    "effect": "npm:effect@^3.18.4",
     "preact": "https://esm.sh/preact@10.26.6",
     "preact/": "https://esm.sh/preact@10.26.6/",
     "preact/compat": "https://esm.sh/preact@10.26.6/compat",
     "@preact/signals": "https://esm.sh/*@preact/signals@2.0.4",
     "@preact/signals-core": "https://esm.sh/*@preact/signals-core@1.8.0",
     "$fresh/": "https://deno.land/x/fresh@1.7.3/",
-    "@std/dotenv": "jsr:@std/dotenv@^0.225.0",
+    "@std/dotenv": "jsr:@std/dotenv@^0.225.5",
     "tailwindcss": "npm:tailwindcss@3.4.15",
-    "@tailwindcss/forms": "npm:@tailwindcss/forms@^0.5.9",
+    "@tailwindcss/forms": "npm:@tailwindcss/forms@^0.5.10",
     "tailwindcss/plugin": "npm:/tailwindcss@3.4.15/plugin.js",
     "tailwindcss/defaultTheme": "npm:/tailwindcss@3.4.15/defaultTheme.js",
     "octokit": "https://esm.sh/@octokit/core@^6.1.2",
     "octokit/types": "https://esm.sh/@octokit/types@^13.5.0",
 
-    "@cliffy/ansi": "jsr:@cliffy/ansi@^1.0.0-rc.7",
-    "@cliffy/command": "jsr:@cliffy/command@^1.0.0-rc.7",
-    "@cliffy/keypress": "jsr:@cliffy/keypress@^1.0.0-rc.7",
-    "@cliffy/prompt": "jsr:@cliffy/prompt@^1.0.0-rc.7",
-    "@cliffy/table": "jsr:@cliffy/table@^1.0.0-rc.7",
+    "@cliffy/ansi": "jsr:@cliffy/ansi@^1.0.0-rc.8",
+    "@cliffy/command": "jsr:@cliffy/command@^1.0.0-rc.8",
+    "@cliffy/keypress": "jsr:@cliffy/keypress@^1.0.0-rc.8",
+    "@cliffy/prompt": "jsr:@cliffy/prompt@^1.0.0-rc.8",
+    "@cliffy/table": "jsr:@cliffy/table@^1.0.0-rc.8",
     "@cross/dir": "jsr:@cross/dir@^1.1.0",
     "@officialrajdeepsingh/slugify": "jsr:@officialrajdeepsingh/slugify@^0.1.1",
-    "@std/assert": "jsr:@std/assert@^1.0.12",
-    "@std/path": "jsr:@std/path@^1.0.9",
+    "@std/assert": "jsr:@std/assert@^1.0.15",
+    "@std/path": "jsr:@std/path@^1.1.2",
     "@std/ulid": "jsr:@std/ulid@^1.0.0",
-    "ink": "npm:ink@^5.2.1",
+    "ink": "npm:ink@^6.3.1",
     "ink-big-text": "npm:ink-big-text@2.0.0",
-    "react": "npm:react@^18.3.1"
+    "react": "npm:react@^19.2.0",
+    "@types/react": "npm:@types/react"
   },
   "compilerOptions": {
     "strict": true,
-    "exactOptionalPropertyTypes": true  
+    "exactOptionalPropertyTypes": true,
+    "strictNullChecks": true
   }
 }

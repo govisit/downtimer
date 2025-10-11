@@ -6,7 +6,7 @@ import { getTimer } from "../../db/timers.ts";
 import { getTopicBySlug } from "../../db/topics.ts";
 import { newTemplateFromTimer } from "../../templates.ts";
 
-import { getTemplateOverrides, Overrides } from "../../timers.ts";
+import { getTemplateOverrides, type Overrides } from "../../timers.ts";
 import { parseDuration } from "../../utils.ts";
 
 export const command = new Command()

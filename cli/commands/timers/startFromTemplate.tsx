@@ -4,12 +4,11 @@ import { colors } from "@cliffy/ansi/colors";
 import { getDatabaseConnection } from "../../db.ts";
 import { getTemplate, getTemplates } from "../../db/templates.ts";
 import { getTopic, getTopicBySlug } from "../../db/topics.ts";
-import React from "react";
 import {
   completedTimerStatuses,
   getTemplateOverrides,
   newTimerFromTemplate,
-  Overrides,
+  type Overrides,
   startTimer,
   withLogs,
 } from "../../timers.ts";
@@ -17,7 +16,7 @@ import { parseDuration } from "../../utils.ts";
 import { render } from "ink";
 import { countdownOnPause, countdownOnResume, font } from "./show.tsx";
 import { Countdown } from "./countdown.tsx";
-import { Template, Topic } from "../../types.ts";
+import type { Template, Topic } from "../../types.ts";
 
 async function getTopicIfAny(
   kv: Deno.Kv,

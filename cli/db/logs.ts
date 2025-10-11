@@ -1,4 +1,4 @@
-import { Log } from "../types.ts";
+import type { Log } from "../types.ts";
 import { getTimer } from "./timers.ts";
 
 const LOG_PREFIX = "logs";

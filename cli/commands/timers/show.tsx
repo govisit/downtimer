@@ -2,7 +2,6 @@ import { Command, EnumType } from "@cliffy/command";
 import { colors } from "@cliffy/ansi/colors";
 import { getDatabaseConnection } from "../../db.ts";
 import { getTimer } from "../../db/timers.ts";
-import React from "react";
 import { render } from "ink";
 import { Countdown, Font } from "./countdown.tsx";
 import { Table } from "@cliffy/table";
@@ -16,7 +15,7 @@ import {
 } from "../../timers.ts";
 import { pauseTimer } from "../../timers.ts";
 import { getPrettyDate } from "../../utils.ts";
-import { TimerWithLogs } from "../../types.ts";
+import type { TimerWithLogs } from "../../types.ts";
 
 export async function countdownOnPause(
   kv: Deno.Kv,

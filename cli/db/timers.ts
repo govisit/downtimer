@@ -1,4 +1,4 @@
-import { Timer } from "../types.ts";
+import type { Timer } from "../types.ts";
 import { getLogByTimerKey, getLogKey, getLogsByTimer } from "./logs.ts";
 import { getTemplate } from "./templates.ts";
 import { getTopic } from "./topics.ts";

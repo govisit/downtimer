@@ -1,6 +1,6 @@
-import { Template, Timer } from "./types.ts";
+import type { Template, Timer } from "./types.ts";
 import { generateId } from "./utils.ts";
-import { Overrides } from "./timers.ts";
+import type { Overrides } from "./timers.ts";
 import { insertTemplate } from "./db/templates.ts";
 
 export function newTemplate(
