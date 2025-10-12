@@ -4,6 +4,13 @@
 }
 
 @import "tailwindcss";
+@plugin "@tailwindcss/forms";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-mono: "Geist Mono", monospace;
+}
 
 /* width */
 ::-webkit-scrollbar {

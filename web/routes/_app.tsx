@@ -14,7 +14,6 @@ export default define.page(function App({ Component }) {
           content="When your phone or PC timer is not enough."
         />
         <title>DownTimer</title>
-        <link rel="stylesheet" href="/styles.css" />
         <script type="text/javascript" src="/init.js" />
         <script
           defer

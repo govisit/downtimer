@@ -23,17 +23,14 @@
     "jsr:@fresh/core@2": "2.1.2",
     "jsr:@fresh/core@^2.1.2": "2.1.2",
     "jsr:@fresh/plugin-vite@^1.0.5": "1.0.5",
-    "jsr:@luca/esbuild-deno-loader@0.11.0": "0.11.0",
     "jsr:@officialrajdeepsingh/slugify@~0.1.1": "0.1.1",
     "jsr:@std/assert@^1.0.15": "1.0.15",
     "jsr:@std/assert@~1.0.6": "1.0.15",
-    "jsr:@std/bytes@^1.0.2": "1.0.5",
     "jsr:@std/bytes@^1.0.6": "1.0.6",
     "jsr:@std/dotenv@~0.225.5": "0.225.5",
-    "jsr:@std/encoding@1": "1.0.7",
+    "jsr:@std/encoding@1": "1.0.10",
     "jsr:@std/encoding@^1.0.10": "1.0.10",
-    "jsr:@std/encoding@^1.0.5": "1.0.7",
-    "jsr:@std/encoding@~1.0.5": "1.0.7",
+    "jsr:@std/encoding@~1.0.5": "1.0.10",
     "jsr:@std/fmt@^1.0.7": "1.0.8",
     "jsr:@std/fmt@^1.0.8": "1.0.8",
     "jsr:@std/fmt@~1.0.2": "1.0.8",
@@ -47,11 +44,9 @@
     "jsr:@std/jsonc@1": "1.0.2",
     "jsr:@std/media-types@1": "1.1.0",
     "jsr:@std/path@1": "1.1.2",
-    "jsr:@std/path@^1.0.1": "1.0.8",
-    "jsr:@std/path@^1.0.6": "1.0.8",
     "jsr:@std/path@^1.1.1": "1.1.2",
     "jsr:@std/path@^1.1.2": "1.1.2",
-    "jsr:@std/path@~1.0.6": "1.0.8",
+    "jsr:@std/path@~1.0.6": "1.0.9",
     "jsr:@std/semver@1": "1.0.6",
     "jsr:@std/text@~1.0.7": "1.0.16",
     "jsr:@std/ulid@1": "1.0.0",
@@ -59,19 +54,20 @@
     "npm:@babel/core@^7.28.0": "7.28.4",
     "npm:@babel/preset-react@^7.27.1": "7.27.1_@babel+core@7.28.4",
     "npm:@mjackson/node-fetch-server@0.7": "0.7.0",
-    "npm:@octokit/core@^6.1.2": "6.1.6",
-    "npm:@octokit/types@^13.5.0": "13.10.0",
+    "npm:@octokit/core@^6.1.6": "6.1.6",
+    "npm:@octokit/types@^13.10.0": "13.10.0",
     "npm:@opentelemetry/api@^1.9.0": "1.9.0",
     "npm:@preact/signals@^2.2.1": "2.3.2_preact@10.27.2",
     "npm:@preact/signals@^2.3.2": "2.3.2_preact@10.27.2",
     "npm:@prefresh/vite@^2.4.8": "2.4.10_preact@10.27.2_vite@7.1.9__picomatch@4.0.3_@types+node@24.2.0",
+    "npm:@tailwindcss/forms@~0.5.10": "0.5.10_tailwindcss@4.1.14",
     "npm:@tailwindcss/vite@^4.1.14": "4.1.14_vite@7.1.9__picomatch@4.0.3_@types+node@24.2.0",
     "npm:@types/node@*": "24.2.0",
     "npm:@types/react@*": "19.2.2",
     "npm:effect@^3.18.4": "3.18.4",
     "npm:esbuild-wasm@0.25.7": "0.25.7",
     "npm:esbuild@0.25.7": "0.25.7",
-    "npm:esbuild@~0.25.5": "0.25.10",
+    "npm:esbuild@~0.25.5": "0.25.7",
     "npm:ink-big-text@2.0.0": "2.0.0_ink@6.3.1__@types+react@19.2.2__react@19.2.0_react@19.2.0_@types+react@19.2.2",
     "npm:ink@^6.3.1": "6.3.1_@types+react@19.2.2_react@19.2.0",
     "npm:preact-render-to-string@^6.5.11": "6.6.2_preact@10.27.2",
@@ -79,7 +75,7 @@
     "npm:preact@^10.27.2": "10.27.2",
     "npm:react@^19.2.0": "19.2.0",
     "npm:rollup@^4.50.0": "4.52.4",
-    "npm:tailwindcss@^4.1.10": "4.1.14",
+    "npm:tailwindcss@^4.1.14": "4.1.14",
     "npm:vite@7.1.9": "7.1.9_picomatch@4.0.3_@types+node@24.2.0",
     "npm:vite@^7.1.4": "7.1.9_picomatch@4.0.3_@types+node@24.2.0",
     "npm:vite@^7.1.9": "7.1.9_picomatch@4.0.3_@types+node@24.2.0"
@@ -236,14 +232,6 @@
         "npm:vite@^7.1.4"
       ]
     },
-    "@luca/esbuild-deno-loader@0.11.0": {
-      "integrity": "c05a989aa7c4ee6992a27be5f15cfc5be12834cab7ff84cabb47313737c51a2c",
-      "dependencies": [
-        "jsr:@std/bytes@^1.0.2",
-        "jsr:@std/encoding@^1.0.5",
-        "jsr:@std/path@^1.0.6"
-      ]
-    },
     "@officialrajdeepsingh/slugify@0.1.1": {
       "integrity": "a016a06eb3d44124e21ff2dc13ac667ef3e3ff99bffae0399cab1238e082f113"
     },
@@ -253,17 +241,11 @@
         "jsr:@std/internal@^1.0.12"
       ]
     },
-    "@std/bytes@1.0.5": {
-      "integrity": "4465dd739d7963d964c809202ebea6d5c6b8e3829ef25c6a224290fbb8a1021e"
-    },
     "@std/bytes@1.0.6": {
       "integrity": "f6ac6adbd8ccd99314045f5703e23af0a68d7f7e58364b47d2c7f408aeb5820a"
     },
     "@std/dotenv@0.225.5": {
       "integrity": "9ce6f9d0ec3311f74a32535aa1b8c62ed88b1ab91b7f0815797d77a6f60c922f"
-    },
-    "@std/encoding@1.0.7": {
-      "integrity": "f631247c1698fef289f2de9e2a33d571e46133b38d042905e3eac3715030a82d"
     },
     "@std/encoding@1.0.10": {
       "integrity": "8783c6384a2d13abd5e9e87a7ae0520a30e9f56aeeaa3bdf910a3eaaf5c811a1"
@@ -316,8 +298,8 @@
     "@std/media-types@1.1.0": {
       "integrity": "c9d093f0c05c3512932b330e3cc1fe1d627b301db33a4c2c2185c02471d6eaa4"
     },
-    "@std/path@1.0.8": {
-      "integrity": "548fa456bb6a04d3c1a1e7477986b6cffbce95102d0bb447c67c4ee70e0364be"
+    "@std/path@1.0.9": {
+      "integrity": "260a49f11edd3db93dd38350bf9cd1b4d1366afa98e81b86167b4e3dd750129e"
     },
     "@std/path@1.1.2": {
       "integrity": "c0b13b97dfe06546d5e16bf3966b1cadf92e1cc83e56ba5476ad8b498d9e3038",
@@ -340,7 +322,7 @@
     "@std/uuid@1.0.9": {
       "integrity": "44b627bf2d372fe1bd099e2ad41b2be41a777fc94e62a3151006895a037f1642",
       "dependencies": [
-        "jsr:@std/bytes@^1.0.6"
+        "jsr:@std/bytes"
       ]
     }
   },
@@ -1062,6 +1044,13 @@
     "@standard-schema/spec@1.0.0": {
       "integrity": "sha512-m2bOd0f2RT9k8QJx1JN85cZYyH1RqFBdlwtkSlf4tBDYLCiiZnv1fIIwacK6cqwXavOydf0NPToMQgpKq+dVlA=="
     },
+    "@tailwindcss/forms@0.5.10_tailwindcss@4.1.14": {
+      "integrity": "sha512-utI1ONF6uf/pPNO68kmN1b8rEwNXv3czukalo8VtJH8ksIkZXr3Q3VYudZLkCsDd4Wku120uF02hYK25XGPorw==",
+      "dependencies": [
+        "mini-svg-data-uri",
+        "tailwindcss"
+      ]
+    },
     "@tailwindcss/node@4.1.14": {
       "integrity": "sha512-hpz+8vFk3Ic2xssIA3e01R6jkmsAhvkQdXlEbRTk6S10xDAtiQiM3FyvZVGsucefq764euO/b8WUW9ysLdThHw==",
       "dependencies": [
@@ -1629,6 +1618,10 @@
     },
     "mimic-fn@2.1.0": {
       "integrity": "sha512-OqbOk5oEQeAZ8WXWydlu9HJjz9WVdEIvamMCcXmuqUYjTknH/sqsWvhQ3vgwKFRR1HpjvNBKQ37nbJgYzGqGcg=="
+    },
+    "mini-svg-data-uri@1.4.4": {
+      "integrity": "sha512-r9deDe9p5FJUPZAk3A59wGH7Ii9YrjjWw0jmw/liSbHl2CHiyXj6FcDXDu2K3TjVAXqiJdaw3xxwlZZr9E6nHg==",
+      "bin": true
     },
     "minipass@7.1.2": {
       "integrity": "sha512-qOOzS1cBTWYF4BH8fVePDBOO9iptMnGUEZwNc/cMWnTV2nVLZ7VoNWEPHkYczZA0pdoA7dl6e7FL659nX9S2aw=="
@@ -2358,13 +2351,14 @@
         "dependencies": [
           "jsr:@fresh/core@^2.1.2",
           "jsr:@fresh/plugin-vite@^1.0.5",
-          "npm:@octokit/core@^6.1.2",
-          "npm:@octokit/types@^13.5.0",
+          "npm:@octokit/core@^6.1.6",
+          "npm:@octokit/types@^13.10.0",
           "npm:@preact/signals@^2.3.2",
+          "npm:@tailwindcss/forms@~0.5.10",
           "npm:@tailwindcss/vite@^4.1.14",
           "npm:effect@^3.18.4",
           "npm:preact@^10.27.2",
-          "npm:tailwindcss@^4.1.10",
+          "npm:tailwindcss@^4.1.14",
           "npm:vite@^7.1.9"
         ]
       }

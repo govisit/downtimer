@@ -62,16 +62,17 @@
     ]
   },
   "imports": {
+    "@tailwindcss/forms": "npm:@tailwindcss/forms@^0.5.10",
     "fresh": "jsr:@fresh/core@^2.1.2",
     "preact": "npm:preact@^10.27.2",
     "@preact/signals": "npm:@preact/signals@^2.3.2",
     "@fresh/plugin-vite": "jsr:@fresh/plugin-vite@^1.0.5",
     "vite": "npm:vite@^7.1.9",
-    "tailwindcss": "npm:tailwindcss@^4.1.10",
+    "tailwindcss": "npm:tailwindcss@^4.1.14",
     "@tailwindcss/vite": "npm:@tailwindcss/vite@^4.1.14",
     "effect": "npm:effect@^3.18.4",
-    "preact/compat": "https://esm.sh/preact@10.27.2/compat",
-    "octokit": "npm:@octokit/core@^6.1.2",
-    "octokit/types": "npm:@octokit/types@^13.5.0"
+    "preact/compat": "npm:preact@^10.27.2/compat",
+    "octokit": "npm:@octokit/core@^6.1.6",
+    "octokit/types": "npm:@octokit/types@^13.10.0"
   }
 }
