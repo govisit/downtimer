@@ -1,10 +1,10 @@
-import { defineLayout } from "$fresh/server.ts";
 import { ComponentChildren } from "preact";
 import Header from "../islands/Header.tsx";
 import { getLatestReleaseForHeader } from "../github.ts";
 import { Release } from "../types.ts";
+import { defineLayout } from "fresh/compat";
 
-export default defineLayout(async (_req, ctx) => {
+export default defineLayout(async (ctx) => {
   const latestRelease = await getLatestReleaseForHeader();
 
   return (

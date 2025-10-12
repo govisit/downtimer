@@ -4,24 +4,74 @@
   "version": "0.1.0",
   "exports": {},
   "tasks": {
-    "check": "deno fmt --check && deno lint && deno check",
-    "cli": "echo \"import '\\$fresh/src/dev/cli.ts'\" | deno run -A -",
-    "manifest": "deno task cli manifest $(pwd)",
-    "start": "deno run -A --watch=static/,routes/ dev.ts",
-    "build": "deno run -A dev.ts build",
-    "preview": "deno run -A main.ts",
-    "update": "deno run -A -r https://fresh.deno.dev/update ."
+    "check": "deno fmt --check . && deno lint . && deno check",
+    "dev": "vite",
+    "build": "vite build",
+    "start": "deno serve -A _fresh/server.js",
+    "update": "deno run -A -r jsr:@fresh/update ."
   },
   "lint": {
-    "exclude": ["static/"],
-    "rules": { "tags": ["fresh", "recommended"] }
+    "rules": {
+      "tags": [
+        "fresh",
+        "recommended"
+      ]
+    },
+    "exclude": [
+      "static/*"
+    ]
   },
-  "exclude": ["**/_fresh/*"],
+  "exclude": [
+    "**/_fresh/*"
+  ],
   "deploy": {
     "project": "61a70179-303f-40f2-8c13-80b46066e22d",
-    "exclude": ["**/node_modules"],
+    "exclude": [
+      "**/node_modules"
+    ],
     "include": [],
     "entrypoint": "main.ts"
   },
-  "compilerOptions": { "jsx": "react-jsx", "jsxImportSource": "preact" }
+  "compilerOptions": {
+    "lib": [
+      "dom",
+      "dom.asynciterable",
+      "dom.iterable",
+      "deno.ns"
+    ],
+    "jsx": "precompile",
+    "jsxImportSource": "preact",
+    "jsxPrecompileSkipElements": [
+      "a",
+      "img",
+      "source",
+      "body",
+      "html",
+      "head",
+      "title",
+      "meta",
+      "script",
+      "link",
+      "style",
+      "base",
+      "noscript",
+      "template"
+    ],
+    "types": [
+      "vite/client"
+    ]
+  },
+  "imports": {
+    "fresh": "jsr:@fresh/core@^2.1.2",
+    "preact": "npm:preact@^10.27.2",
+    "@preact/signals": "npm:@preact/signals@^2.3.2",
+    "@fresh/plugin-vite": "jsr:@fresh/plugin-vite@^1.0.5",
+    "vite": "npm:vite@^7.1.9",
+    "tailwindcss": "npm:tailwindcss@^4.1.10",
+    "@tailwindcss/vite": "npm:@tailwindcss/vite@^4.1.14",
+    "effect": "npm:effect@^3.18.4",
+    "preact/compat": "https://esm.sh/preact@10.27.2/compat",
+    "octokit": "npm:@octokit/core@^6.1.2",
+    "octokit/types": "npm:@octokit/types@^13.5.0"
+  }
 }

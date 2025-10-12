@@ -3,9 +3,7 @@
   src: url("./fonts/GeistMonoVF.woff2") format("woff2");
 }
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
 /* width */
 ::-webkit-scrollbar {

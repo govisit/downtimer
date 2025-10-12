@@ -2,8 +2,9 @@ import { signal } from "@preact/signals";
 import Shell from "../islands/Shell.tsx";
 import { Line, ValidPrompts } from "../islands/ShellLine.tsx";
 import { getTimestamp } from "../islands/ShellPrompt.tsx";
-import { Head } from "$fresh/runtime.ts";
+import { Head } from "fresh/runtime";
 import { getLatestDownloadAssets } from "../github.ts";
+import { define } from "../utils.ts";
 
 const lines = signal<Line[]>([
   {
@@ -27,7 +28,7 @@ const history = signal(
     .toReversed(),
 );
 
-export default async function Home() {
+export default define.page(async function Home() {
   const downloadAssets = await getLatestDownloadAssets();
 
   return (
@@ -39,4 +40,4 @@ export default async function Home() {
       <Shell lines={lines} history={history} assets={downloadAssets} />
     </>
   );
-}
+});

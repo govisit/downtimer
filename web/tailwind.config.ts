@@ -1,6 +1,6 @@
-import defaultTheme from "tailwindcss/defaultTheme";
+// import defaultTheme from "tailwindcss/defaultTheme";
 import { type Config } from "tailwindcss";
-import tailwindCssForms from "@tailwindcss/forms";
+// import tailwindCssForms from "@tailwindcss/forms";
 
 export default {
   content: [
@@ -9,10 +9,11 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        "mono": ['"Geist Mono"', ...defaultTheme.fontFamily.sans],
+        "mono": ['"Geist Mono"'],
+        // "mono": ['"Geist Mono"', ...defaultTheme.fontFamily.sans],
       },
     },
   },
-  plugins: [tailwindCssForms],
+  // plugins: [tailwindCssForms],
   darkMode: "selector",
 } satisfies Config;

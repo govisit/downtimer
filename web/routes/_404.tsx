@@ -1,5 +1,5 @@
-import { Head } from "$fresh/runtime.ts";
-import { RouteConfig } from "$fresh/server.ts";
+import { Head } from "fresh/runtime";
+import { RouteConfig } from "fresh";
 import { getLatestReleaseForHeader } from "../github.ts";
 import { LayoutComponent as Layout } from "./_layout.tsx";
 
@@ -7,7 +7,7 @@ export const config: RouteConfig = {
   skipInheritedLayouts: true, // Skip already inherited layouts
 };
 
-export default async function Error404() {
+export async function Error404() {
   const latestRelease = await getLatestReleaseForHeader();
 
   return (
