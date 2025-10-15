@@ -178,9 +178,9 @@ function AboutResponse({ setShellPrompt }: AboutResponseProps) {
       <ResponseTitle title="About" />
       <br />
       <p>
-        I needed a way to manage multiple timers, so I have created this
-        application. The CLI application is free to download and use. It has no
-        restrictions. You can download the binary if you type{" "}
+        I needed a way to manage multiple timers which count down time, so I
+        have created this application. You can download the binary if you type
+        {" "}
         <button
           type="button"
           class="bg-gray-900 dark:bg-gray-100 py px-2 rounded text-gray-100 dark:text-gray-900 hover:opacity-70"
@@ -196,10 +196,28 @@ function AboutResponse({ setShellPrompt }: AboutResponseProps) {
       </p>
       <br />
       <p>
-        In the future I plan to add a web app and implement the sync feature in
-        the CLI application so that you can sync your timers across devices.
-        These both features will require some form of payment, but the CLI
-        application will remain free forever.
+        DownTimer is a CLI application written in TypeScript / Deno, and
+        compiled to a binary. You tell it how much time you want to count down,
+        and you can pause it, resume it, view times it has been paused, when it
+        completed, etc. It also has a nice CLI display where it uses ASCII
+        graphics to show remaining time. Good for showing linux rices or just
+        showing off your terminal skills.
+      </p>
+      <br />
+
+      <p>
+        &gt; dt timer show 01K7HTNR83EQEG0Q4XXHBDR8G5 -c --font slick<br />
+        Name: DownTimer<br />
+        Duration: 2h<br />
+        Status: Paused<br />
+        Created at: 17.12.2023. 21:56:57<br />
+        <br />
+        ╱╭━━━╮╱╱╭╮╱╱╱╱╱╭━━━╮╱╭━━━╮╱╱╱╱╭━━━╮╱╭━━━╮<br />
+        ╱┃╭━╮┃╱╭╯┃╱╱╭╮╱┃╭━━╯╱┃╭━╮┃╱╭╮╱┃╭━╮┃╱┃╭━━╯<br />
+        ╱┃┃┃┃┃╱╰╮┃╱╱╰╯╱┃╰━━╮╱┃╰━╯┃╱╰╯╱┃┃┃┃┃╱┃╰━━╮<br />
+        ╱┃┃┃┃┃╱╱┃┃╱╱╭╮╱╰━━╮┃╱╰━━╮┃╱╭╮╱┃┃┃┃┃╱┃╭━╮┃<br />
+        ╱┃╰━╯┃╱╭╯╰╮╱╰╯╱╭━━╯┃╱╭━━╯┃╱╰╯╱┃╰━╯┃╱┃╰━╯┃<br />
+        ╱╰━━━╯╱╰━━╯╱╱╱╱╰━━━╯╱╰━━━╯╱╱╱╱╰━━━╯╱╰━━━╯<br />
       </p>
       <br />
       <div>

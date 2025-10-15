@@ -4,7 +4,8 @@
   "vendor": true,
   "workspace": [
     "./web",
-    "./cli"
+    "./cli",
+    "./shared"
   ],
   "compilerOptions": {
     "strict": true,
