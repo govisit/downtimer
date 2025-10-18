@@ -12,6 +12,7 @@ This monorepo contains two projects:
 
 - cli
 - web
+- shared
 
 ### Web
 
@@ -59,6 +60,15 @@ Related links:
 - https://github.com/govisit/deno-cross-compilation-panic
 
 ## Deployment/release
+
+### WEB application
+
+Was deployed to Deno Deploy, but now I have to either use optimize or docker to package the application and self host.
+Can't use Deno Deploy because I don't know how to configure it for fresh in a monorepo...
+
+- [ ] Self host website
+
+### CLI application
 
 I'm using github actions to trigger a new release on tag. Currently the tag
 format is `v0.1.0-cli`.
