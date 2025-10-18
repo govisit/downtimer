@@ -2342,6 +2342,7 @@
           "jsr:@std/path@^1.1.2",
           "jsr:@std/ulid@1",
           "npm:@types/react@*",
+          "npm:effect@^3.18.4",
           "npm:ink-big-text@2.0.0",
           "npm:ink@^6.3.1",
           "npm:react@^19.2.0"
@@ -2356,7 +2357,6 @@
           "npm:@preact/signals@^2.3.2",
           "npm:@tailwindcss/forms@~0.5.10",
           "npm:@tailwindcss/vite@^4.1.14",
-          "npm:effect@^3.18.4",
           "npm:preact@^10.27.2",
           "npm:tailwindcss@^4.1.14",
           "npm:vite@^7.1.9"

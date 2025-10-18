@@ -70,7 +70,6 @@
     "vite": "npm:vite@^7.1.9",
     "tailwindcss": "npm:tailwindcss@^4.1.14",
     "@tailwindcss/vite": "npm:@tailwindcss/vite@^4.1.14",
-    "effect": "npm:effect@^3.18.4",
     "preact/compat": "npm:preact@^10.27.2/compat",
     "octokit": "npm:@octokit/core@^6.1.6",
     "octokit/types": "npm:@octokit/types@^13.10.0"
