@@ -16,4 +16,3 @@ export function getRemainingTimeText(remainingTime: number): string {
 
   return `${hours}:${minutes}:${seconds}`;
 }
-

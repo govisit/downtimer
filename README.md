@@ -1,85 +1,49 @@
 # DownTimer
 
-When your phone or PC is not enough.
+**When your phone or PC is not enough.**
 
-## Usage
+I needed a way to manage multiple timers which count down time, so I have
+created this application. You can download the binary if you type
+
+in the shell prompt bellow.
+
+DownTimer is a CLI application written in TypeScript / Deno, and compiled to a
+binary. You tell it how much time you want to count down, and you can pause it,
+resume it, view times it has been paused, when it completed, etc. It also has a
+nice CLI display where it uses ASCII graphics to show remaining time. Good for
+showing linux rices or just showing off your terminal skills.
+
+```bash
+> dt timer show 01K7HTNR83EQEG0Q4XXHBDR8G5 -c --font slick
+Name: DownTimer
+Duration: 2h
+Status: Paused
+Created at: 17.12.2023. 21:56:57
+
+╱╭━━━╮╱╱╭╮╱╱╱╱╱╭━━━╮╱╭━━━╮╱╱╱╱╭━━━╮╱╭━━━╮
+╱┃╭━╮┃╱╭╯┃╱╱╭╮╱┃╭━━╯╱┃╭━╮┃╱╭╮╱┃╭━╮┃╱┃╭━━╯
+╱┃┃┃┃┃╱╰╮┃╱╱╰╯╱┃╰━━╮╱┃╰━╯┃╱╰╯╱┃┃┃┃┃╱┃╰━━╮
+╱┃┃┃┃┃╱╱┃┃╱╱╭╮╱╰━━╮┃╱╰━━╮┃╱╭╮╱┃┃┃┃┃╱┃╭━╮┃
+╱┃╰━╯┃╱╭╯╰╮╱╰╯╱╭━━╯┃╱╭━━╯┃╱╰╯╱┃╰━╯┃╱┃╰━╯┃
+╱╰━━━╯╱╰━━╯╱╱╱╱╰━━━╯╱╰━━━╯╱╱╱╱╰━━━╯╱╰━━━╯
+```
+
+## Quickstart
 
 Make sure to install Deno: https://deno.land/manual/getting_started/installation
 
+```bash
+deno install
+
+deno task --cwd ./web dev
+
+deno task --cwd ./cli start
+```
+
 ## Structure
 
-This monorepo contains two projects:
+This monorepo contains projects:
 
-- cli
-- web
-- shared
-
-### Web
-
-**Do not import from `@preact/signals-core`, but from `@preact/signals`.
-
-## Testing
-
-Navigate to a project and run tests with:
-
-```bash
-deno task test
-
-# or watch for changes
-deno task test --watch
-
-# or run specific test
-deno task test --filter "it should calculate correct completed at time"
-```
-
-### Coverage
-
-Run right after running tests with the above command:
-
-```bash
-deno task coverage
-```
-
-## Compile
-
-```bash
-deno task compile:host
-deno task compile:windows # For generating Windows executable.
-deno task compile:linux # For generating Linux executable.
-deno task compile:mac # For generating Mac executable.
-deno task compile:mac-arm # For generating Mac ARM executable.
-```
-
-Cross compilation (Linux -> Windows) does not work at the moment. The workaround
-is to clone the repository to Windows and then run `deno task compile-host`.
-
-Related links:
-
-- https://github.com/denoland/deno/issues/22690
-- https://github.com/denoland/deno/discussions/22685
-- https://github.com/govisit/deno-cross-compilation-panic
-
-## Deployment/release
-
-### WEB application
-
-Was deployed to Deno Deploy, but now I have to either use optimize or docker to package the application and self host.
-Can't use Deno Deploy because I don't know how to configure it for fresh in a monorepo...
-
-- [ ] Self host website
-
-### CLI application
-
-I'm using github actions to trigger a new release on tag. Currently the tag
-format is `v0.1.0-cli`.
-
-This runs a workflow in which deno is installed, and the cli program is compiled
-for each operating system and placed in `/cli/dist` directory. Then I execute
-`tar` on each generated binary file to reduce its size. After that, I use
-`gh release create` (GitHub CLI) to publish a new release with the newly created
-tarred binary files. Finally, I use an
-[repository secret for GitHub actions](https://github.com/govisit/DownTimer/settings/secrets/actions)
-named `DOCS_GITHUB_TOKEN`, which I generated on this page
-[Fine-grained personal access tokens](https://github.com/settings/tokens?type=beta)
-for repository `govisit/DownTimer-docs` only; to publish the release on
-`govisit/DownTimer-docs` which is publically available.
+- [cli](/cli/README.md)
+- [web](/web/README.md)
+- [shared](/shared/README.md)

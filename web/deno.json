@@ -8,7 +8,8 @@
     "dev": "vite",
     "build": "vite build",
     "start": "deno serve -A _fresh/server.js",
-    "update": "deno run -A -r jsr:@fresh/update ."
+    "update": "deno run -A -r jsr:@fresh/update .",
+    "compile": "deno compile --output dt-web --include _fresh -A _fresh/compiled-entry.js"
   },
   "lint": {
     "rules": {
