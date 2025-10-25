@@ -1,5 +1,6 @@
 # CLI program
 
+
 ## Testing
 
 Navigate to a project and run tests with:
@@ -14,6 +15,7 @@ deno task test --watch
 deno task test --filter "it should calculate correct completed at time"
 ```
 
+
 ### Coverage
 
 Run right after running tests with the above command:
@@ -21,6 +23,7 @@ Run right after running tests with the above command:
 ```bash
 deno task coverage
 ```
+
 
 ## Compile
 
@@ -40,6 +43,7 @@ Related links:
 - https://github.com/denoland/deno/issues/22690
 - https://github.com/denoland/deno/discussions/22685
 - https://github.com/govisit/deno-cross-compilation-panic
+
 
 ## Deployment
 

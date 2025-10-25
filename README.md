@@ -28,7 +28,14 @@ Created at: 17.12.2023. 21:56:57
 ╱╰━━━╯╱╰━━╯╱╱╱╱╰━━━╯╱╰━━━╯╱╱╱╱╰━━━╯╱╰━━━╯
 ```
 
-## Quickstart
+
+## Documentation
+
+- [Docs index](https://github.com/govisit/DownTimer-docs)
+- [Quickstart](https://github.com/govisit/DownTimer-docs/wiki/Quickstart)
+
+
+## Local development
 
 Make sure to install Deno: https://deno.land/manual/getting_started/installation
 
@@ -39,6 +46,13 @@ deno task --cwd ./web dev
 
 deno task --cwd ./cli start
 ```
+
+
+## Requirements
+
+- Deno
+- Nushell
+
 
 ## Structure
 
