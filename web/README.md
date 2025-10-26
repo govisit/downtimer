@@ -2,13 +2,11 @@
 
 **Do not import from `@preact/signals-core`, but from `@preact/signals`.
 
-
 ## Deployment
 
 Was deployed to Deno Deploy, but now I have to either use optimize or docker to
 package the application and self host. Can't use Deno Deploy because I don't
 know how to configure it for fresh in a monorepo...
-
 
 ### Compile
 
@@ -28,7 +26,6 @@ The compiled entry supports two environment variables out of the box:
 
     `PORT` to set the port number (`PORT=4000 my-app`)
     `HOSTNAME` to set the host name number (`HOSTNAME=0.0.0.0 my-app`)
-
 
 ### Containerize
 

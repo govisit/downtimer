@@ -28,12 +28,10 @@ Created at: 17.12.2023. 21:56:57
 ╱╰━━━╯╱╰━━╯╱╱╱╱╰━━━╯╱╰━━━╯╱╱╱╱╰━━━╯╱╰━━━╯
 ```
 
-
 ## Documentation
 
 - [Docs index](https://github.com/govisit/DownTimer-docs)
 - [Quickstart](https://github.com/govisit/DownTimer-docs/wiki/Quickstart)
-
 
 ## Local development
 
@@ -47,12 +45,10 @@ deno task --cwd ./web dev
 deno task --cwd ./cli start
 ```
 
-
 ## Requirements
 
 - Deno
 - Nushell
-
 
 ## Structure
 
