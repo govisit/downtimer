@@ -3,7 +3,7 @@
   "nodeModulesDir": "auto",
   "vendor": true,
   "tasks": {
-    "web:build:image": "podman build --build-arg GIT_REVISION=$(git rev-parse HEAD) -t dt-web -f ./web/Dockerfile ."
+    "web:build:image": "podman build --build-arg GIT_REVISION=$(git rev-parse HEAD) -t dt-web:latest -f ./web/Dockerfile ."
   },
   "workspace": [
     "./web",

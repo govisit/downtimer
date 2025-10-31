@@ -1,0 +1,44 @@
+name: WEB Release
+
+on:
+  push:
+    # Publish semver tags as releases.
+    tags: ["v*.*.*-web"]
+
+jobs:
+  release-linux:
+    name: Release all
+    runs-on: ubuntu-latest
+
+    permissions:
+      packages: write # Needed for creating a package
+      contents: write # Needed to clone the repository
+
+    steps:
+      - name: Clone repository
+        uses: actions/checkout@v4
+
+      - name: Install Deno
+        uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+
+      - name: Install podman
+        run: "sudo apt-get update && sudo apt-get install -y podman"
+
+      - name: Build image
+        run: "deno task web:build:image -t ghcr.io/govisit/dt-web:${{ github.ref_name }}"
+
+      - name: Login to GHCR
+        run: "podman login ghcr.io -u mabasic -p \"${{ secrets.GITHUB_TOKEN }}\""
+
+      - name: Push versioned image to GHCR
+        run: "podman push ghcr.io/govisit/dt-web:${{ github.ref_name }}"
+
+      - name: Push latest image to GHCR
+        run: "podman push ghcr.io/govisit/dt-web:latest"
+
+      - name: Create release
+        run: "gh release create ${{ github.ref_name }}"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
