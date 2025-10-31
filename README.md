@@ -45,6 +45,24 @@ deno task --cwd ./web dev
 deno task --cwd ./cli start
 ```
 
+### Releases
+
+Run the following script with different parameters.
+It will bump the version in deno.json and create a commit.
+It will also tag the commit.
+
+Requirements:
+- jujutsu
+- nushell
+
+```nu
+nu ./scripts/version.nu web minor
+
+nu ./scripts/version.nu cli major
+
+nu ./scripts/version.nu shared patch
+```
+
 ## Requirements
 
 - Deno
