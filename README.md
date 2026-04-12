@@ -47,11 +47,11 @@ deno task --cwd ./cli start
 
 ### Releases
 
-Run the following script with different parameters.
-It will bump the version in deno.json and create a commit.
-It will also tag the commit.
+Run the following script with different parameters. It will bump the version in
+deno.json and create a commit. It will also tag the commit.
 
 Requirements:
+
 - jujutsu
 - nushell
 

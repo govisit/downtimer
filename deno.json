@@ -1,5 +1,5 @@
 {
-  "$schema": "https://raw.githubusercontent.com/denoland/deno/main/cli/schemas/config-file.v1.json",
+  "$schema": "https://raw.githubusercontent.com/denoland/deno/refs/heads/main/cli/schemas/config-file.v1.json",
   "nodeModulesDir": "auto",
   "vendor": true,
   "tasks": {
@@ -14,5 +14,10 @@
     "strict": true,
     "exactOptionalPropertyTypes": true,
     "strictNullChecks": true
-  }
+  },
+  "allowScripts": [
+    "npm:@tailwindcss/oxide@4.1.14",
+    "npm:esbuild@0.25.10",
+    "npm:esbuild@0.25.7"
+  ]
 }
