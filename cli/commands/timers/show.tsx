@@ -1,4 +1,5 @@
 import { Command, EnumType } from "@cliffy/command";
+import { Select } from "@cliffy/prompt";
 import { colors } from "@cliffy/ansi/colors";
 import { getDatabaseConnection } from "../../db.ts";
 import { getTimer } from "../../db/timers.ts";
@@ -58,6 +59,9 @@ export const command = new Command()
     "--latest",
     "Get latest created active timer.",
   )
+  .option(
+    "-i, --interactive",
+    "Pick from a list of active timers.",
   )
   .option(
     "-l, --logs",
@@ -107,7 +111,34 @@ export const command = new Command()
         );
       }
 
-      console.error("You must provide either `id` or `--latest`.");
+      if (options.interactive) {
+        const activeTimers = await getActiveTimers(kv);
+
+        return EffectArray.match(activeTimers, {
+          onEmpty: () => {
+            console.info("No active timers found.");
+
+            Deno.exit(0);
+          },
+          onNonEmpty: async (activeTimers) => {
+            const timerId = await Select.prompt({
+              message: "Select a timer",
+              options: activeTimers.map((_) => ({
+                name: _.name,
+                value: _.id,
+              })),
+            });
+
+            // NOTE: There is little chance that this will not find anything.
+            return EffectArray.findFirst(activeTimers, (_) => _.id === timerId)
+              .pipe(Option.getOrThrow);
+          },
+        });
+      }
+
+      console.error(
+        "You must provide either `[id]`, or `--latest`, or `-i, --interactive`.",
+      );
 
       Deno.exit(1);
     })();
