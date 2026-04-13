@@ -10,12 +10,14 @@ import {
   cron,
   formatStatus,
   formatTimerForTable,
+  getActiveTimers,
   resumeTimer,
   withLogs,
 } from "../../timers.ts";
 import { pauseTimer } from "../../timers.ts";
 import { getPrettyDate } from "../../utils.ts";
 import type { TimerWithLogs } from "../../types.ts";
+import { Array as EffectArray, Match, Option } from "effect";
 
 export async function countdownOnPause(
   kv: Deno.Kv,
@@ -47,10 +49,15 @@ export const font = new EnumType(Font);
 
 export const command = new Command()
   .type("font", font)
-  .arguments("<id:string>")
+  .arguments("[id:string]")
   .option(
     "-c, --countdown",
     "Eye candy and real time monitoring.",
+  )
+  .option(
+    "--latest",
+    "Get latest created active timer.",
+  )
   )
   .option(
     "-l, --logs",
@@ -69,15 +76,41 @@ export const command = new Command()
 
     await cron(kv);
 
-    const timer = await getTimer(kv, id);
+    const timerWithLogs = await (async () => {
+      if (id) {
+        const timerMaybe = await getTimer(kv, id);
 
-    if (timer.value === null) {
-      console.error(colors.red(`Timer with Id '${id}' was not found.`));
+        return Match.value(timerMaybe.value).pipe(
+          Match.when(Match.null, () => {
+            console.error(colors.red(`Timer with Id '${id}' was not found.`));
+
+            Deno.exit(1);
+          }),
+          Match.orElse((timer) => withLogs(kv, timer)),
+        );
+      }
+
+      if (options.latest) {
+        const latestActiveTimerMaybe = await getActiveTimers(kv).then(
+          EffectArray.head,
+        );
+
+        return latestActiveTimerMaybe.pipe(
+          Option.match({
+            onSome: (_) => _,
+            onNone: () => {
+              console.info("Latest active timer not found.");
+
+              Deno.exit(0);
+            },
+          }),
+        );
+      }
+
+      console.error("You must provide either `id` or `--latest`.");
 
       Deno.exit(1);
-    }
-
-    const timerWithLogs = await withLogs(kv, timer.value);
+    })();
 
     if (
       options.countdown &&
