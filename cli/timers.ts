@@ -352,6 +352,11 @@ export const activeStatuses = [
   TimerStatus.Paused,
 ];
 
+export const completedStatuses = [
+  TimerStatus.Completed,
+  TimerStatus.ManualCompleted,
+];
+
 export async function getAllTimers(kv: Deno.Kv): Promise<TimerWithLogs[]> {
   return (await Promise.all(
     await getTimers(kv).then((timers) =>
@@ -369,6 +374,16 @@ export async function getRunningTimers(kv: Deno.Kv): Promise<TimerWithLogs[]> {
 export async function getActiveTimers(kv: Deno.Kv): Promise<TimerWithLogs[]> {
   return (await getAllTimers(kv)).filter((timer) => {
     return activeStatuses.includes(
+      timer.latestLog.timerStatus,
+    );
+  });
+}
+
+export async function getCompletedTimers(
+  kv: Deno.Kv,
+): Promise<TimerWithLogs[]> {
+  return (await getAllTimers(kv)).filter((timer) => {
+    return completedStatuses.includes(
       timer.latestLog.timerStatus,
     );
   });
