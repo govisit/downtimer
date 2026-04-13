@@ -4,8 +4,12 @@ import { getDatabaseConnection } from "../../db.ts";
 import { getTopicBySlug } from "../../db/topics.ts";
 import { newTimer, startTimer } from "../../timers.ts";
 import { parseDuration } from "../../utils.ts";
+import { Countdown } from "./countdown.tsx";
+import { render } from "ink";
+import { countdownOnPause, countdownOnResume, font } from "./show.tsx";
 
 export const command = new Command()
+  .type("font", font)
   .option("-n, --name <name:string>", "The name of the timer.", {
     required: true,
   })
@@ -15,6 +19,17 @@ export const command = new Command()
   .option(
     "-t, --topic <topic:string>",
     "The topic slug to which the timer belongs.",
+  )
+  .option(
+    "-c, --countdown",
+    "Eye candy and real time monitoring.",
+  )
+  .option(
+    "--font <font:font>",
+    "Font for countdown feature. Possible values",
+    {
+      required: false,
+    },
   )
   .description("Starts a new timer.")
   .action(async (options) => {
@@ -44,7 +59,18 @@ export const command = new Command()
 
     const timer = newTimer(options.name, duration, topic?.value?.id);
 
-    await startTimer(kv, timer);
+    const { timer: timerWithLogs } = await startTimer(kv, timer);
 
-    console.log(colors.green(`Timer "${timer.id}" started.`));
+    if (options.countdown) {
+      render(
+        <Countdown
+          font={options.font}
+          timer={timerWithLogs}
+          onPause={async () => await countdownOnPause(kv, timerWithLogs)}
+          onResume={async () => await countdownOnResume(kv, timerWithLogs)}
+        />,
+      );
+    } else {
+      console.log(colors.green(`Timer "${timer.id}" started.`));
+    }
   });
