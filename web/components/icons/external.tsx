@@ -5,7 +5,7 @@ export default function ExternalIcon() {
       width="14"
       height="14"
       fill="currentColor"
-      class="bi bi-box-arrow-up-right"
+      class="bi bi-box-arrow-up-right inline-block ml-1"
       viewBox="0 0 16 16"
     >
       <path

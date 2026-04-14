@@ -7,12 +7,12 @@ import { Asset } from "../types.ts";
 type ShellProps = {
   lines: Signal<Line[]>;
   history: Signal<string[]>;
-  assets: Asset[];
+  assets?: Asset[];
 };
 
 const initialLoad = signal(true);
 
-export default function Shell({ lines, history, assets }: ShellProps) {
+export default function Shell({ lines, history, assets = [] }: ShellProps) {
   const prompt = useSignal("");
   const linesRef = useRef<HTMLDivElement>(null);
   const shellPromptRef = useRef<HTMLInputElement>(null);

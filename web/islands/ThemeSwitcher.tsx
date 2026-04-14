@@ -130,6 +130,7 @@ export default function ThemeSwitcher() {
     <button
       type="button"
       title="Toggle theme"
+      class="cursor-pointer"
       onClick={() => {
         changeTheme();
       }}

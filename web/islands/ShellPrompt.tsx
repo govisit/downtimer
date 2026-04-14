@@ -97,7 +97,7 @@ const ShellPrompt = forwardRef<HTMLInputElement, ShellPromptProps>(
           />
           <button
             type="submit"
-            class="text-gray-700 dark:text-gray-300 px-2"
+            class="text-gray-700 dark:text-gray-300 px-2 cursor-pointer hover:bg-gray-200 hover:opacity-70 rounded-lg"
             title="Return"
           >
             <ReturnIcon />

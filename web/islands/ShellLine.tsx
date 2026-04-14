@@ -1,6 +1,6 @@
 import { ComponentChildren } from "preact";
 import { Asset } from "../types.ts";
-import { docsUrl } from "../config.ts";
+import { repoUrl } from "../config.ts";
 import { Menu, MenuItem, MenuItemLink } from "../components/menu.tsx";
 import { Code } from "../components/typography.tsx";
 
@@ -21,7 +21,6 @@ export enum ValidPrompts {
   GoTo = "goto",
   About = "about",
   Features = "features",
-  Privacy = "privacy",
   Download = "download",
   Help = "help",
   Clear = "clear",
@@ -152,12 +151,6 @@ function HelpResponse() {
             displays this help text.
           </SmallText>
         </li>
-        <li>
-          privacy{" "}
-          <SmallText>
-            displays a privacy notice.
-          </SmallText>
-        </li>
       </ul>
       <br />
       <p>
@@ -183,7 +176,7 @@ function AboutResponse({ setShellPrompt }: AboutResponseProps) {
         {" "}
         <button
           type="button"
-          class="bg-gray-900 dark:bg-gray-100 py px-2 rounded text-gray-100 dark:text-gray-900 hover:opacity-70"
+          class="bg-gray-900 dark:bg-gray-100 py px-2 rounded text-gray-100 dark:text-gray-900 hover:opacity-70 cursor-pointer"
           onClick={() => {
             if (setShellPrompt) {
               setShellPrompt(ValidPrompts.Download.toString());
@@ -205,32 +198,38 @@ function AboutResponse({ setShellPrompt }: AboutResponseProps) {
       </p>
       <br />
 
-      <p>
+      <div>
         &gt; dt timer show 01K7HTNR83EQEG0Q4XXHBDR8G5 -c --font slick<br />
         Name: DownTimer<br />
         Duration: 2h<br />
         Status: Paused<br />
         Created at: 17.12.2023. 21:56:57<br />
         <br />
-        ╱╭━━━╮╱╱╭╮╱╱╱╱╱╭━━━╮╱╭━━━╮╱╱╱╱╭━━━╮╱╭━━━╮<br />
-        ╱┃╭━╮┃╱╭╯┃╱╱╭╮╱┃╭━━╯╱┃╭━╮┃╱╭╮╱┃╭━╮┃╱┃╭━━╯<br />
-        ╱┃┃┃┃┃╱╰╮┃╱╱╰╯╱┃╰━━╮╱┃╰━╯┃╱╰╯╱┃┃┃┃┃╱┃╰━━╮<br />
-        ╱┃┃┃┃┃╱╱┃┃╱╱╭╮╱╰━━╮┃╱╰━━╮┃╱╭╮╱┃┃┃┃┃╱┃╭━╮┃<br />
-        ╱┃╰━╯┃╱╭╯╰╮╱╰╯╱╭━━╯┃╱╭━━╯┃╱╰╯╱┃╰━╯┃╱┃╰━╯┃<br />
-        ╱╰━━━╯╱╰━━╯╱╱╱╱╰━━━╯╱╰━━━╯╱╱╱╱╰━━━╯╱╰━━━╯<br />
-      </p>
+        <div class="text-[8px] sm:text-xs">
+          ╱╭━━━╮╱╱╭╮╱╱╱╱╱╭━━━╮╱╭━━━╮╱╱╱╱╭━━━╮╱╭━━━╮<br />
+          ╱┃╭━╮┃╱╭╯┃╱╱╭╮╱┃╭━━╯╱┃╭━╮┃╱╭╮╱┃╭━╮┃╱┃╭━━╯<br />
+          ╱┃┃┃┃┃╱╰╮┃╱╱╰╯╱┃╰━━╮╱┃╰━╯┃╱╰╯╱┃┃┃┃┃╱┃╰━━╮<br />
+          ╱┃┃┃┃┃╱╱┃┃╱╱╭╮╱╰━━╮┃╱╰━━╮┃╱╭╮╱┃┃┃┃┃╱┃╭━╮┃<br />
+          ╱┃╰━╯┃╱╭╯╰╮╱╰╯╱╭━━╯┃╱╭━━╯┃╱╰╯╱┃╰━╯┃╱┃╰━╯┃<br />
+          ╱╰━━━╯╱╰━━╯╱╱╱╱╰━━━╯╱╰━━━╯╱╱╱╱╰━━━╯╱╰━━━╯<br />
+        </div>
+      </div>
       <br />
       <div>
         <Menu>
           <MenuItemLink
-            href={docsUrl + "/wiki/quickstart"}
+            href="/docs/quickstart"
             name="Quickstart"
+          />
+          <MenuItemLink href="/docs" name="Documentation" />
+          <MenuItemLink
+            href={repoUrl + "/issues"}
+            name="Issues"
             isExternal
           />
-          <MenuItemLink href={docsUrl} name="Documentation" isExternal />
           <MenuItemLink
-            href={docsUrl + "/issues"}
-            name="Issues"
+            href={repoUrl + "/discussions"}
+            name="Discussions"
             isExternal
           />
         </Menu>
@@ -268,46 +267,6 @@ function ResponseTitle({ title }: { title: string }) {
     <h2 class="text-gray-700 dark:text-gray-300">
       <b>{title}</b>
     </h2>
-  );
-}
-
-function PrivacyResponse() {
-  return (
-    <PlainResponse>
-      <ResponseTitle title="Privacy Notice" />
-
-      <br />
-
-      <p>
-        This notice provides information about the types of information I may
-        collect from you when you visit my website and explains how I use such
-        data, as well as describes the steps I take in order to protect them.
-        The notice also describes the options you have with regard to the
-        collection and use of your data when you visit my website.
-      </p>
-
-      <br />
-
-      <h3>Analytics</h3>
-      <p>
-        I use a self-hosted version of{" "}
-        <a
-          class="underline hover:opacity-70"
-          href="https://plausible.io"
-          rel="nofollow noopener"
-          target="_blank"
-        >
-          Plausible Analytics
-        </a>{" "}
-        for the purpose of collecting and analyzing website visit frequency. It
-        is an open source web analytics software, built in the EU, with no
-        cookies, no tracking and no personal data collection.
-      </p>
-
-      <br />
-
-      <h3>Cookies</h3> This website does not use cookies.
-    </PlainResponse>
   );
 }
 
@@ -386,7 +345,7 @@ function GoToResponse({ setShellPrompt }: GoToResponseProps) {
         Click on the link bellow or type{" "}
         <button
           type="button"
-          class="bg-gray-900 dark:bg-gray-100 py px-2 rounded text-gray-100 dark:text-gray-900 hover:opacity-70"
+          class="bg-gray-900 dark:bg-gray-100 py px-2 rounded text-gray-100 dark:text-gray-900 hover:opacity-70 cursor-pointer"
           onClick={() => {
             if (setShellPrompt) {
               setShellPrompt("goto home");
@@ -399,10 +358,9 @@ function GoToResponse({ setShellPrompt }: GoToResponseProps) {
       </p>
       <br />
       <Menu>
-        <MenuItemLink href="/about" name="about" />
-        <MenuItemLink href="/download" name="download" />
-        <MenuItemLink href="/features" name="features" />
         <MenuItemLink href="/home" name="home" />
+        <MenuItemLink href="/docs" name="docs" />
+        <MenuItemLink href="/docs/quickstart" name="docs/quickstart" />
         <MenuItemLink href="/privacy" name="privacy" />
       </Menu>
       <br />
@@ -453,6 +411,14 @@ export default function ShellLine(
               globalThis.window.location.href = "/";
               return;
             }
+            case "docs": {
+              globalThis.window.location.href = "/docs";
+              return;
+            }
+            case "docs/quickstart": {
+              globalThis.window.location.href = "/docs/quickstart";
+              return;
+            }
             case "privacy": {
               globalThis.window.location.href = "/privacy";
               return;
@@ -469,10 +435,6 @@ export default function ShellLine(
 
       case ValidPrompts.Download: {
         return <DownloadResponse assets={assets} />;
-      }
-
-      case ValidPrompts.Privacy: {
-        return <PrivacyResponse />;
       }
 
       case ValidPrompts.Features: {

@@ -1,1 +1,1 @@
-export const docsUrl = "https://github.com/govisit/DownTimer-docs";
+export const repoUrl = "https://github.com/govisit/downtimer";

@@ -1,6 +1,22 @@
 @font-face {
   font-family: "Geist Mono";
-  src: url("./fonts/GeistMonoVF.woff2") format("woff2");
+  src: url("./fonts/GeistMonoVF.woff2") format("woff2-variations");
+  font-weight: 100 900;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Geist";
+  src: url("./fonts/Geist.woff2") format("woff2-variations");
+  font-weight: 100 900;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "GeistPixelCircle";
+  src: url("./fonts/GeistPixelCircle.woff2") format("woff2-variations");
+  font-weight: 100 900;
+  font-style: normal;
 }
 
 @import "tailwindcss";
@@ -10,6 +26,8 @@
 
 @theme {
   --font-mono: "Geist Mono", monospace;
+  --font-sans: "Geist", sans-serif;
+  --font-pixel: "GeistPixelCircle", monospace;
 }
 
 /* width */
@@ -32,4 +50,34 @@
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
   background: #1f2937;
+}
+
+.docs-page {
+  pre {
+    background-color: var(--color-gray-200);
+    padding: calc(var(--spacing) * 5) calc(var(--spacing) * 8);
+    border-radius: var(--radius-lg);
+    margin-top: 20px;
+    margin-bottom: 20px;
+    color: var(--color-gray-700);
+    overflow: scroll;
+  }
+
+  p code {
+    background-color: var(--color-gray-200);
+    color: var(--color-sky-600);
+    padding: calc(var(--spacing) * 1);
+    border-radius: var(--radius-lg);
+  }
+}
+
+.dark .docs-page {
+  pre {
+    background-color: var(--color-gray-800);
+    color: var(--color-gray-300);
+  }
+
+  p code {
+    background-color: var(--color-gray-800);
+  }
 }

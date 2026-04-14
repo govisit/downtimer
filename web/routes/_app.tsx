@@ -21,7 +21,7 @@ export default define.page(function App({ Component }) {
           src="https://plausible.laravelista.com/js/script.js"
         >
         </script>
-        <link rel="icon" href="favicon.svg" />
+        <link rel="icon" href="/favicon.svg" />
       </head>
       <body class="bg-gray-100 dark:bg-gray-900">
         <Component />

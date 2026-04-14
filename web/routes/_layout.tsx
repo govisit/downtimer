@@ -1,39 +1,35 @@
-import { ComponentChildren } from "preact";
-import Header from "../islands/Header.tsx";
 import { getLatestReleaseForHeader } from "../github.ts";
-import { Release } from "../types.ts";
 import { define } from "../utils.ts";
+import { NavLink } from "../components/menu.tsx";
+import { repoUrl } from "../config.ts";
+import Header from "../components/header.tsx";
 
-export default define.layout(async (ctx) => {
+export default define.layout(async ({ Component }) => {
   const latestRelease = await getLatestReleaseForHeader();
 
   return (
-    <LayoutComponent latestRelease={latestRelease}>
-      <ctx.Component />
-    </LayoutComponent>
-  );
-});
-
-export function LayoutComponent({ children, isScreen = true, latestRelease }: {
-  isScreen?: boolean;
-  children: ComponentChildren;
-  latestRelease: Release;
-}) {
-  return (
-    <div
-      class={[
-        "bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-200 p-6 flex flex-col font-mono",
-        isScreen ? "h-screen" : "",
-      ].join(" ")}
-    >
+    <div class="bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-200 p-6 flex flex-col font-mono min-h-screen">
       <Header latestRelease={latestRelease} />
-      <div
-        class={["mt-10 h-full h-full", isScreen ? "overflow-hidden" : ""].join(
-          " ",
-        )}
-      >
-        {children}
-      </div>
+      <main class="mt-10 h-full h-full flex flex-col grow">
+        <Component />
+      </main>
+      <footer class="mt-12 font-sans border-t border-dashed border-gray-300 pt-4 flex flex-col gap-4 sm:flex-row justify-between">
+        <div>
+          © 2023-{new Date().getFullYear()}{" "}
+          <a class="font-bold" href="https://govisit.pro" target="_blank">
+            Go Visit
+          </a>{" "}
+          - All rights reserved.
+        </div>
+        <nav class="flex flex-row gap-3">
+          <NavLink external href={repoUrl} title="Source code" />
+          <NavLink
+            href="/docs"
+            title="Docs"
+          />
+          <NavLink href="/privacy" title="Privacy" />
+        </nav>
+      </footer>
     </div>
   );
-}
+});

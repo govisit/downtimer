@@ -1,10 +1,15 @@
 import { Octokit } from "octokit";
 import { Endpoints } from "octokit/types";
 import { Asset, Release } from "./types.ts";
+import { Match } from "effect";
 
 const octokit = new Octokit({
   auth: Deno.env.get("GITHUB_TOKEN"),
 });
+
+const LATEST_RELEASE_KEY = ["latest-release-key"];
+
+const LATEST_RELEASE_EXPIRE_IN = 60000; // 1 minute
 
 // NOTE: There is a bug in octokit/type or in octokit where `status` is of wrong type for some reason.
 type ReleasesLatest =
@@ -15,18 +20,43 @@ type ReleasesLatest =
   & { status: number };
 
 export async function getLatestRelease(): Promise<ReleasesLatest["data"]> {
-  const result: ReleasesLatest = await octokit.request(
-    "GET /repos/govisit/DownTimer-docs/releases/latest",
-    {
-      owner: "govisit",
-      repo: "DownTimer-docs",
-      headers: {
-        "X-GitHub-Api-Version": "2022-11-28",
-      },
-    },
+  const kv = await Deno.openKv();
+
+  const latestRelease_cached = await kv.get<ReleasesLatest["data"]>(
+    LATEST_RELEASE_KEY,
   );
 
-  return result.data;
+  return await Match.value(latestRelease_cached.value).pipe(
+    Match.when(Match.null, async () => {
+      console.log("Fetching latest release from github.");
+
+      const result: ReleasesLatest = await octokit.request(
+        "GET /repos/govisit/downtimer/releases/latest",
+        {
+          owner: "govisit",
+          repo: "downtimer",
+          headers: {
+            "X-GitHub-Api-Version": "2022-11-28",
+          },
+        },
+      );
+
+      const latestRelease = result.data;
+
+      await kv.set(LATEST_RELEASE_KEY, latestRelease, {
+        expireIn: LATEST_RELEASE_EXPIRE_IN,
+      });
+
+      console.log("Caching latest release.");
+
+      return latestRelease;
+    }),
+    Match.orElse((latestRelease) => {
+      console.log("Retrieving latest release from cache.");
+
+      return latestRelease;
+    }),
+  );
 }
 
 export async function getLatestReleaseForHeader(): Promise<Release> {
