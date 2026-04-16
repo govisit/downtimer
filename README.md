@@ -92,4 +92,4 @@ This monorepo contains projects:
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 
-For commercial licensing inquiries: [open-source@govisit.pro]
+For commercial licensing inquiries: open-source@govisit.pro
