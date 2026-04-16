@@ -1,6 +1,6 @@
 # Website
 
-**Do not import from `@preact/signals-core`, but from `@preact/signals`.
+**Do not import from `@preact/signals-core`, but from `@preact/signals`.**
 
 Deployed to Deno Deploy.
 

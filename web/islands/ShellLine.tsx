@@ -359,6 +359,7 @@ function GoToResponse({ setShellPrompt }: GoToResponseProps) {
       <br />
       <Menu>
         <MenuItemLink href="/home" name="home" />
+        <MenuItemLink href="/download" name="download" />
         <MenuItemLink href="/docs" name="docs" />
         <MenuItemLink href="/docs/quickstart" name="docs/quickstart" />
         <MenuItemLink href="/privacy" name="privacy" />
