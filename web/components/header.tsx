@@ -18,18 +18,19 @@ export default function Header({ latestRelease }: { latestRelease: Release }) {
           <NavLink
             small
             href={latestRelease.url}
-            title={latestRelease.name}
-            external
+            name={latestRelease.name}
+            isExternal
           />
         </div>
         <div class="flex justify-end gap-3 items-center">
           <nav class="hidden md:flex md:flex-row md:gap-3">
-            <NavLink href="/" title="Home" />
+            <NavLink href="/" name="Home" />
+            <NavLink href="/download" name="Download" />
             <NavLink
               href="/docs"
-              title="Docs"
+              name="Docs"
             />
-            <NavLink href="/privacy" title="Privacy" />
+            <NavLink href="/privacy" name="Privacy" />
           </nav>
           <ToggleMenu isMenuOpen={isMenuOpen} />
           <ThemeSwitcher />
@@ -37,12 +38,13 @@ export default function Header({ latestRelease }: { latestRelease: Release }) {
       </header>
       <OnMenuOpen isMenuOpen={isMenuOpen}>
         <nav class="mt-4 md:hidden flex-col flex gap-3">
-          <NavLink href="/" title="Home" />
+          <NavLink href="/" name="Home" />
+          <NavLink href="/download" name="Download" />
           <NavLink
             href="/docs"
-            title="Docs"
+            name="Docs"
           />
-          <NavLink href="/privacy" title="Privacy" />
+          <NavLink href="/privacy" name="Privacy" />
         </nav>
       </OnMenuOpen>
     </>

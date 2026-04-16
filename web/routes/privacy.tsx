@@ -1,6 +1,6 @@
 import { Head } from "fresh/runtime";
 import { define } from "../utils.ts";
-import { PageTitle } from "../components/typography.tsx";
+import { PageHeading, PageTitle } from "../components/typography.tsx";
 
 export default define.page(function PrivacyNotice() {
   return (
@@ -11,18 +11,19 @@ export default define.page(function PrivacyNotice() {
       <PageTitle>Privacy Notice</PageTitle>
       <div class="font-sans">
         <p>
-          This notice provides information about the types of information I may
-          collect from you when you visit my website and explains how I use such
-          data, as well as describes the steps I take in order to protect them.
-          The notice also describes the options you have with regard to the
-          collection and use of your data when you visit my website.
+          This notice provides information about the types of information Go
+          Visit may collect from you when you visit this website and explains
+          how we use such data, as well as describes the steps we take in order
+          to protect them. The notice also describes the options you have with
+          regard to the collection and use of your data when you visit this
+          website.
         </p>
 
         <br />
 
-        <h2 class="text-2xl font-pixel mb-2">Analytics</h2>
+        <PageHeading level="h2">Analytics</PageHeading>
         <p>
-          I use a self-hosted version of{" "}
+          Go Visit uses a self-hosted version of{" "}
           <a
             class="underline hover:opacity-70"
             href="https://plausible.io"
@@ -38,7 +39,7 @@ export default define.page(function PrivacyNotice() {
 
         <br />
 
-        <h2 class="text-2xl font-pixel mb-2">Cookies</h2>{" "}
+        <PageHeading level="h2">Cookies</PageHeading>
         This website does not use cookies.
       </div>
     </>

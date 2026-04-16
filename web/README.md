@@ -2,11 +2,7 @@
 
 **Do not import from `@preact/signals-core`, but from `@preact/signals`.
 
-## Deployment
-
-Was deployed to Deno Deploy, but now I have to either use optimize or docker to
-package the application and self host. Can't use Deno Deploy because I don't
-know how to configure it for fresh in a monorepo...
+Deployed to Deno Deploy.
 
 ### Compile
 

@@ -21,13 +21,14 @@ export default define.layout(async ({ Component }) => {
           </a>{" "}
           - All rights reserved.
         </div>
-        <nav class="flex flex-row gap-3">
-          <NavLink external href={repoUrl} title="Source code" />
+        <nav class="flex flex-col sm:flex-row gap-3">
+          <NavLink isExternal href={repoUrl} name="Source code" />
+          <NavLink href="/download" name="Download" />
           <NavLink
             href="/docs"
-            title="Docs"
+            name="Docs"
           />
-          <NavLink href="/privacy" title="Privacy" />
+          <NavLink href="/privacy" name="Privacy" />
         </nav>
       </footer>
     </div>

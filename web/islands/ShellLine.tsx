@@ -102,26 +102,26 @@ function HelpResponse() {
         <li>
           about{" "}
           <SmallText>
-            displays information about this application.
+            Displays information about this application.
           </SmallText>
         </li>
         <li>
           clear{" "}
           <SmallText>
-            clears the terminal, but history remains intact. Use keybinding
-            ctrl+l to trigger this command.
+            Clears the terminal, but history remains intact. Use keybinding
+            ctrl+l to trigger this command (sorry).
           </SmallText>
         </li>
         <li>
           download{" "}
           <SmallText>
-            displays a list of download links.
+            Displays a list of download links.
           </SmallText>
         </li>
         <li>
           echo &lt;output&gt;{" "}
           <SmallText>
-            prints given output to the console. You can pipe the output to:{" "}
+            Prints given output to the console. You can pipe the output to:{" "}
             <Code>/dev/null</Code>, <Code>/dev/stdout</Code> or{" "}
             <Code>/dev/stderr</Code>.
           </SmallText>
@@ -129,26 +129,26 @@ function HelpResponse() {
         <li>
           features{" "}
           <SmallText>
-            displays the features of this application.
+            Displays the features of this application.
           </SmallText>
         </li>
         <li>
           goto [page]{" "}
           <SmallText>
-            displays a list of links to which you can navigate to. You can also
+            Displays a list of links to which you can navigate to. You can also
             pass the page name as the second parameter to navigate to that page.
           </SmallText>
         </li>
         <li>
           hello [name]{" "}
           <SmallText>
-            displays a hello message.
+            Displays a hello message.
           </SmallText>
         </li>
         <li>
           help{" "}
           <SmallText>
-            displays this help text.
+            Displays this help text.
           </SmallText>
         </li>
       </ul>
@@ -171,9 +171,8 @@ function AboutResponse({ setShellPrompt }: AboutResponseProps) {
       <ResponseTitle title="About" />
       <br />
       <p>
-        I needed a way to manage multiple timers which count down time, so I
-        have created this application. You can download the binary if you type
-        {" "}
+        <b>Manage multiple timers which count down time.</b>{" "}
+        You can download the binary if you type{" "}
         <button
           type="button"
           class="bg-gray-900 dark:bg-gray-100 py px-2 rounded text-gray-100 dark:text-gray-900 hover:opacity-70 cursor-pointer"
@@ -193,13 +192,13 @@ function AboutResponse({ setShellPrompt }: AboutResponseProps) {
         compiled to a binary. You tell it how much time you want to count down,
         and you can pause it, resume it, view times it has been paused, when it
         completed, etc. It also has a nice CLI display where it uses ASCII
-        graphics to show remaining time. Good for showing linux rices or just
-        showing off your terminal skills.
+        graphics to show remaining time. Good for showing linux rices or
+        actually being productive.
       </p>
       <br />
 
       <div>
-        &gt; dt timer show 01K7HTNR83EQEG0Q4XXHBDR8G5 -c --font slick<br />
+        &gt; dt timer start -n DownTimer -d "2h" -c --font slick<br />
         Name: DownTimer<br />
         Duration: 2h<br />
         Status: Paused<br />
@@ -221,7 +220,6 @@ function AboutResponse({ setShellPrompt }: AboutResponseProps) {
             href="/docs/quickstart"
             name="Quickstart"
           />
-          <MenuItemLink href="/docs" name="Documentation" />
           <MenuItemLink
             href={repoUrl + "/issues"}
             name="Issues"
@@ -232,6 +230,7 @@ function AboutResponse({ setShellPrompt }: AboutResponseProps) {
             name="Discussions"
             isExternal
           />
+          <MenuItemLink href={repoUrl} name="Source code" isExternal />
         </Menu>
       </div>
     </PlainResponse>
@@ -254,9 +253,9 @@ function DownloadResponse({ assets }: { assets: Asset[] }) {
       </Menu>
       <br />
       <p>
-        Remember to extract the file. I recommend to name the binary file{" "}
+        Remember to extract the file. We recommend to name the binary file{" "}
         <Code>dt</Code> after extracting it.<br />
-        Add binary to PATH and then just call it with <Code>dt --help</Code>.
+        Add binary to PATH and then call it with <Code>dt --help</Code>.
       </p>
     </PlainResponse>
   );
@@ -293,13 +292,14 @@ function FeaturesResponse() {
         <MenuItem>
           Countdown view{" "}
           <SmallText>
-            If you spend your days in the terminal you will love this feature.
+            Uses ASCII fonts to graphically display remaining time. If you spend
+            your days in the terminal you will love this feature.
           </SmallText>
         </MenuItem>
         <MenuItem>
           Logs{" "}
           <SmallText>
-            each timer has a log of events that have happened during the
+            Each timer has a log of events that have happened during the
             lifetime of the timer (started, paused, resumed, completed, manual
             completed).
           </SmallText>
@@ -307,27 +307,27 @@ function FeaturesResponse() {
         <MenuItem>
           Topics{" "}
           <SmallText>
-            group timers by topic. Useful when having multiple timers for a
+            Group timers by topic. Useful when having multiple timers for a
             specific topic.
           </SmallText>
         </MenuItem>
         <MenuItem>
           Templates{" "}
           <SmallText>
-            if you notice that you reuse the same timer multiple times, you can
+            If you notice that you create the same timer over and over, you can
             create a template from that timer.
           </SmallText>
         </MenuItem>
         <MenuItem>
           Cross platform{" "}
           <SmallText>
-            works on all major operating systems.
+            Works on all major operating systems.
           </SmallText>
         </MenuItem>
         <MenuItem>
           Disasterproof{" "}
           <SmallText>
-            it will continue to work even if you close the terminal or if your
+            It will continue to work even if you close the terminal or if your
             computer battery dies. <b>No more lost time.</b>
           </SmallText>
         </MenuItem>

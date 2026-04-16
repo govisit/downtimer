@@ -14,49 +14,48 @@ export function MenuItemLink(
 ) {
   return (
     <MenuItem>
-      <a
-        class="hover:opacity-70"
-        {...(isExternal && { target: "_blank" })}
+      <NavLink
+        name={name}
+        isExternal={isExternal}
         href={href}
-      >
-        {name}
-        {isExternal && <ExternalIcon />}
-      </a>
+      />
     </MenuItem>
   );
 }
 
-export function Menu({ children }: { children: ComponentChildren }) {
+export function Menu(
+  { children, classPlus }: { children: ComponentChildren; classPlus?: string },
+) {
   return (
-    <menu class="list-disc list-inside">
+    <menu class={`list-disc list-inside ${classPlus ?? ""}`}>
       {children}
     </menu>
   );
 }
 
 export function NavLink(
-  { href, title, external = false, small = false }: {
+  { href, name, isExternal = false, small = false }: {
     href: string;
-    title: string;
-    external?: boolean;
+    name: string;
+    isExternal?: boolean;
     small?: boolean;
   },
 ) {
   return (
     <a
       class={[
-        "hover:opacity-70 flex gap-1 items-center",
+        "hover:opacity-70 gap-1 items-center inline-flex shrink-0",
         small ? "text-xs" : "",
         href === "/" ? "" : "aria-[current]:underline ",
       ].join(" ")}
       href={href}
-      {...(external && {
+      {...(isExternal && {
         rel: "noopener",
         target: "_blank",
       })}
     >
-      {title}
-      {external && <ExternalIcon />}
+      {name}
+      {isExternal && <ExternalIcon />}
     </a>
   );
 }

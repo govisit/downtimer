@@ -1,20 +1,15 @@
 # DownTimer
 
-**When your phone or PC is not enough.**
-
-I needed a way to manage multiple timers which count down time, so I have
-created this application. You can download the binary if you type
-
-in the shell prompt bellow.
+**Manage multiple timers which count down time.**
 
 DownTimer is a CLI application written in TypeScript / Deno, and compiled to a
 binary. You tell it how much time you want to count down, and you can pause it,
 resume it, view times it has been paused, when it completed, etc. It also has a
 nice CLI display where it uses ASCII graphics to show remaining time. Good for
-showing linux rices or just showing off your terminal skills.
+showing linux rices or actually being productive.
 
 ```bash
-> dt timer show 01K7HTNR83EQEG0Q4XXHBDR8G5 -c --font slick
+> dt timer start -n DownTimer -d "2h" -c --font slick
 Name: DownTimer
 Duration: 2h
 Status: Paused
@@ -31,7 +26,9 @@ Created at: 17.12.2023. 21:56:57
 ## Documentation
 
 - [Docs index](https://downtimer.govisit.pro/docs)
-- [Quickstart](https://downtimer.govisit.pro/docs/quickstart)
+  - [Quickstart](https://downtimer.govisit.pro/docs/quickstart)
+- [Issues](https://github.com/govisit/downtimer/issues)
+- [Discussions](https://github.com/govisit/downtimer/discussions)
 
 ## Local development
 

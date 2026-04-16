@@ -22,7 +22,7 @@ export default define.page(async function DocsPage(ctx) {
         <a href="/docs">&lt;- Docs</a>
       </div>
       <PageTitle>Quickstart</PageTitle>
-      {/* deno-lint-ignore react-no-danger */}
+      {/* // deno-lint-ignore react-no-danger */}
       <div
         class="docs-page font-sans"
         dangerouslySetInnerHTML={{ __html: html }}

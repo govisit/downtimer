@@ -60,14 +60,21 @@
     margin-top: 20px;
     margin-bottom: 20px;
     color: var(--color-gray-700);
-    overflow: scroll;
+    overflow-x: scroll;
+    line-height: initial;
   }
 
-  p code {
-    background-color: var(--color-gray-200);
-    color: var(--color-sky-600);
-    padding: calc(var(--spacing) * 1);
-    border-radius: var(--radius-lg);
+  p {
+    padding-top: calc(var(--spacing) * 1);
+    padding-bottom: calc(var(--spacing) * 1);
+
+    code {
+      background-color: var(--color-gray-200);
+      color: var(--color-sky-600);
+      padding: calc(var(--spacing) * 1);
+      border-radius: var(--radius-lg);
+      font-size: var(--text-sm);
+    }
   }
 }
 

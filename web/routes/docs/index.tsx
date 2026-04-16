@@ -1,7 +1,9 @@
 import { Head } from "fresh/runtime";
 import { define } from "../../utils.ts";
-import { PageTitle } from "../../components/typography.tsx";
+import { PageHeading, PageTitle } from "../../components/typography.tsx";
 import { capitalize } from "effect/String";
+import { repoUrl } from "../../config.ts";
+import { Menu, MenuItem, NavLink } from "../../components/menu.tsx";
 
 export default define.page(async function Docs() {
   const files: string[] = [];
@@ -13,16 +15,39 @@ export default define.page(async function Docs() {
   return (
     <>
       <Head>
-        <title>DownTimer - Docs</title>
+        <title>DownTimer - Documentation</title>
       </Head>
       <PageTitle>Documentation</PageTitle>
-      <ul class="list-disc list-inside">
+      <Menu classPlus="mb-8">
         {files.map((file, index) => (
-          <li>
-            <a href={`/docs/${file}`} key={index}>{capitalize(file)}</a>
-          </li>
+          <MenuItem>
+            <NavLink
+              href={`/docs/${file}`}
+              key={index}
+              name={capitalize(file)}
+            />
+          </MenuItem>
         ))}
-      </ul>
+      </Menu>
+      <PageHeading level="h2">Other links</PageHeading>
+      <Menu>
+        <MenuItem>
+          <NavLink href={repoUrl + "/issues"} isExternal name="Issues" />{" "}
+          - Report any bugs that you encounter.
+        </MenuItem>
+        <MenuItem>
+          <NavLink
+            href={repoUrl + "/discussions"}
+            isExternal
+            name="Discussions"
+          />{" "}
+          - Ask questions or suggest features.
+        </MenuItem>
+        <MenuItem>
+          <NavLink href={repoUrl} isExternal name="Source code" />{" "}
+          - View source code and contribute.
+        </MenuItem>
+      </Menu>
     </>
   );
 });
