@@ -96,7 +96,7 @@ export const command = new Command()
 
       if (options.latest) {
         const latestActiveTimerMaybe = await getActiveTimers(kv).then(
-          EffectArray.head,
+          EffectArray.last,
         );
 
         return latestActiveTimerMaybe.pipe(
