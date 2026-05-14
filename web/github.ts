@@ -19,43 +19,67 @@ type ReleasesLatest =
   >
   & { status: number };
 
+const getLatest = async (): Promise<ReleasesLatest["data"]> => {
+  const result: ReleasesLatest = await octokit.request(
+    "GET /repos/govisit/downtimer/releases/latest",
+    {
+      owner: "govisit",
+      repo: "downtimer",
+      headers: {
+        "X-GitHub-Api-Version": "2022-11-28",
+      },
+    },
+  );
+
+  return result.data;
+};
+
+const cacheLatest = async (
+  kv: Deno.Kv,
+  latestRelease: ReleasesLatest["data"],
+): Promise<void> => {
+  await kv.set(LATEST_RELEASE_KEY, {
+    latestRelease,
+    expiresAt: Date.now() + LATEST_RELEASE_EXPIRE_IN,
+  }, {
+    expireIn: LATEST_RELEASE_EXPIRE_IN,
+  });
+};
+
+const fetchLatestAndCache = async (
+  kv: Deno.Kv,
+): Promise<ReleasesLatest["data"]> => {
+  console.log("Fetching latest release from github.");
+
+  const latestRelease = await getLatest();
+
+  await cacheLatest(kv, latestRelease);
+
+  console.log("Cached latest release.");
+
+  return latestRelease;
+};
+
+type LatestReleaseCached = {
+  latestRelease: ReleasesLatest["data"];
+  expiresAt: number;
+};
+
 export async function getLatestRelease(): Promise<ReleasesLatest["data"]> {
   const kv = await Deno.openKv();
 
-  const latestRelease_cached = await kv.get<ReleasesLatest["data"]>(
+  const latestRelease_cached = await kv.get<LatestReleaseCached>(
     LATEST_RELEASE_KEY,
   );
 
-  return await Match.value(latestRelease_cached.value).pipe(
-    Match.when(Match.null, async () => {
-      console.log("Fetching latest release from github.");
-
-      const result: ReleasesLatest = await octokit.request(
-        "GET /repos/govisit/downtimer/releases/latest",
-        {
-          owner: "govisit",
-          repo: "downtimer",
-          headers: {
-            "X-GitHub-Api-Version": "2022-11-28",
-          },
-        },
-      );
-
-      const latestRelease = result.data;
-
-      await kv.set(LATEST_RELEASE_KEY, latestRelease, {
-        expireIn: LATEST_RELEASE_EXPIRE_IN,
-      });
-
-      console.log("Caching latest release.");
-
-      return latestRelease;
-    }),
-    Match.orElse((latestRelease) => {
+  return await Match.value(latestRelease_cached).pipe(
+    Match.when({ value: Match.null }, () => fetchLatestAndCache(kv)),
+    Match.when({ value: (_) => _.expiresAt > Date.now() }, (latestRelease) => {
       console.log("Retrieving latest release from cache.");
 
-      return latestRelease;
+      return latestRelease.value.latestRelease;
     }),
+    Match.orElse(() => fetchLatestAndCache(kv)),
   );
 }
 
