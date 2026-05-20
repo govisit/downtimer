@@ -2,7 +2,7 @@ import { Command } from "@cliffy/command";
 import { command as topicCommand } from "./commands/topics/index.ts";
 import { command as templateCommand } from "./commands/templates/index.ts";
 import { command as timerCommand } from "./commands/timers/index.ts";
-import packageInfo from "./deno.json" with { type: "json" };
+import { packageInfo } from "./stats.ts";
 
 const main = new Command()
   .name("DownTimer")

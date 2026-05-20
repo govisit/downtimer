@@ -2,31 +2,34 @@ import { Octokit } from "octokit";
 import { Endpoints } from "octokit/types";
 import { Asset, Release } from "./types.ts";
 import { Match } from "effect";
+import { packageInfo } from "@downtimer/cli/stats";
 
 const octokit = new Octokit({
   auth: Deno.env.get("GITHUB_TOKEN"),
 });
 
-const LATEST_RELEASE_KEY = ["latest-release-key"];
+const LATEST_RELEASE_KEY = ["latest-release-key-2"];
 
 const LATEST_RELEASE_EXPIRE_IN = 60000; // 1 minute
 
-// NOTE: There is a bug in octokit/type or in octokit where `status` is of wrong type for some reason.
-type ReleasesLatest =
-  & Omit<
-    Endpoints["GET /repos/{owner}/{repo}/releases/latest"]["response"],
-    "status"
-  >
-  & { status: number };
+const latestReleaseName = `v${packageInfo.version}-cli`;
 
-const getLatest = async (): Promise<ReleasesLatest["data"]> => {
-  const result: ReleasesLatest = await octokit.request(
-    "GET /repos/govisit/downtimer/releases/latest",
+export const latestRelease = {
+  name: latestReleaseName,
+  url: `https://github.com/govisit/downtimer/releases/tag/${latestReleaseName}`,
+} satisfies Release;
+
+const fetchLatestRelease = async (): Promise<
+  Endpoints["GET /repos/{owner}/{repo}/releases/tags/{tag}"]["response"]["data"]
+> => {
+  const result = await octokit.request(
+    `GET /repos/{owner}/{repo}/releases/tags/{tag}`,
     {
       owner: "govisit",
       repo: "downtimer",
+      tag: latestRelease.name,
       headers: {
-        "X-GitHub-Api-Version": "2022-11-28",
+        "X-GitHub-Api-Version": "2026-03-10",
       },
     },
   );
@@ -34,75 +37,65 @@ const getLatest = async (): Promise<ReleasesLatest["data"]> => {
   return result.data;
 };
 
-const cacheLatest = async (
+const cacheDownloadAssets = async (
   kv: Deno.Kv,
-  latestRelease: ReleasesLatest["data"],
+  assets: Asset[],
 ): Promise<void> => {
-  await kv.set(LATEST_RELEASE_KEY, {
-    latestRelease,
-    expiresAt: Date.now() + LATEST_RELEASE_EXPIRE_IN,
-  }, {
-    expireIn: LATEST_RELEASE_EXPIRE_IN,
-  });
+  await kv.set(
+    LATEST_RELEASE_KEY,
+    {
+      assets,
+      expiresAt: Date.now() + LATEST_RELEASE_EXPIRE_IN,
+    } satisfies DownloadAssetsCached,
+    {
+      expireIn: LATEST_RELEASE_EXPIRE_IN,
+    },
+  );
 };
 
-const fetchLatestAndCache = async (
+const fetchLatestReleaseAndCacheDownloadAssets = async (
   kv: Deno.Kv,
-): Promise<ReleasesLatest["data"]> => {
+): Promise<Asset[]> => {
   console.log("Fetching latest release from github.");
 
-  const latestRelease = await getLatest();
-
-  await cacheLatest(kv, latestRelease);
-
-  console.log("Cached latest release.");
-
-  return latestRelease;
-};
-
-type LatestReleaseCached = {
-  latestRelease: ReleasesLatest["data"];
-  expiresAt: number;
-};
-
-export async function getLatestRelease(): Promise<ReleasesLatest["data"]> {
-  const kv = await Deno.openKv();
-
-  const latestRelease_cached = await kv.get<LatestReleaseCached>(
-    LATEST_RELEASE_KEY,
-  );
-
-  return await Match.value(latestRelease_cached).pipe(
-    Match.when({ value: Match.null }, () => fetchLatestAndCache(kv)),
-    Match.when({ value: (_) => _.expiresAt > Date.now() }, (latestRelease) => {
-      console.log("Retrieving latest release from cache.");
-
-      return latestRelease.value.latestRelease;
-    }),
-    Match.orElse(() => fetchLatestAndCache(kv)),
-  );
-}
-
-export async function getLatestReleaseForHeader(): Promise<Release> {
-  const result = await getLatestRelease();
-
-  const latestRelease: Release = {
-    name: result.tag_name,
-    url: result.html_url,
-  };
-
-  return latestRelease;
-}
-
-export async function getLatestDownloadAssets(): Promise<Asset[]> {
-  const latestRelease = await getLatestRelease();
+  const latestRelease = await fetchLatestRelease();
 
   const downloadAssets: Asset[] = latestRelease.assets.map((asset) => {
     return {
       name: asset.name,
       url: asset.browser_download_url,
-    };
+    } satisfies Asset;
   });
 
+  await cacheDownloadAssets(kv, downloadAssets);
+
+  console.log("Cached latest release download assets.");
+
   return downloadAssets;
+};
+
+type DownloadAssetsCached = {
+  assets: Asset[];
+  expiresAt: number;
+};
+
+export async function getDownloadAssetsForLatestRelease(): Promise<Asset[]> {
+  const kv = await Deno.openKv();
+
+  const latestRelease_cached = await kv.get<DownloadAssetsCached>(
+    LATEST_RELEASE_KEY,
+  );
+
+  return Match.value(latestRelease_cached).pipe(
+    Match.when(
+      { value: Match.null },
+      () => fetchLatestReleaseAndCacheDownloadAssets(kv),
+    ),
+    Match.when({ value: (_) => _.expiresAt > Date.now() }, (latestRelease) => {
+      console.log("Retrieving latest release download assets from cache.");
+
+      return latestRelease.value.assets;
+    }),
+    Match.orElse(() => fetchLatestReleaseAndCacheDownloadAssets(kv)),
+  );
 }

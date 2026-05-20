@@ -2,10 +2,10 @@ import { Head } from "fresh/runtime";
 import { define } from "../utils.ts";
 import { Code, PageTitle } from "../components/typography.tsx";
 import { Menu, MenuItemLink } from "../components/menu.tsx";
-import { getLatestDownloadAssets } from "../github.ts";
+import { getDownloadAssetsForLatestRelease } from "../github.ts";
 
 export default define.page(async function DownloadPage() {
-  const downloadAssets = await getLatestDownloadAssets();
+  const downloadAssets = await getDownloadAssetsForLatestRelease();
 
   return (
     <>

@@ -24,6 +24,6 @@
     "npm:esbuild@0.25.7"
   ],
   "imports": {
-    "effect": "npm:effect@^3.21.0"
+    "effect": "npm:effect@^3.21.2"
   }
 }

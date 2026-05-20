@@ -60,16 +60,16 @@
   },
   "imports": {
     "@deno/gfm": "jsr:@deno/gfm@^0.12.0",
-    "@tailwindcss/forms": "npm:@tailwindcss/forms@^0.5.10",
-    "fresh": "jsr:@fresh/core@^2.1.2",
-    "preact": "npm:preact@^10.27.2",
-    "@preact/signals": "npm:@preact/signals@^2.3.2",
-    "@fresh/plugin-vite": "jsr:@fresh/plugin-vite@^1.0.5",
-    "vite": "npm:vite@^7.1.9",
-    "tailwindcss": "npm:tailwindcss@^4.1.14",
-    "@tailwindcss/vite": "npm:@tailwindcss/vite@^4.1.14",
-    "preact/compat": "npm:preact@^10.27.2/compat",
-    "octokit": "npm:@octokit/core@^6.1.6",
-    "octokit/types": "npm:@octokit/types@^13.10.0"
+    "@tailwindcss/forms": "npm:@tailwindcss/forms@^0.5.11",
+    "fresh": "jsr:@fresh/core@^2.3.3",
+    "preact": "npm:preact@^10.29.2",
+    "@preact/signals": "npm:@preact/signals@^2.9.0",
+    "@fresh/plugin-vite": "jsr:@fresh/plugin-vite@^1.1.2",
+    "vite": "npm:vite@^8.0.13",
+    "tailwindcss": "npm:tailwindcss@^4.3.0",
+    "@tailwindcss/vite": "npm:@tailwindcss/vite@^4.3.0",
+    "preact/compat": "npm:preact@^10.29.2/compat",
+    "octokit": "npm:@octokit/core@^7.0.6",
+    "octokit/types": "npm:@octokit/types@^16.0.0"
   }
 }

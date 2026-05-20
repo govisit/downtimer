@@ -4,8 +4,8 @@ import { Line, ValidPrompts } from "../../islands/ShellLine.tsx";
 import { getTimestamp } from "../../islands/ShellPrompt.tsx";
 import { Head } from "fresh/runtime";
 import {
-  getLatestDownloadAssets,
-  getLatestReleaseForHeader,
+  getDownloadAssetsForLatestRelease,
+  latestRelease,
 } from "../../github.ts";
 import { define } from "../../utils.ts";
 import { RouteConfig } from "fresh";
@@ -38,8 +38,7 @@ const history = signal(
 );
 
 export default define.page(async function Home() {
-  const downloadAssets = await getLatestDownloadAssets();
-  const latestRelease = await getLatestReleaseForHeader();
+  const downloadAssets = await getDownloadAssetsForLatestRelease();
 
   return (
     <>

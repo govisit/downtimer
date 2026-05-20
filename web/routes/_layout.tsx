@@ -1,12 +1,10 @@
-import { getLatestReleaseForHeader } from "../github.ts";
 import { define } from "../utils.ts";
 import { NavLink } from "../components/menu.tsx";
 import { repoUrl } from "../config.ts";
 import Header from "../components/header.tsx";
+import { latestRelease } from "../github.ts";
 
-export default define.layout(async ({ Component }) => {
-  const latestRelease = await getLatestReleaseForHeader();
-
+export default define.layout(({ Component }) => {
   return (
     <div class="bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-200 p-6 flex flex-col font-mono min-h-screen">
       <Header latestRelease={latestRelease} />
